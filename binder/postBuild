@@ -34,17 +34,10 @@ def _(*args, **kwargs):
 # install dependencies
 _("jlpm")
 
-# initially list installed extensions to determine if there are any surprises
-_("jupyter", "labextension", "list")
+_('jlpm', 'build')
 
-# install the labextension
-_("jupyter", "labextension", "install", "--no-build", '.')
-
-# verify the list of extensions
-_("jupyter", "labextension", "list")
-
-# verify the list of extensions
-_("jupyter", "lab", "build", "--minimize=False", '--dev-build=False')
+# Link your development version of the extension with JupyterLab
+_('jupyter', 'labextension', 'link', '.')
 
 # verify the list of extensions one last time
 _("jupyter", "labextension", "list")
