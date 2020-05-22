@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
     "allowSyntheticDefaultImports": true,
     "composite": true,
     "declaration": true,

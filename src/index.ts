@@ -12,8 +12,9 @@ import {
 
 import { Widget } from '@lumino/widgets';
 
+import JitsiMeetExternalAPI from  './external_api';
+
 class JitsiWidget extends Widget {
-  private JitsiMeetExternalAPI: any;
 
   private currentMeeting: any;
 
@@ -25,9 +26,6 @@ class JitsiWidget extends Widget {
 
   async onAfterAttach(): Promise<void> {
     console.log('attach called');
-    if (!this.JitsiMeetExternalAPI) {
-      this.JitsiMeetExternalAPI = await this.loadJitsiExternalApi();
-    }
     // FIXME: How often is this actually called?
     const domain = 'meet.jit.si';
     const options = {
@@ -35,38 +33,13 @@ class JitsiWidget extends Widget {
       parentNode: this.node
     };
 
-    this.currentMeeting = new this.JitsiMeetExternalAPI(domain, options);
+    // console.log((window as any).JitsiMeetexternalAPI)
+    this.currentMeeting = new JitsiMeetExternalAPI(domain, options);
   }
 
   onAfterDetach(): void {
     console.log('detach called');
     this.currentMeeting.dispose();
-  }
-
-  /**
-   * Load Jitsi External IFrame API
-   *
-   * Returns JitsiMeetExternalApi
-   */
-  async loadJitsiExternalApi(): Promise<void> {
-    console.log('jitsi loader called');
-    const SCRIPT_ID = 'jpe-jitsi-external-api-loader-script';
-    return new Promise((resolve, reject) => {
-      if (document.querySelector(`script#${SCRIPT_ID}`)) {
-        resolve((window as any).JitsiMeetExternalAPI);
-      } else {
-        const script = document.createElement('script');
-        // FIXME: Load this locally
-        script.src = 'https://meet.jit.si/external_api.js';
-        script.id = SCRIPT_ID;
-        script.onload = (): void => {
-          console.log('Loading Jitsi Meet External API script');
-          resolve((window as any).JitsiMeetExternalAPI);
-        };
-        // FIXME: Should this be appended to body instead? Does it matter?
-        document.head.appendChild(script);
-      }
-    });
   }
 }
 
