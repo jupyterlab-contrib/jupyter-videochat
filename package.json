@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-videochat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JuVideo Chat with peers inside  JupyterLab",
   "keywords": [
     "jupyter",
@@ -24,7 +24,7 @@
     "type": "git",
     "url": "https://github.com/yuvipanda/jupyter-videochat.git"
   },
-  "scripts": { 
+  "scripts": {
     "build": "jlpm run build:lib",
     "build:labextension": "cd jupyter_videochat && rimraf labextension && mkdirp labextension && cd labextension && npm pack ../..",
     "build:lib": "tsc",
@@ -61,7 +61,7 @@
   "sideEffects": [
     "style/*.css"
   ],
-  "jupyterlab": { 
+  "jupyterlab": {
     "discovery": {
         "server": {
           "managers": [
@@ -71,7 +71,7 @@
             "name": "jupyter_videochat"
           }
         }
-    }, 
+    },
     "extension": true
   }
 }
