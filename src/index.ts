@@ -123,7 +123,7 @@ async function activate(
  * Initialization data for the jupyter-jitsi extension.
  */
 const extension: JupyterFrontEndPlugin<void> = {
-  id: 'jupyter-jitsi',
+  id: 'jupyterlab-videochat',
   autoStart: true,
   requires: [ICommandPalette, ILayoutRestorer],
   activate: activate
