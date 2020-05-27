@@ -4,4 +4,7 @@
 
 .jp-VideoChat {
     height: 100%;
+    /* Lift us above the JupyterLab statusbar */
+    /* FIXME: Is there a better way to do this? */
+    padding-bottom: 24px;
 }
