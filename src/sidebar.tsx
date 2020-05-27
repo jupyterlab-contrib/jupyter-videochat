@@ -57,7 +57,7 @@ export class VideoChatSidebarWidget extends ReactWidget {
 
   constructor() {
     super()
-    this.addClass('jp-VideoChcat')
+    this.addClass('jp-VideoChat')
   }
 
   render(): JSX.Element {
