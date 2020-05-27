@@ -10,7 +10,7 @@ import {
   WidgetTracker
 } from '@jupyterlab/apputils';
 
-import { VideoCallSidebarWidget } from './sidebar';
+import { VideoChatSidebarWidget } from './sidebar';
 
 
 async function activate(
@@ -20,17 +20,17 @@ async function activate(
 ): Promise<void> {
   console.log('JupyterLab extension jupyter-jitsi is activated!');
   // Create a blank content widget inside of a MainAreaWidget
-  let widget: MainAreaWidget<VideoCallSidebarWidget>;
+  let widget: MainAreaWidget<VideoChatSidebarWidget>;
 
   const command = 'jitsi:open';
 
-  const tracker = new WidgetTracker<MainAreaWidget<VideoCallSidebarWidget>>({
+  const tracker = new WidgetTracker<MainAreaWidget<VideoChatSidebarWidget>>({
     namespace: 'jitsi'
   });
 
   if (!widget || widget.isDisposed) {
     // Create widget
-    const content = new VideoCallSidebarWidget();
+    const content = new VideoChatSidebarWidget();
     widget = new MainAreaWidget({ content });
 
     widget.id = 'jitsi-jupyterlab';

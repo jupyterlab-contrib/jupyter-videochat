@@ -27,11 +27,11 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     }
   });
 
-  return (<div id="jp-videocall-jitsi-container" ref={container}>
+  return (<div id="jp-VideoChat-jitsi-container" ref={container}>
   </div>)
 }
 
-const VideoCallSidebarComponent = (): JSX.Element => {
+const VideoChatSidebarComponent = (): JSX.Element => {
   const [currentChat, setCurrentChat] = useState("project-1");
 
   return (
@@ -39,7 +39,7 @@ const VideoCallSidebarComponent = (): JSX.Element => {
       <div>
         <label>
           Select chat to join
-          <select name="jp-videocall-chat-name" id="jp-videocall-chat-name"
+          <select name="jp-VideoChat-chat-name" id="jp-VideoChat-chat-name"
             onChange={
               (ev: any) => {setCurrentChat(ev.target.value)}
             }>
@@ -53,14 +53,15 @@ const VideoCallSidebarComponent = (): JSX.Element => {
   );
 }
 
-export class VideoCallSidebarWidget extends ReactWidget {
+export class VideoChatSidebarWidget extends ReactWidget {
 
   constructor() {
     super()
+    this.addClass('jp-VideoChcat')
   }
 
   render(): JSX.Element {
-    return <VideoCallSidebarComponent />;
+    return <VideoChatSidebarComponent />;
   }
 
 
