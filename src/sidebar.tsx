@@ -8,6 +8,9 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { stopIcon } from '@jupyterlab/ui-components';
 
+// Prefix for all meetings, to prevent clashes temporarily
+const MEETING_PREFIX = "jp-VideoCall-test-";
+
 type JitsiMeetProps = {
   meetingID: string
   domain: string
@@ -18,7 +21,7 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
 
   useEffect(() => {
     const options = {
-      roomName: props.meetingID,
+      roomName: MEETING_PREFIX + props.meetingID,
       parentNode: container.current,
       interfaceConfigOverwrite: {
         // Overrides defined from https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
