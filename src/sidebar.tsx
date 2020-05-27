@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react';
 
 
 import JitsiMeetExternalAPI from  './external_api';
-import { ReactWidget } from '@jupyterlab/apputils';
+import { ReactWidget, ToolbarButtonComponent, InputDialog } from '@jupyterlab/apputils';
+
+import { listIcon } from '@jupyterlab/ui-components';
 
 type JitsiMeetProps = {
   meetingID: string
@@ -36,22 +38,26 @@ const VideoChatSidebarComponent = (): JSX.Element => {
 
   return (
     <>
-      <div className="jp-VideoChat-toolbar">
-
-        <label>
-          Select chat to join
-          <select name="jp-VideoChat-chat-name" id="jp-VideoChat-chat-name"
-            onChange={
-              (ev: any) => {setCurrentChat(ev.target.value)}
-            }>
-            <option value="project-1">Project 1</option>
-            <option value="project-2">Project 2</option>
-          </select>
-        </label>
-
+      <div className="jp-VideoChat-toolbar jp-Toolbar">
+        <div className="jp-ToolbarButton jp-Toolbar-item">
+          <ToolbarButtonComponent
+            tooltip="Select chat to join"
+            icon={listIcon}
+            iconLabel="Select chat to join"
+            onClick={() => {
+              InputDialog.getItem({
+                title: "Pick video chat to join",
+                items: ["Project 1", "Project 2"],
+                editable: true
+              }).then((value) => {
+                setCurrentChat(value.value);
+              })
+            }}
+          />
+        </div>
       </div>
 
-      <JitsiMeetComponent meetingID={currentChat} domain="meet.jit.si"/>
+      <JitsiMeetComponent meetingID={currentChat} domain="meet.jit.si" />
     </>
   );
 }
