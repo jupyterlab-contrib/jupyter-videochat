@@ -34,7 +34,7 @@ async function activate(
     widget = new Panel;
 
     widget.id = 'jitsi-jupyterlab';
-    widget.title.label = 'Jitsi Video Conference';
+    widget.title.label = 'Project Video Chat';
     widget.title.closable = true;
     widget.addWidget(content);
   }
