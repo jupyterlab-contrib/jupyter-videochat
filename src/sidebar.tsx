@@ -44,18 +44,20 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     };
 
     let currentMeeting = new JitsiMeetExternalAPI(props.domain, options);
+
     return () => {
       console.log('disposing')
       currentMeeting.dispose();
     }
   });
 
+
   return (<div className="jp-VideoChat-jitsi-container" ref={container}>
   </div>)
 }
 
 const VideoChatSidebarComponent = (): JSX.Element => {
-  const [currentChat, setCurrentChat] = useState("project-1");
+  const [currentChat, setCurrentChat] = useState(null);
 
   return (
     <>
