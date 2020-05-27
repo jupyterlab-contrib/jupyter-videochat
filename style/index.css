@@ -21,6 +21,7 @@ ul.jp-VideoChat-rooms-list li > a {
     display: block;
     /* Offset from left of title */
     padding: 8px 24px;
+    border-bottom: solid var(--jp-border-width) var(--jp-border-color3);
 }
 
 ul.jp-VideoChat-rooms-list li > a:hover {
@@ -33,7 +34,8 @@ ul.jp-VideoChat-rooms-list li > a:hover {
     font-size: var(--jp-ui-font-size1);
     font-family: var(--jp-ui-font-family);
     color: var(--jp-ui-font-color0);
-    font-variant: small-caps;
+    text-transform: uppercase;
+    padding-bottom: 1px;
 }
 
 .jp-VideoChat-room-description {
