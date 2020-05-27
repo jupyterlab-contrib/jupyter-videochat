@@ -64,14 +64,15 @@ const VideoChatSidebarComponent = (): JSX.Element => {
           <ToolbarButtonComponent
             tooltip="Select chat to join"
             icon={listIcon}
-            iconLabel="Select chat to join"
+            label="Select chat to join"
             onClick={() => {
               InputDialog.getItem({
                 title: "Pick video chat to join",
                 items: ["Project 1", "Project 2"],
-                editable: true
-              }).then((value) => {
-                setCurrentChat(value.value);
+              }).then((result) => {
+                if(result.value) {
+                  setCurrentChat(result.value);
+                }
               })
             }}
           />
@@ -93,6 +94,4 @@ export class VideoChatSidebarWidget extends ReactWidget {
   render(): JSX.Element {
     return <VideoChatSidebarComponent />;
   }
-
-
 }
