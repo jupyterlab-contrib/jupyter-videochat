@@ -27,7 +27,7 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     }
   });
 
-  return (<div id="jp-VideoChat-jitsi-container" ref={container}>
+  return (<div className="jp-VideoChat-jitsi-container" ref={container}>
   </div>)
 }
 
@@ -35,8 +35,9 @@ const VideoChatSidebarComponent = (): JSX.Element => {
   const [currentChat, setCurrentChat] = useState("project-1");
 
   return (
-    <div id="jp-videochat-container">
-      <div>
+    <>
+      <div className="jp-VideoChat-toolbar">
+
         <label>
           Select chat to join
           <select name="jp-VideoChat-chat-name" id="jp-VideoChat-chat-name"
@@ -47,9 +48,11 @@ const VideoChatSidebarComponent = (): JSX.Element => {
             <option value="project-2">Project 2</option>
           </select>
         </label>
+
       </div>
+
       <JitsiMeetComponent meetingID={currentChat} domain="meet.jit.si"/>
-    </div>
+    </>
   );
 }
 

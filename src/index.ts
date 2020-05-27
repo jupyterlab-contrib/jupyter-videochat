@@ -6,10 +6,10 @@ import {
 
 import {
   ICommandPalette,
-  MainAreaWidget,
   WidgetTracker
 } from '@jupyterlab/apputils';
 
+import { Panel } from '@lumino/widgets';
 import { VideoChatSidebarWidget } from './sidebar';
 
 
@@ -20,22 +20,23 @@ async function activate(
 ): Promise<void> {
   console.log('JupyterLab extension jupyter-jitsi is activated!');
   // Create a blank content widget inside of a MainAreaWidget
-  let widget: MainAreaWidget<VideoChatSidebarWidget>;
+  let widget: Panel;
 
   const command = 'jitsi:open';
 
-  const tracker = new WidgetTracker<MainAreaWidget<VideoChatSidebarWidget>>({
+  const tracker = new WidgetTracker<Panel>({
     namespace: 'jitsi'
   });
 
   if (!widget || widget.isDisposed) {
     // Create widget
     const content = new VideoChatSidebarWidget();
-    widget = new MainAreaWidget({ content });
+    widget = new Panel;
 
     widget.id = 'jitsi-jupyterlab';
     widget.title.label = 'Jitsi Video Conference';
     widget.title.closable = true;
+    widget.addWidget(content);
   }
   if (!tracker.has(widget)) {
     tracker.add(widget);
@@ -44,7 +45,7 @@ async function activate(
     // Attach the widget to the main work area if it's not there
     app.shell.add(widget, 'right');
   }
-  widget.content.update();
+  widget.update()
 
   app.commands.addCommand(command, {
     label: 'Jitsi Video Conference',

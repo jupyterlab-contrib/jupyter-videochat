@@ -1,7 +1,10 @@
-#jp-VideoChat-jitsi-container {
+.jp-VideoChat-jitsi-container {
     height: 100%;
 }
 
-#jp-VideoChat-container {
+.jp-VideoChat {
+    display: flex;
+    flex-direction: column;
+
     height: 100%;
 }
