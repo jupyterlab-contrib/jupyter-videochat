@@ -6,7 +6,7 @@ import JitsiMeetExternalAPI from  './external_api';
 import { ReactWidget, ToolbarButtonComponent, InputDialog } from '@jupyterlab/apputils';
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { listIcon } from '@jupyterlab/ui-components';
+import { listIcon, stopIcon } from '@jupyterlab/ui-components';
 
 type JitsiMeetProps = {
   meetingID: string
@@ -67,19 +67,39 @@ const VideoChatSidebarComponent = (): JSX.Element => {
             label="Select chat to join"
             onClick={() => {
               InputDialog.getItem({
-                title: "Pick video chat to join",
-                items: ["Project 1", "Project 2"],
-              }).then((result) => {
-                if(result.value) {
+                title: 'Pick video chat to join',
+                items: ['Project 1', 'Project 2']
+              }).then(result => {
+                if (result.value) {
                   setCurrentChat(result.value);
                 }
-              })
+              });
+            }}
+          />
+        </div>
+
+        <div className="jp-Toolbar-item jp-Toolbar-spacer" />
+
+        <div className="jp-ToolbarButton jp-Toolbar-item">
+          <ToolbarButtonComponent
+            tooltip="Disconnect"
+            icon={stopIcon}
+            label="Disconnect"
+            onClick={() => {
+              setCurrentChat(null);
             }}
           />
         </div>
       </div>
 
-      <JitsiMeetComponent meetingID={currentChat} domain="meet.jit.si" />
+      {currentChat !== null ? (
+        <JitsiMeetComponent
+          meetingID={currentChat}
+          domain="meet.jit.si"
+        />
+      ) : (
+        <span>Select a meeting to start</span>
+      )}
     </>
   );
 }
