@@ -8,13 +8,18 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { stopIcon } from '@jupyterlab/ui-components';
 
-// Prefix for all meetings, to prevent clashes temporarily
-const MEETING_PREFIX = "jp-VideoCall-test-";
+let MEETING_PREFIX = 'jp-VideoCall-default-meet';
+if (PageConfig.getOption('hubHost')) {
+  // if we are on a hub, use its name as prefix.
+  // FIXME: This isn't secure, we need a randomized name set by the serverextension
+  MEETING_PREFIX = PageConfig.getOption('hubHost') + PageConfig.getOption('hubPrefix');
+}
 
 type JitsiMeetProps = {
   meetingID: string
   domain: string
 }
+
 
 const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
   let container = React.createRef<HTMLDivElement>();
