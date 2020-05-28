@@ -13,17 +13,22 @@ import { stopIcon } from '@jupyterlab/ui-components';
 let MEETING_PREFIX = 'jp-VideoCall-' + window.location.hostname;
 
 type JitsiMeetProps = {
-  meetingID: string
+  room: Room
   domain: string
 }
 
+type Room = {
+  id: string
+  displayName: string
+  description: string
+}
 
 const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
   let container = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
     const options = {
-      roomName: MEETING_PREFIX + props.meetingID,
+      roomName: MEETING_PREFIX + props.room.id,
       parentNode: container.current,
       interfaceConfigOverwrite: {
         // Overrides defined from https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
@@ -49,6 +54,7 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     };
 
     let currentMeeting = new JitsiMeetExternalAPI(props.domain, options);
+    currentMeeting.executeCommand('subject', props.room.displayName);
 
     return () => {
       console.log('disposing')
@@ -62,11 +68,11 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
 }
 
 type VideoChatListProps = {
-  onRoomSelect: (room: string) => void
+  onRoomSelect: (room: Room) => void
 }
 
 const VideoChatListComponent = (props: VideoChatListProps): JSX.Element => {
-  const rooms = [
+  const rooms: Array<Room> = [
     {
       'id': 'project-1',
       'displayName': '16A Project 1 - Team A',
@@ -87,7 +93,7 @@ const VideoChatListComponent = (props: VideoChatListProps): JSX.Element => {
         {rooms.map((value, i) => {
           return (<li
             onClick={() => {
-              props.onRoomSelect(value.id);
+              props.onRoomSelect(value);
             }}
           >
             <a href="#">
@@ -102,7 +108,7 @@ const VideoChatListComponent = (props: VideoChatListProps): JSX.Element => {
 }
 
 const VideoChatSidebarComponent = (): JSX.Element => {
-  const [currentChat, setCurrentChat] = useState(null);
+  const [currentRoom, setCurrentRoom] = useState<Room>(null);
 
   return (
     <>
@@ -114,21 +120,21 @@ const VideoChatSidebarComponent = (): JSX.Element => {
             tooltip="Disconnect"
             icon={stopIcon}
             label="Disconnect"
-            enabled={currentChat !== null}
+            enabled={currentRoom !== null}
             onClick={() => {
-              setCurrentChat(null);
+              setCurrentRoom(null);
             }}
           />
         </div>
       </div>
 
-      {currentChat !== null ? (
+      {currentRoom !== null ? (
         <JitsiMeetComponent
-          meetingID={currentChat}
+          room={currentRoom}
           domain="meet.jit.si"
         />
       ) : (
-        <VideoChatListComponent onRoomSelect={(room) => {setCurrentChat(room)}} />
+        <VideoChatListComponent onRoomSelect={(room) => {setCurrentRoom(room)}} />
       )}
     </>
   );
