@@ -8,12 +8,9 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { stopIcon } from '@jupyterlab/ui-components';
 
-let MEETING_PREFIX = 'jp-VideoCall-default-meet';
-if (PageConfig.getOption('hubHost')) {
-  // if we are on a hub, use its name as prefix.
-  // FIXME: This isn't secure, we need a randomized name set by the serverextension
-  MEETING_PREFIX = PageConfig.getOption('hubHost') + PageConfig.getOption('hubPrefix');
-}
+// When we're on a hub, let's use that as a prefix
+// FIXME: This isn't secure, we need a randomized name set by the serverextension
+let MEETING_PREFIX = 'jp-VideoCall-' + window.location.hostname;
 
 type JitsiMeetProps = {
   meetingID: string
