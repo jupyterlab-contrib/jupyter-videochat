@@ -67,11 +67,11 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
   </div>)
 }
 
-type VideoChatListProps = {
+type RoomsListProps = {
   onRoomSelect: (room: Room) => void
 }
 
-const VideoChatListComponent = (props: VideoChatListProps): JSX.Element => {
+const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   const rooms: Array<Room> = [
     {
       'id': 'project-1',
@@ -134,7 +134,7 @@ const VideoChatSidebarComponent = (): JSX.Element => {
           domain="meet.jit.si"
         />
       ) : (
-        <VideoChatListComponent onRoomSelect={(room) => {setCurrentRoom(room)}} />
+        <RoomsListComponent onRoomSelect={(room) => {setCurrentRoom(room)}} />
       )}
     </>
   );
