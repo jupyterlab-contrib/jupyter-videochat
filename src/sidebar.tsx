@@ -107,6 +107,8 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   );
 }
 
+// Needs to be a separate functional component so it can use hooks
+// Hooks can't be used inside the render() method of the ReactWidget
 const VideoChatSidebarComponent = (): JSX.Element => {
   const [currentRoom, setCurrentRoom] = useState<Room>(null);
 
