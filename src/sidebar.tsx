@@ -2,15 +2,12 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 
 
+import { requestAPI } from './jupyter-videochat';
 import JitsiMeetExternalAPI from  './external_api';
 import { ReactWidget, ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import { stopIcon } from '@jupyterlab/ui-components';
-
-// When we're on a hub, let's use that as a prefix
-// FIXME: This isn't secure, we need a randomized name set by the serverextension
-let MEETING_PREFIX = 'jp-VideoCall-' + window.location.hostname;
 
 type JitsiMeetProps = {
   room: Room
@@ -28,7 +25,7 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
 
   useEffect(() => {
     const options = {
-      roomName: MEETING_PREFIX + props.room.id,
+      roomName: props.room.id,
       parentNode: container.current,
       interfaceConfigOverwrite: {
         // Overrides defined from https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
@@ -46,7 +43,7 @@ const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
         ],
         SETTINGS_SECTIONS: [ 'devices', 'language', 'moderator', 'profile', /* 'calendar' */ ],
         // Users can't join with mobile app here
-        MOBILE_APP_PROMO: false
+        MOBILE_APP_PROMO: false,
       },
       userInfo: {
         displayName: PageConfig.getOption("hubUser") || undefined
@@ -72,18 +69,18 @@ type RoomsListProps = {
 }
 
 const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
-  const rooms: Array<Room> = [
-    {
-      'id': 'project-1',
-      'displayName': '16A Project 1 - Team A',
-      'description': 'Room for members of Team A on Project 1 of CS 16A'
-    },
-    {
-      'id': 'project-2',
-      'displayName': 'data8 Lab 1 - Team C',
-      'description': 'Room for members of Team C on Lab 1 of data8'
-    }
-  ];
+  const [rooms, setRooms] = useState<Array<Room>>([]);
+
+  // Fetch list of rooms at first render only
+  // We should have a 'refresh' button somewhere
+  useEffect(() => {
+    requestAPI<Array<Room>>('rooms').then((data) => {
+      if(rooms !== data) {
+        setRooms(data)
+      }
+    })
+  }, []);
+
   return (
     <>
       <div className="jp-VideoChat-rooms-list-header">
