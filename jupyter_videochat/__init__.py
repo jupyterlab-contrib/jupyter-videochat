@@ -1,7 +1,7 @@
 import os
 
 from traitlets.config import Configurable
-from traitlets import Unicode
+from traitlets import Unicode, List, Dict
 
 from ._version import __version__
 from .handlers import setup_handlers
@@ -26,6 +26,36 @@ class VideoChat(Configurable):
         will be used to form a prefix.
         """,
         config=True,
+    )
+
+    rooms = List(
+        Dict,
+        default_value=[
+            {
+                'id': 'CS16A-project-1-team-a',
+                'displayName': '16A Project 1 - Team A',
+                'description': 'Room for members of Team A on Project 1 of CS 16A'
+            },
+            {
+                'id': 'data8-lab-1-team-c',
+                'displayName': 'data8 Lab 1 - Team C',
+                'description': 'Room for members of Team C on Lab 1 of data8'
+            }
+        ],
+        help="""
+        List of rooms shown to users in chat window.
+
+        Each item should be a dict with the following keys:
+
+        id - id of the meeting to be used with jitsi. Will be prefixed with `room_prefix,
+             and escaped to contain only alphanumeric characters and '-'
+        displayName - Name to be displayed to the users
+        description - Description of this particular room
+
+        This can be dynamically set eventually from an API call or something of that
+        sort.
+        """,
+        config=True
     )
 
 def _jupyter_server_extension_paths():

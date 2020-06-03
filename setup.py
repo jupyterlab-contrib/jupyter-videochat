@@ -39,7 +39,7 @@ data_files_spec = [
      "jupyter-config", "jupyter_videochat.json"),
 ]
 
-cmdclass = create_cmdclass("jsdeps", 
+cmdclass = create_cmdclass("jsdeps",
     package_data_spec=package_data_spec,
     data_files_spec=data_files_spec
 )

@@ -3,6 +3,7 @@ import json
 from notebook.base.handlers import APIHandler
 from notebook.utils import url_path_join
 from escapism import escape
+from copy import deepcopy
 import string
 
 import tornado
@@ -43,18 +44,12 @@ class RoomsListHandler(APIHandler):
         if not prefix:
             prefix = f'jp-VideoChat-{self.request.host}-'
 
-        rooms = [
-            {
-                'id': self.safe_id(f'{prefix}project-1'),
-                'displayName': '16A Project 1 - Team A',
-                'description': 'Room for members of Team A on Project 1 of CS 16A'
-            },
-            {
-                'id': self.safe_id(f'{prefix}project-2'),
-                'displayName': 'data8 Lab 1 - Team C',
-                'description': 'Room for members of Team C on Lab 1 of data8'
-            }
-        ]
+        # FIXME: Do this prefixing only once
+        rooms = deepcopy(self.videochat.rooms)
+
+        for room in rooms:
+            room['id'] = self.safe_id(f"{prefix}{room['id']}")
+
         self.finish(json.dumps(rooms))
 
 def setup_handlers(web_app):
