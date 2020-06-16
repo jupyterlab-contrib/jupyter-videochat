@@ -16,7 +16,8 @@ class ConfigHandler(APIHandler):
     @tornado.web.authenticated
     def get(self):
         self.finish(json.dumps({
-            "room_prefix": self.videochat.room_prefix
+            "room_prefix": self.videochat.room_prefix,
+            "jitsiServer": self.videochat.jitsi_server
         }))
 
 
@@ -62,5 +63,6 @@ def setup_handlers(web_app):
 
     handlers = [
         (make_url_pattern('rooms'), RoomsListHandler),
+        (make_url_pattern('config'), ConfigHandler)
     ]
     web_app.add_handlers(host_pattern, handlers)

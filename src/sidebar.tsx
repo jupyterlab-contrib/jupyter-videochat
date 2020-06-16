@@ -20,6 +20,10 @@ type Room = {
   description: string
 }
 
+type VideoChatConfig = {
+  jitsiServer: string
+}
+
 const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
   let container = React.createRef<HTMLDivElement>();
 
@@ -108,6 +112,14 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
 // Hooks can't be used inside the render() method of the ReactWidget
 const VideoChatSidebarComponent = (): JSX.Element => {
   const [currentRoom, setCurrentRoom] = useState<Room>(null);
+  const [jitsiServer, setJitsiServer] = useState<string>(null);
+
+  // FIXME: Have a loading screen here?
+  useEffect(() => {
+    requestAPI<VideoChatConfig>('config').then(config => {
+      setJitsiServer(config.jitsiServer);
+    });
+  }, []);
 
   return (
     <>
@@ -127,10 +139,10 @@ const VideoChatSidebarComponent = (): JSX.Element => {
         </div>
       </div>
 
-      {currentRoom !== null ? (
+      {(jitsiServer !== null && currentRoom !== null) ? (
         <JitsiMeetComponent
           room={currentRoom}
-          domain="meet.jit.si"
+          domain={jitsiServer}
         />
       ) : (
         <RoomsListComponent onRoomSelect={(room) => {setCurrentRoom(room)}} />

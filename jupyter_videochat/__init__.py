@@ -58,6 +58,16 @@ class VideoChat(Configurable):
         config=True
     )
 
+    jitsi_server = Unicode(
+        "meet.jit.si",
+        help="""
+        Domain of Jitsi server to use
+
+        Must be a domain name, with HTTPS working.
+        """,
+        config=True
+    )
+
 def _jupyter_server_extension_paths():
     return [{
         "module": "jupyter_videochat"
