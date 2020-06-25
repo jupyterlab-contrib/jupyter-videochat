@@ -1,67 +1,17 @@
-"""
-Setup Module to setup Python Handlers for the jupyter-videochat extension.
-"""
-import os
-
-from jupyter_packaging import (
-    create_cmdclass, install_npm, ensure_targets,
-    combine_commands, ensure_python, get_version,
-)
-import setuptools
-
-HERE = os.path.abspath(os.path.dirname(__file__))
-
-# The name of the project
-name="jupyter_videochat"
-
-# Ensure a valid python version
-ensure_python(">=3.5")
-
-# Get our version
-version = get_version(os.path.join(name, "_version.py"))
-
-lab_path = os.path.join(HERE, name, "labextension")
-
-# Representative files that should exist after a successful build
-jstargets = [
-    os.path.join(HERE, "lib", "jupyter-videochat.js"),
-]
-
-package_data_spec = {
-    name: [
-        "*"
-    ]
-}
-
-data_files_spec = [
-    ("share/jupyter/lab/extensions", lab_path, "*.tgz"),
-    ("etc/jupyter/jupyter_notebook_config.d",
-     "jupyter-config", "jupyter_videochat.json"),
-]
-
-cmdclass = create_cmdclass("jsdeps",
-    package_data_spec=package_data_spec,
-    data_files_spec=data_files_spec
-)
-
-cmdclass["jsdeps"] = combine_commands(
-    install_npm(HERE, build_cmd="build:all", npm=["jlpm"]),
-    ensure_targets(jstargets),
-)
+from setuptools import find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup_args = dict(
-    name=name,
-    version=version,
+    name='jupyter-videochat',
+    version='0.1',
     url="https://github.com/yuvipanda/jupyter-videochat",
     author="Yuvi Panda",
-    description="JuVideo Chat with peers inside  JupyterLab",
-    long_description= long_description,
+    description="Video Chat with peers inside  JupyterLab",
+    long_description=long_description,
     long_description_content_type="text/markdown",
-    cmdclass= cmdclass,
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     install_requires=[
         "jupyterlab~=2.0",
         "escapism"
@@ -73,16 +23,7 @@ setup_args = dict(
     keywords=["Jupyter", "JupyterLab"],
     classifiers=[
         "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Framework :: Jupyter",
     ],
 )
-
-
-if __name__ == "__main__":
-    setuptools.setup(**setup_args)
