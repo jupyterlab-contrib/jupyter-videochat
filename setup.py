@@ -1,9 +1,9 @@
-from setuptools import find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setup_args = dict(
+setup(
     name='jupyter-videochat',
     version='0.1',
     url="https://github.com/yuvipanda/jupyter-videochat",
