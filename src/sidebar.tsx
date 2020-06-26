@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 import { requestAPI } from './jupyter-videochat';
 import JitsiMeetExternalAPI from  './external_api';
-import { ReactWidget, ToolbarButtonComponent } from '@jupyterlab/apputils';
+import { ReactWidget, ToolbarButtonComponent, InputDialog } from '@jupyterlab/apputils';
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import { stopIcon } from '@jupyterlab/ui-components';
@@ -103,6 +103,27 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
             </a>
           </li>);
         })}
+        <li onClick={() => {
+          InputDialog.getText({
+            title: 'Join room by name',
+          }).then((value) => {
+            const roomName = value.value;
+
+            requestAPI<Room>('generate-room', {
+              method: 'POST',
+              body: JSON.stringify({displayName: roomName})
+            }).then(room => {
+              props.onRoomSelect(room);
+            });
+          })
+        }}
+        >
+          <a href="#">
+              <span className="jp-VideoChat-room-displayname">Join room by name</span>
+
+              <small className="jp-VideoChat-room-description">Join an unlisted room on this hub</small>
+          </a>
+        </li>
       </ul>
     </>
   );
