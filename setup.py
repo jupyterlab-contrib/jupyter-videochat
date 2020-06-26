@@ -9,8 +9,6 @@ setup(
     url="https://github.com/yuvipanda/jupyter-videochat",
     author="Yuvi Panda",
     description="Video Chat with peers inside  JupyterLab",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=[
         "jupyterlab~=2.0",
