@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='jupyter-videochat',
-    version='0.1',
+    version='0.1.1',
     url="https://github.com/yuvipanda/jupyter-videochat",
     author="Yuvi Panda",
     description="Video Chat with peers inside  JupyterLab",

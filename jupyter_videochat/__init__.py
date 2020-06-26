@@ -30,18 +30,7 @@ class VideoChat(Configurable):
 
     rooms = List(
         Dict,
-        default_value=[
-            {
-                'id': 'CS16A-project-1-team-a',
-                'displayName': '16A Project 1 - Team A',
-                'description': 'Room for members of Team A on Project 1 of CS 16A'
-            },
-            {
-                'id': 'data8-lab-1-team-c',
-                'displayName': 'data8 Lab 1 - Team C',
-                'description': 'Room for members of Team C on Lab 1 of data8'
-            }
-        ],
+        default_value=[],
         help="""
         List of rooms shown to users in chat window.
 
