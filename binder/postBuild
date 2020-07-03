@@ -33,8 +33,11 @@ _(sys.executable, "-m", "pip", "check")
 # list server extensions
 _("jupyter", "serverextension", "list")
 
-# install dependencies (and build)
+# install dependencies
 _("jlpm")
+
+# build typescript
+_("jlpm", "build")
 
 tarball = subprocess.check_output(["npm", "pack", "."]).decode("utf-8").strip()
 
