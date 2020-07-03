@@ -26,13 +26,14 @@ jobs:
     - name: Build the extension
       run: |
         set -eux
-        jlpm
-        jlpm run eslint:check
-
         pip install .
-        jupyter labextension install .
+        jupyter serverextension enable --sys-prefix --py jupyter_videochat
         jupyter serverextension list 1>serverextensions 2>&1
         cat serverextensions | grep "jupyter_videochat.*OK"
+
+        jlpm
+        jlpm run eslint:check
+        jupyter labextension install .
         jupyter labextension list 1>labextensions 2>&1
         cat labextensions | grep "jupyter-videochat.*OK"
 
