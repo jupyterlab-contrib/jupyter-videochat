@@ -4,14 +4,10 @@ import {
   ILayoutRestorer
 } from '@jupyterlab/application';
 
-import {
-  ICommandPalette,
-  WidgetTracker
-} from '@jupyterlab/apputils';
+import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
 import { Panel } from '@lumino/widgets';
 import { VideoChatSidebarWidget } from './sidebar';
-
 
 async function activate(
   app: JupyterFrontEnd,
@@ -31,7 +27,7 @@ async function activate(
   if (!widget || widget.isDisposed) {
     // Create widget
     const content = new VideoChatSidebarWidget();
-    widget = new Panel;
+    widget = new Panel();
 
     widget.id = 'jitsi-jupyterlab';
     widget.title.label = 'Project Video Chat';
@@ -45,7 +41,7 @@ async function activate(
     // Attach the widget to the main work area if it's not there
     app.shell.add(widget, 'right');
   }
-  widget.update()
+  widget.update();
 
   app.commands.addCommand(command, {
     label: 'Jitsi Video Conference',
