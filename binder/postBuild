@@ -44,5 +44,9 @@ _("jupyter", "lab", "build", "--dev-build=False", "--minimize=True")
 # verify the list of extensions one last time
 _("jupyter", "labextension", "list")
 
+# clean up
+_("conda", "clean", "-yaf")
+_("jlpm", "cache", "clean")
+
 print("JupyterLab with jupyter-videochat is ready to run with:\n")
 print("\tjupyter lab\n")
