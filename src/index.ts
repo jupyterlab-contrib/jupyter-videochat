@@ -4,10 +4,22 @@ import {
   ILayoutRestorer
 } from '@jupyterlab/application';
 
+import {
+  LabIcon
+} from '@jupyterlab/ui-components';
+
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
 import { Panel } from '@lumino/widgets';
 import { VideoChatSidebarWidget } from './sidebar';
+
+import CHAT_ICON from '../style/icons/videochat.svg';
+
+const chatIcon = new LabIcon({
+  name: 'jitsi:chat',
+  svgstr: CHAT_ICON
+});
+
 
 async function activate(
   app: JupyterFrontEnd,
@@ -30,8 +42,9 @@ async function activate(
     widget = new Panel();
 
     widget.id = 'jitsi-jupyterlab';
-    widget.title.label = 'Project Video Chat';
+    widget.title.caption = 'Project Video Chat';
     widget.title.closable = true;
+    widget.title.icon = chatIcon;
     widget.addWidget(content);
   }
   if (!tracker.has(widget)) {
