@@ -3,14 +3,10 @@ import { useState, useEffect } from 'react';
 
 import { requestAPI } from './jupyter-videochat';
 import JitsiMeetExternalAPI from './external_api';
-import {
-  ReactWidget,
-  ToolbarButtonComponent,
-  InputDialog
-} from '@jupyterlab/apputils';
+import { ReactWidget, ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { stopIcon } from '@jupyterlab/ui-components';
+import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
 
 type JitsiMeetProps = {
   room: Room;
@@ -97,13 +93,14 @@ type RoomsListProps = {
 
 const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   const [rooms, setRooms] = useState<Array<Room>>([]);
+  const [roomName, setRoomName] = useState<string>('');
 
   // Fetch list of rooms at first render only
   // We should have a 'refresh' button somewhere
   useEffect(() => {
     requestAPI<Array<Room>>('rooms')
       .then(data => {
-        if (rooms !== data) {
+        if (data !== rooms) {
           setRooms(data);
         }
       })
@@ -133,31 +130,32 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
             </li>
           );
         })}
-        <li
-          onClick={() => {
-            InputDialog.getText({
-              title: 'Join room by name'
-            })
-              .then(value => {
-                const roomName = value.value;
-
-                requestAPI<Room>('generate-room', {
-                  method: 'POST',
-                  body: JSON.stringify({ displayName: roomName })
-                })
-                  .then(room => {
-                    props.onRoomSelect(room);
-                  })
-                  .catch(console.warn);
-              })
-              .catch(console.warn);
-          }}
-        >
+        <li>
           <a href="#">
             <span className="jp-VideoChat-room-displayname">
               Join room by name
             </span>
-
+            <div className="jp-VideoChat-room-displayname-input">
+              <input
+                className="jp-mod-styled"
+                onInput={evt => {
+                  setRoomName(evt.currentTarget.value);
+                }}
+              />
+              <button
+                className="jp-mod-styled jp-mod-accept"
+                onClick={() => {
+                  requestAPI<Room>('generate-room', {
+                    method: 'POST',
+                    body: JSON.stringify({ displayName: roomName })
+                  })
+                    .then(room => props.onRoomSelect(room))
+                    .catch(console.warn);
+                }}
+              >
+                JOIN
+              </button>
+            </div>
             <small className="jp-VideoChat-room-description">
               Join an unlisted room on this hub
             </small>
@@ -168,9 +166,13 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   );
 };
 
+type VideoChatProps = {
+  onToggleSidebar: () => void;
+};
+
 // Needs to be a separate functional component so it can use hooks
 // Hooks can't be used inside the render() method of the ReactWidget
-const VideoChatSidebarComponent = (): JSX.Element => {
+const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   const [currentRoom, setCurrentRoom] = useState<Room>(null);
   const [jitsiServer, setJitsiServer] = useState<string>(null);
 
@@ -186,22 +188,27 @@ const VideoChatSidebarComponent = (): JSX.Element => {
   return (
     <>
       <div className="jp-VideoChat-toolbar jp-Toolbar">
-        <div className="jp-Toolbar-item jp-Toolbar-spacer" />
-
         <div className="jp-ToolbarButton jp-Toolbar-item">
           <ToolbarButtonComponent
-            tooltip="Disconnect"
+            tooltip="Toggle Video Chat Sidebar"
+            icon={launcherIcon}
+            label="Toggle Sidebar"
+            onClick={() => props.onToggleSidebar()}
+          />
+        </div>
+        <div className="jp-Toolbar-item jp-Toolbar-spacer" />
+        <div className="jp-ToolbarButton jp-Toolbar-item">
+          <ToolbarButtonComponent
+            tooltip={`Disconnect from ${jitsiServer}`}
             icon={stopIcon}
             label="Disconnect"
             enabled={currentRoom !== null}
-            onClick={() => {
-              setCurrentRoom(null);
-            }}
+            onClick={() => setCurrentRoom(null)}
           />
         </div>
       </div>
 
-      {jitsiServer !== null && currentRoom !== null ? (
+      {jitsiServer != null && currentRoom != null ? (
         <JitsiMeetComponent room={currentRoom} domain={jitsiServer} />
       ) : (
         <RoomsListComponent
@@ -214,13 +221,24 @@ const VideoChatSidebarComponent = (): JSX.Element => {
   );
 };
 
-export class VideoChatSidebarWidget extends ReactWidget {
-  constructor() {
+export class VideoChat extends ReactWidget {
+  onToggleSidebar: () => void;
+
+  constructor(options: VideoChat.IOptions) {
     super();
+    this.onToggleSidebar = options.onToggleSidebar;
     this.addClass('jp-VideoChat');
   }
 
   render(): JSX.Element {
-    return <VideoChatSidebarComponent />;
+    return (
+      <VideoChatComponent onToggleSidebar={() => this.onToggleSidebar()} />
+    );
+  }
+}
+
+export namespace VideoChat {
+  export interface IOptions {
+    onToggleSidebar: () => void;
   }
 }

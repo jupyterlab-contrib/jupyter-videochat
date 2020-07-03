@@ -38,13 +38,27 @@ ul.jp-VideoChat-rooms-list li > a:hover {
     padding-bottom: 1px;
 }
 
+.jp-VideoChat-room-displayname-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.jp-VideoChat-room-displayname-input input {
+    flex: 1;
+}
+
+.jp-VideoChat-room-displayname-input button {
+    flex: 0;
+    min-width: 5em;
+}
+
 .jp-VideoChat-room-description {
     display: block;
-    font-size: var(--jp-ui-font-size0);
+    font-size: var(--jp-ui-font-size1);
     font-family: var(--jp-ui-font-family);
     color: var(--jp-ui-font-color2);
 }
-
 
 .jp-VideoChat-rooms-list-header {
     font-size: var(--jp-ui-font-size1);
