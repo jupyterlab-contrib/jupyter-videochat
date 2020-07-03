@@ -138,12 +138,14 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
             <div className="jp-VideoChat-room-displayname-input">
               <input
                 className="jp-mod-styled"
+                placeholder="Room Name"
                 onInput={evt => {
                   setRoomName(evt.currentTarget.value);
                 }}
               />
               <button
-                className="jp-mod-styled jp-mod-accept"
+                className={`jp-mod-styled jp-mod-accept`}
+                disabled={!roomName.trim().length}
                 onClick={() => {
                   requestAPI<Room>('generate-room', {
                     method: 'POST',
