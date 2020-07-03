@@ -2,19 +2,37 @@
     height: 100%;
 }
 
+#jp-right-stack .jp-VideoChat-wrapper,
+#jp-left-stack .jp-VideoChat-wrapper {
+    min-width: 350px;
+}
+
 .jp-VideoChat {
     height: 100%;
-    /* Lift us above the JupyterLab statusbar */
-    /* FIXME: Is there a better way to do this? */
-    padding-bottom: 24px;
-
     background-color: var(--jp-layout-color1);
+    display: flex;
+    flex-direction: column;
+}
+
+.jp-VideoChat-rooms {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 ul.jp-VideoChat-rooms-list {
     list-style: none;
     margin: 0px;
     padding: 0px;
+}
+
+.jp-VideoChat-rooms-list-named {
+    flex: 1 0 0;
+    overflow-y: auto;
+}
+
+.jp-VideoChat-rooms-list-new {
+    flex: 0;
 }
 
 ul.jp-VideoChat-rooms-list li > a {
@@ -38,15 +56,30 @@ ul.jp-VideoChat-rooms-list li > a:hover {
     padding-bottom: 1px;
 }
 
+.jp-VideoChat-room-displayname-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.jp-VideoChat-room-displayname-input input {
+    flex: 1;
+}
+
+.jp-VideoChat-room-displayname-input button {
+    flex: 0;
+    min-width: 5em;
+}
+
 .jp-VideoChat-room-description {
     display: block;
-    font-size: var(--jp-ui-font-size0);
+    font-size: var(--jp-ui-font-size1);
     font-family: var(--jp-ui-font-family);
     color: var(--jp-ui-font-color2);
 }
 
-
 .jp-VideoChat-rooms-list-header {
+    flex: 0;
     font-size: var(--jp-ui-font-size1);
     font-family: var(--jp-ui-font-family);
     color: var(--jp-ui-font-color1);
@@ -55,4 +88,10 @@ ul.jp-VideoChat-rooms-list li > a:hover {
     padding: 8px 12px;
     font-weight: 600;
     letter-spacing: 1px;
+}
+
+.jp-VideoChat blockquote {
+    font-size: var(--jp-ui-font-size2);
+    color: var(--jp-ui-font-color1);
+    text-align: center;
 }

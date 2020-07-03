@@ -4,25 +4,33 @@ import {
   ILayoutRestorer
 } from '@jupyterlab/application';
 
-import {
-  ICommandPalette,
-  WidgetTracker
-} from '@jupyterlab/apputils';
+import { ILauncher } from '@jupyterlab/launcher';
+
+import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
 import { Panel } from '@lumino/widgets';
-import { VideoChatSidebarWidget } from './sidebar';
+import { VideoChat } from './widget';
 
+import { chatIcon } from './icons';
+
+export namespace CommandIds {
+  export const open = 'jitsi:open';
+  export const toggleArea = 'jitsi:togglearea';
+}
+
+const category = 'Video Chat';
+let area = 'right';
 
 async function activate(
   app: JupyterFrontEnd,
   palette: ICommandPalette,
-  restorer: ILayoutRestorer
+  restorer: ILayoutRestorer,
+  launcher?: ILauncher
 ): Promise<void> {
   console.log('JupyterLab extension jupyter-jitsi is activated!');
+  const { commands, shell } = app;
   // Create a blank content widget inside of a MainAreaWidget
   let widget: Panel;
-
-  const command = 'jitsi:open';
 
   const tracker = new WidgetTracker<Panel>({
     namespace: 'jitsi'
@@ -30,38 +38,72 @@ async function activate(
 
   if (!widget || widget.isDisposed) {
     // Create widget
-    const content = new VideoChatSidebarWidget();
-    widget = new Panel;
+    const content = new VideoChat({
+      onToggleSidebar: () => {
+        commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
+      }
+    });
+    widget = new Panel();
+    widget.addClass('jp-VideoChat-wrapper');
 
     widget.id = 'jitsi-jupyterlab';
-    widget.title.label = 'Project Video Chat';
-    widget.title.closable = true;
+    widget.title.caption = 'Video Chat';
+    widget.title.closable = false;
+    widget.title.icon = chatIcon;
     widget.addWidget(content);
   }
   if (!tracker.has(widget)) {
-    tracker.add(widget);
+    tracker.add(widget).catch(console.warn);
   }
   if (!widget.isAttached) {
-    // Attach the widget to the main work area if it's not there
-    app.shell.add(widget, 'right');
+    shell.add(widget, area);
   }
-  widget.update()
+  widget.update();
 
-  app.commands.addCommand(command, {
-    label: 'Jitsi Video Conference',
-    execute: () => {
+  restorer
+    .restore(tracker, {
+      command: CommandIds.open,
+      name: () => 'jitsi'
+    })
+    .catch(console.warn);
+
+  commands.addCommand(CommandIds.open, {
+    label: 'Show Video Chat',
+    icon: chatIcon,
+    execute: (args: IChatArgs) => {
+      if (args.area) {
+        area = args.area;
+        shell.add(widget, area);
+      }
       // Activate the widget
-      app.shell.activateById(widget.id);
+      shell.activateById(widget.id);
     }
   });
 
-  restorer.restore(tracker, {
-    command,
-    name: () => 'jitsi'
+  commands.addCommand(CommandIds.toggleArea, {
+    label: 'Toggle Video Chat Sidebar',
+    execute: () => {
+      area = area === 'right' ? 'main' : 'right';
+      widget.title.label = area === 'main' ? widget.title.caption : '';
+      shell.add(widget, area);
+      shell.activateById(widget.id);
+    }
   });
 
-  // Add the command to the palette.
-  palette.addItem({ command, category: 'Tutorial' });
+  // Add the commands to the palette.
+  palette.addItem({ command: CommandIds.open, category });
+  palette.addItem({ command: CommandIds.toggleArea, category });
+
+  if (launcher) {
+    launcher.add({
+      command: CommandIds.open,
+      args: { area: 'main' }
+    });
+  }
+}
+
+export interface IChatArgs {
+  area?: 'left' | 'right' | 'main';
 }
 
 /**
@@ -71,6 +113,7 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-videochat',
   autoStart: true,
   requires: [ICommandPalette, ILayoutRestorer],
+  optional: [ILauncher],
   activate: activate
 };
 
