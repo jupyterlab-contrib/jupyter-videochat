@@ -101,11 +101,13 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   // Fetch list of rooms at first render only
   // We should have a 'refresh' button somewhere
   useEffect(() => {
-    requestAPI<Array<Room>>('rooms').then(data => {
-      if (rooms !== data) {
-        setRooms(data);
-      }
-    });
+    requestAPI<Array<Room>>('rooms')
+      .then(data => {
+        if (rooms !== data) {
+          setRooms(data);
+        }
+      })
+      .catch(console.warn);
   }, []);
 
   return (
@@ -115,6 +117,7 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
         {rooms.map((value, i) => {
           return (
             <li
+              key={value.id}
               onClick={() => {
                 props.onRoomSelect(value);
               }}
@@ -134,16 +137,20 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           onClick={() => {
             InputDialog.getText({
               title: 'Join room by name'
-            }).then(value => {
-              const roomName = value.value;
+            })
+              .then(value => {
+                const roomName = value.value;
 
-              requestAPI<Room>('generate-room', {
-                method: 'POST',
-                body: JSON.stringify({ displayName: roomName })
-              }).then(room => {
-                props.onRoomSelect(room);
-              });
-            });
+                requestAPI<Room>('generate-room', {
+                  method: 'POST',
+                  body: JSON.stringify({ displayName: roomName })
+                })
+                  .then(room => {
+                    props.onRoomSelect(room);
+                  })
+                  .catch(console.warn);
+              })
+              .catch(console.warn);
           }}
         >
           <a href="#">
@@ -169,9 +176,11 @@ const VideoChatSidebarComponent = (): JSX.Element => {
 
   // FIXME: Have a loading screen here?
   useEffect(() => {
-    requestAPI<VideoChatConfig>('config').then(config => {
-      setJitsiServer(config.jitsiServer);
-    });
+    requestAPI<VideoChatConfig>('config')
+      .then(config => {
+        setJitsiServer(config.jitsiServer);
+      })
+      .catch(console.warn);
   }, []);
 
   return (

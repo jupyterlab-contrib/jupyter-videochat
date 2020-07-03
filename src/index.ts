@@ -35,7 +35,7 @@ async function activate(
     widget.addWidget(content);
   }
   if (!tracker.has(widget)) {
-    tracker.add(widget);
+    tracker.add(widget).catch(console.warn);
   }
   if (!widget.isAttached) {
     // Attach the widget to the main work area if it's not there
@@ -51,10 +51,12 @@ async function activate(
     }
   });
 
-  restorer.restore(tracker, {
-    command,
-    name: () => 'jitsi'
-  });
+  restorer
+    .restore(tracker, {
+      command,
+      name: () => 'jitsi'
+    })
+    .catch(console.warn);
 
   // Add the command to the palette.
   palette.addItem({ command, category: 'Tutorial' });
