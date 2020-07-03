@@ -6,14 +6,12 @@ import {
 
 import { ILauncher } from '@jupyterlab/launcher';
 
-import { LabIcon } from '@jupyterlab/ui-components';
-
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
 import { Panel } from '@lumino/widgets';
 import { VideoChat } from './widget';
 
-import CHAT_ICON from '../style/icons/videochat.svg';
+import { chatIcon } from './icons';
 
 export namespace CommandIds {
   export const open = 'jitsi:open';
@@ -22,11 +20,6 @@ export namespace CommandIds {
 
 const category = 'Video Chat';
 let area = 'right';
-
-const chatIcon = new LabIcon({
-  name: 'jitsi:chat',
-  svgstr: CHAT_ICON
-});
 
 async function activate(
   app: JupyterFrontEnd,
@@ -51,6 +44,7 @@ async function activate(
       }
     });
     widget = new Panel();
+    widget.addClass('jp-VideoChat-wrapper');
 
     widget.id = 'jitsi-jupyterlab';
     widget.title.caption = 'Video Chat';
@@ -74,7 +68,7 @@ async function activate(
     .catch(console.warn);
 
   commands.addCommand(CommandIds.open, {
-    label: 'Open Video Chat',
+    label: 'Show Video Chat',
     icon: chatIcon,
     execute: (args: IChatArgs) => {
       if (args.area) {

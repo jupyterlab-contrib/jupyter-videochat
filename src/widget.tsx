@@ -7,6 +7,7 @@ import { ReactWidget, ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
+import { chatIcon } from './icons';
 
 type JitsiMeetProps = {
   room: Room;
@@ -94,7 +95,6 @@ type RoomsListProps = {
 const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [roomName, setRoomName] = useState<string>('');
-
   // Fetch list of rooms at first render only
   // We should have a 'refresh' button somewhere
   useEffect(() => {
@@ -107,29 +107,55 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
       .catch(console.warn);
   }, []);
 
+  const noRoom = (
+    <li>
+      <blockquote>
+        <p>
+          <chatIcon.react
+            tag="span"
+            width="200px"
+            height="200px"
+            textAlign="center"
+            opacity="0.25"
+          />
+        </p>
+        <p>
+          <strong>No named rooms are configured.</strong>
+        </p>
+        <p>
+          <em>Create or join a room by name below.</em>
+        </p>
+      </blockquote>
+    </li>
+  );
+
   return (
-    <>
+    <div className="jp-VideoChat-rooms">
       <div className="jp-VideoChat-rooms-list-header">Select room to join</div>
-      <ul className="jp-VideoChat-rooms-list">
-        {rooms.map((value, i) => {
-          return (
-            <li
-              key={value.id}
-              onClick={() => {
-                props.onRoomSelect(value);
-              }}
-            >
-              <a href="#">
-                <span className="jp-VideoChat-room-displayname">
-                  {value.displayName}
-                </span>
-                <small className="jp-VideoChat-room-description">
-                  {value.description}
-                </small>
-              </a>
-            </li>
-          );
-        })}
+      <ul className="jp-VideoChat-rooms-list jp-VideoChat-rooms-list-named">
+        {!rooms.length
+          ? noRoom
+          : rooms.map((value, i) => {
+              return (
+                <li
+                  key={value.id}
+                  onClick={() => {
+                    props.onRoomSelect(value);
+                  }}
+                >
+                  <a href="#">
+                    <span className="jp-VideoChat-room-displayname">
+                      {value.displayName}
+                    </span>
+                    <small className="jp-VideoChat-room-description">
+                      {value.description}
+                    </small>
+                  </a>
+                </li>
+              );
+            })}
+      </ul>
+      <ul className="jp-VideoChat-rooms-list jp-VideoChat-rooms-list-new">
         <li>
           <a href="#">
             <span className="jp-VideoChat-room-displayname">
@@ -159,12 +185,13 @@ const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
               </button>
             </div>
             <small className="jp-VideoChat-room-description">
-              Join an unlisted room on this hub
+              Join (or create) a named room. Share this name with other users of
+              your Hub.
             </small>
           </a>
         </li>
       </ul>
-    </>
+    </div>
   );
 };
 
