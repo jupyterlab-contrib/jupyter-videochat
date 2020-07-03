@@ -1,0 +1,10 @@
+name: jupyter-videochat
+
+channels:
+  - conda-forge
+
+dependencies:
+  - jupyterlab >=2.1.5,<3.0.0a0
+  - nodejs >=12,<13.0.0a0
+  - escapism
+  - python >=3.8,<3.9.0a0

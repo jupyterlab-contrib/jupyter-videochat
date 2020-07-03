@@ -1,0 +1,18 @@
+{
+  "VideoChat": {
+    "room_prefix": "public-jupyter-videochat-demo",
+    "jitsi_server": "meet.jit.si",
+    "rooms": [
+      {
+        "id": "binder-demo",
+        "displayName": "jupyter-videochat on binder",
+        "description": "A public room with other viewers of the jupyter-videochat binder"
+      }
+    ]
+  },
+  "NotebookApp": {
+    "nbserver_extensions": {
+      "jupyter_videochat": true
+    }
+  }
+}
