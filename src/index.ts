@@ -1,22 +1,21 @@
+import { Panel } from '@lumino/widgets';
+
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
-  ILayoutRestorer
+  ILayoutRestorer,
+  IRouter
 } from '@jupyterlab/application';
 
 import { ILauncher } from '@jupyterlab/launcher';
 
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
-import { Panel } from '@lumino/widgets';
+import { CommandIds, IVideoChatManager, URL_PARAM, NS } from './tokens';
+import { IChatArgs } from './types';
+import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
-
 import { chatIcon } from './icons';
-
-export namespace CommandIds {
-  export const open = 'jitsi:open';
-  export const toggleArea = 'jitsi:togglearea';
-}
 
 const category = 'Video Chat';
 let area = 'right';
@@ -25,20 +24,24 @@ async function activate(
   app: JupyterFrontEnd,
   palette: ICommandPalette,
   restorer: ILayoutRestorer,
+  router: IRouter,
   launcher?: ILauncher
-): Promise<void> {
+): Promise<IVideoChatManager> {
   console.log('JupyterLab extension jupyter-jitsi is activated!');
+  const manager = new VideoChatManager({});
+
   const { commands, shell } = app;
   // Create a blank content widget inside of a MainAreaWidget
   let widget: Panel;
+  let chat: VideoChat;
 
   const tracker = new WidgetTracker<Panel>({
-    namespace: 'jitsi'
+    namespace: NS
   });
 
   if (!widget || widget.isDisposed) {
     // Create widget
-    const content = new VideoChat({
+    chat = new VideoChat(manager, {
       onToggleSidebar: () => {
         commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
       }
@@ -50,7 +53,7 @@ async function activate(
     widget.title.caption = 'Video Chat';
     widget.title.closable = false;
     widget.title.icon = chatIcon;
-    widget.addWidget(content);
+    widget.addWidget(chat);
   }
   if (!tracker.has(widget)) {
     tracker.add(widget).catch(console.warn);
@@ -90,9 +93,35 @@ async function activate(
     }
   });
 
+  commands.addCommand(CommandIds.routerStart, {
+    label: 'Open Video Chat from URL',
+    execute: args => {
+      const { request } = args as IRouter.ILocation;
+      const url = new URL(`http://example.com${request}`);
+      const params = url.searchParams;
+      const displayName = params.get(URL_PARAM);
+
+      const chatAfterRoute = async () => {
+        router.routed.disconnect(chatAfterRoute);
+        if (manager.currentRoom?.displayName != displayName) {
+          await commands.execute(CommandIds.open);
+          manager.currentRoom = {displayName};
+        }
+      };
+
+      router.routed.connect(chatAfterRoute);
+    }
+  });
+
   // Add the commands to the palette.
   palette.addItem({ command: CommandIds.open, category });
   palette.addItem({ command: CommandIds.toggleArea, category });
+
+  router.register({
+    command: CommandIds.routerStart,
+    pattern: /.*/,
+    rank: 29
+  });
 
   if (launcher) {
     launcher.add({
@@ -100,21 +129,19 @@ async function activate(
       args: { area: 'main' }
     });
   }
-}
 
-export interface IChatArgs {
-  area?: 'left' | 'right' | 'main';
+  return manager;
 }
 
 /**
  * Initialization data for the jupyter-jitsi extension.
  */
-const extension: JupyterFrontEndPlugin<void> = {
+const extension: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: 'jupyterlab-videochat',
   autoStart: true,
-  requires: [ICommandPalette, ILayoutRestorer],
+  requires: [ICommandPalette, ILayoutRestorer, IRouter],
   optional: [ILauncher],
-  activate: activate
+  activate
 };
 
 export default extension;
