@@ -21,6 +21,22 @@ export type VideoChatConfig = {
   jitsiServer: string;
 };
 
+/** need to figure out how to use these */
+export type TEvent = string;
+export type TCommandId = string;
+
+/** would be nice to be able to use existing libs, sigh */
+export interface IEventListener {
+  (evt: Event, ...args: any): void;
+}
+export interface IEventListenerMap {
+  [key: string]: IEventListener;
+}
+
+export interface ICommandMap {
+  [key: string]: any;
+}
+
 /**
  * the jitsi meet constructor
  */
@@ -29,15 +45,90 @@ export interface IMeetConstructor {
 }
 
 /**
- * A jitsi meeting
+ * options to initialize a jitsi meeting
  */
-export interface IMeet {
-  executeCommand(command: string, ...options: any): void;
-  dispose(): void;
-  on(event: string, fn: (...args: any) => void): void;
+export interface IMeetOptions {
+  /** name of the room to join. */
+  roomName?: string;
+  /** width for the iframe which will be created. If a number is specified
+   * it's treated as pixel units. If a string is specified the format is
+   * number followed by 'px', 'em', 'pt' or '%'. */
+  width?: string | number;
+  /** height for the iframe which will be created. If a number is specified
+   * it's treated as pixel units. If a string is specified the format is
+   * number followed by 'px', 'em', 'pt' or '%'. */
+  height?: string | number;
+  /** HTML DOM Element where the iframe will be added as a child. */
+  parentNode?: HTMLElement;
+  /** JS object with overrides for options defined in config.js. */
+  configOverwrite?: IConfig;
+  /** JS object with overrides for options defined in interface_config.js. */
+  interfaceConfigOverwrite?: IInterfaceConfig;
+  /** Boolean indicating if the server should be contacted using HTTP or HTTPS. */
+  noSSL?: boolean;
+  /** JWT token. */
+  jwt?: any;
+  /** handler for the iframe onload event. */
+  onload?: (event: Event) => void;
+  /** Array of objects containing information about new participants that
+   * will be invited in the call. */
+  invitees?: IInvitee[];
+  /** A map containing information about the initial devices that will be
+   * used in the call. */
+  devices?: IDeviceMap;
+  /** JS object containing information about the participant opening the
+   * meeting, such as email. */
+  userInfo?: IUserInfo;
+}
+
+export interface IUserInfo {}
+export interface IConfig {}
+export interface IInterfaceConfig {}
+export interface IInvitee {}
+export interface IDevice {}
+export interface IDeviceMap {
+  [key: string]: IDevice;
 }
 
 /**
- * options to initialize a jitsi meeting
+ * A jitsi meeting
  */
-export interface IMeetOptions {}
+
+export interface IMeet {
+  dispose(): void;
+
+  executeCommand(command: string, ...options: any): void;
+  executeCommands(commands: ICommandMap): void;
+
+  /* event cruft */
+  on(event: TEvent, listener: IEventListener): void;
+  addEventListener(event: TEvent, listener: IEventListener): void;
+  addEventListeners(events: IEventListenerMap): void;
+  removeEventListener(listener: any): void;
+  removeEventListeners(listeners: any[]): void;
+  getAvatarURL(): string;
+  getDisplayName(): string;
+  getEmail(): string;
+  getIFrame(): HTMLIFrameElement;
+  getNumberOfParticipants(): number;
+
+  /* promises that are probably bools */
+  isAudioAvailable(): Promise<boolean>;
+  isVideoAvailable(): Promise<boolean>;
+  isAudioMuted(): Promise<boolean>;
+  isVideoMuted(): Promise<boolean>;
+  isDeviceChangeAvailable(): Promise<boolean>;
+  isDeviceListAvailable(): Promise<boolean>;
+  isMultipleAudioInputSupported(): Promise<boolean>;
+
+  /* poorly typed for now */
+  getCurrentDevices(): Promise<any>;
+  getAvailableDevices(): Promise<any>;
+
+  /* not even trying now */
+  // sendProxyConnectionEvent: ƒ sendProxyConnectionEvent(e)
+  // setAudioInputDevice: ƒ setAudioInputDevice(e, t)
+  // setAudioOutputDevice: ƒ setAudioOutputDevice(e, t)
+  // setVideoInputDevice: ƒ setVideoInputDevice(e, t)
+  // invite: ƒ invite(e)
+}
