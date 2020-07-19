@@ -51,7 +51,10 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   set meet(meet) {
-    this._meet = meet;
+    if (this._meet !== meet) {
+      this._meet = meet;
+      this._meetChanged.emit(void 0);
+    }
   }
 
   get meetChanged() {
