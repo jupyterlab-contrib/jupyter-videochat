@@ -94,7 +94,13 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     if (Private.api) {
       return Private.api;
     } else {
-      Private.ensureExternalAPI().then(() => this.stateChanged.emit(void 0));
+      let url = DEFAULT_JS_API_URL;
+      if (this.config.jitsiServer) {
+        url = `https://${this.config.jitsiServer}/external_api.js`;
+      }
+      Private.ensureExternalAPI(url)
+        .then(() => this.stateChanged.emit(void 0))
+        .catch(console.warn);
     }
     return null;
   }
