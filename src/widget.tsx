@@ -34,8 +34,12 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
   };
 
   render() {
+    if (!this.isVisible) {
+      return <div />;
+    }
     return (
       <VideoChatComponent
+        JitsiMeetExternalAPI={this.model.JitsiMeetExternalAPI}
         onToggleSidebar={this.onToggleSidebar}
         onRoomSelect={this.onRoomSelect}
         onCreateRoom={this.onCreateRoom}

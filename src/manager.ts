@@ -2,9 +2,10 @@ import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 import { VDomModel } from '@jupyterlab/apputils';
 import { Signal } from '@lumino/signaling';
+import { PromiseDelegate } from '@lumino/coreutils';
 
-import { IVideoChatManager } from './tokens';
-import { Room, VideoChatConfig, IMeet } from './types';
+import { IVideoChatManager, DEFAULT_JS_API_URL } from './tokens';
+import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
 
 export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _rooms: Room[] = [];
@@ -88,6 +89,15 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this.currentRoom = newRoom;
     return newRoom;
   }
+
+  get JitsiMeetExternalAPI() {
+    if (Private.api) {
+      return Private.api;
+    } else {
+      Private.ensureExternalAPI().then(() => this.stateChanged.emit(void 0));
+    }
+    return null;
+  }
 }
 
 export namespace VideoChatManager {
@@ -126,4 +136,28 @@ export async function requestAPI<T>(
   }
 
   return data;
+}
+
+namespace Private {
+  export let api: IMeetConstructor;
+
+  let _scriptElement: HTMLScriptElement;
+  let _loadPromise: PromiseDelegate<IMeetConstructor>;
+
+  export async function ensureExternalAPI(url: string = DEFAULT_JS_API_URL) {
+    if (_loadPromise == null) {
+      _loadPromise = new PromiseDelegate();
+      _scriptElement = document.createElement('script');
+      _scriptElement.id = 'jp-VideoChat-external-api';
+      _scriptElement.src = url;
+      _scriptElement.async = true;
+      _scriptElement.type = 'text/javascript';
+      document.body.appendChild(_scriptElement);
+      _scriptElement.onload = () => {
+        api = (window as any).JitsiMeetExternalAPI;
+        _loadPromise.resolve(api);
+      };
+    }
+    return _loadPromise.promise;
+  }
 }

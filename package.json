@@ -76,6 +76,6 @@
         }
       }
     },
-    "extension": true
+    "extension": "lib/plugin.js"
   }
 }

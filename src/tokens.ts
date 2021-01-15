@@ -1,12 +1,13 @@
 import { Token } from '@lumino/coreutils';
-// import { Widget } from '@lumino/widgets';
 import { ISignal } from '@lumino/signaling';
 
-import { Room, VideoChatConfig, IMeet } from './types';
+import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
 
 export const NS = 'jupyterlab-videochat';
 
 export const URL_PARAM = 'jvc';
+
+export const DEFAULT_JS_API_URL = 'https://meet.jit.si/external_api.js';
 
 export interface IVideoChatManager {
   rooms: Room[];
@@ -17,6 +18,7 @@ export interface IVideoChatManager {
   config: VideoChatConfig;
   meet: IMeet;
   meetChanged: ISignal<IVideoChatManager, void>;
+  JitsiMeetExternalAPI: IMeetConstructor;
 }
 
 export namespace IVideoChatManager {

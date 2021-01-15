@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import { Room, IMeetConstructor, IMeet } from '../types';
-import JitsiMeetExternalAPI from '../external_api';
 
 export type JitsiMeetProps = {
+  JitsiMeetExternalAPI: IMeetConstructor;
   room: Room;
   domain: string;
   onRoomSelect: (room: Room) => void;
@@ -64,10 +64,7 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
       }
     };
 
-    const meet = new (JitsiMeetExternalAPI as IMeetConstructor)(
-      props.domain,
-      options
-    );
+    const meet = new props.JitsiMeetExternalAPI(props.domain, options);
 
     props.onMeet(meet);
 

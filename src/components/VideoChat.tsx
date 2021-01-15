@@ -3,11 +3,12 @@ import React from 'react';
 import { ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
 
-import { Room, VideoChatConfig, IMeet } from '../types';
+import { Room, VideoChatConfig, IMeet, IMeetConstructor } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
 
 export type VideoChatProps = {
+  JitsiMeetExternalAPI: IMeetConstructor;
   currentRoom: Room;
   onCreateRoom: (room: Room) => void;
   onRoomSelect: (room: Room) => void;
@@ -44,6 +45,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
 
       {domain != null && props.currentRoom?.id != null ? (
         <JitsiMeetComponent
+            JitsiMeetExternalAPI={props.JitsiMeetExternalAPI}
             room={props.currentRoom}
             domain={domain}
             onRoomSelect={props.onRoomSelect}
