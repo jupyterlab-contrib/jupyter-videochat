@@ -22,8 +22,43 @@ export type VideoChatConfig = {
 };
 
 /** need to figure out how to use these */
-export type TEvent = string;
 export type TCommandId = string;
+
+/** @see https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe#events */
+export type TEvent =
+  | 'cameraError'
+  | 'avatarChanged'
+  | 'audioAvailabilityChanged'
+  | 'audioMuteStatusChanged'
+  | 'contentSharingParticipantsChanged'
+  | 'endpointTextMessageReceived'
+  | 'largeVideoChanged'
+  | 'log'
+  | 'micError'
+  | 'screenSharingStatusChanged'
+  | 'dominantSpeakerChanged'
+  | 'raiseHandUpdated'
+  | 'tileViewChanged'
+  | 'incomingMessage'
+  | 'outgoingMessage'
+  | 'displayNameChange'
+  | 'deviceListChanged'
+  | 'emailChange'
+  | 'feedbackSubmitted'
+  | 'filmstripDisplayChanged'
+  | 'participantJoined'
+  | 'participantKickedOut'
+  | 'participantLeft'
+  | 'participantRoleChanged'
+  | 'passwordRequired'
+  | 'videoConferenceJoined'
+  | 'videoConferenceLeft'
+  | 'videoAvailabilityChanged'
+  | 'videoMuteStatusChanged'
+  | 'videoQualityChanged'
+  | 'readyToClose'
+  | 'subjectChange'
+  | 'suspendDetected';
 
 /** would be nice to be able to use existing libs, sigh */
 export interface IEventListener {

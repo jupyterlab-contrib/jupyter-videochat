@@ -64,18 +64,27 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
       }
     };
 
-    const meet = new props.JitsiMeetExternalAPI(props.domain, options);
+    let meet: IMeet;
 
-    props.onMeet(meet);
+    try {
+      meet = new props.JitsiMeetExternalAPI(props.domain, options);
+    } catch (err) {
+      console.warn('Jitsi API not yet ready, will retry when available');
+    }
 
-    meet.executeCommand('subject', props.room.displayName);
+    if (meet) {
+      props.onMeet(meet);
 
-    meet.on('readyToClose', () => props.onRoomSelect(null));
+      meet.executeCommand('subject', props.room.displayName);
+
+      meet.on('readyToClose', () => props.onRoomSelect(null));
+    }
 
     return () => {
-      console.warn('disposing', props.room.displayName);
       props.onMeet(null);
-      meet.dispose();
+      if (meet) {
+        meet.dispose();
+      }
     };
   });
 

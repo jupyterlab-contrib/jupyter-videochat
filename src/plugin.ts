@@ -27,7 +27,6 @@ async function activate(
   router: IRouter,
   launcher?: ILauncher
 ): Promise<IVideoChatManager> {
-  console.log('JupyterLab extension jupyter-jitsi is activated!');
   const manager = new VideoChatManager({});
 
   const { commands, shell } = app;
