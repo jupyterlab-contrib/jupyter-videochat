@@ -53,8 +53,8 @@ jobs:
       - name: Validate Environment
         run: |
           set -eux
-          pip freeze | tee .pip-frozen
-          pip check
+          pip3 freeze | tee .pip-frozen
+          pip3 check
 
       - name: Cache (node)
         uses: actions/cache@v2
@@ -134,7 +134,7 @@ jobs:
     - name: Install python packaging dependencies
       run: |
         set -eux
-        pip install -U pip wheel setuptools twine
+        pip3 install -U pip wheel setuptools twine
 
     - name: Download distributions
       uses: actions/download-artifact@v2
@@ -146,13 +146,13 @@ jobs:
       run: |
         set -eux
         cd dist
-        pip install -vv ${{ matrix.artifact-glob }}
+        pip3 install -vv ${{ matrix.artifact-glob }}
 
     - name: Validate python environment
       run:
         set -eux
-        pip freeze | tee .pip-frozen
-        pip check
+        pip3 freeze | tee .pip-frozen
+        pip3 check
 
     - name: Import smoke test
       run: |
