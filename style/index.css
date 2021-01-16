@@ -35,16 +35,22 @@ ul.jp-VideoChat-rooms-list {
 
 .jp-VideoChat-rooms-list-new {
     flex: 0;
+    border-top: solid var(--jp-border-width) var(--jp-border-color2);
+}
+
+ul.jp-VideoChat-rooms-list li {
+    display: flex;
+    flex-direction: column;
 }
 
 ul.jp-VideoChat-rooms-list li > a {
     display: block;
     /* Offset from left of title */
     padding: 8px 24px;
-    border-bottom: solid var(--jp-border-width) var(--jp-border-color3);
+    flex: 1;
 }
 
-ul.jp-VideoChat-rooms-list li > a:hover {
+ul.jp-VideoChat-rooms-list li:hover > a {
     background-color: var(--jp-layout-color2);
     color: unset;
 }
@@ -120,4 +126,18 @@ body.lm-mod-override-cursor .jp-VideoChat-jitsi-container:before {
     right: 0;
     bottom: 0;
     background: transparent;
+}
+
+/* custom stuff while in main area */
+#jp-main-dock-panel .jp-VideoChat-rooms-list-named {
+    display: flex;
+    padding: 0 1em 1em 0;
+    flex-wrap: wrap;
+}
+
+#jp-main-dock-panel .jp-VideoChat-rooms-list-named li {
+    flex: 1;
+    min-width: 300px;
+    margin: 1em 0 0 1em;
+    border: solid var(--jp-border-width) var(--jp-border-color2);
 }

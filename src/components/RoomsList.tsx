@@ -3,6 +3,15 @@ import React, { useState } from 'react';
 import { CSS } from '../tokens';
 import { Room } from '../types';
 import { chatIcon } from '../icons';
+import { LabIcon } from '@jupyterlab/ui-components';
+
+const bigIcon: Partial<LabIcon.IReactProps> = {
+  tag: 'span',
+  width: '200px',
+  height: '200px',
+  textAlign: 'center',
+  opacity: '0.25'
+};
 
 export type RoomsListProps = {
   onRoomSelect: (room: Room) => void;
@@ -18,19 +27,13 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
     <li>
       <blockquote>
         <p>
-          <chatIcon.react
-            tag="span"
-            width="200px"
-            height="200px"
-            textAlign="center"
-            opacity="0.25"
-          />
+          <chatIcon.react {...bigIcon} />
         </p>
         <p>
-          <strong>No named rooms are configured.</strong>
+          <strong>No named Hub rooms are configured.</strong>
         </p>
         <p>
-          <em>Create or join a room by name below.</em>
+          <em>Create or join a Hub room by name below.</em>
         </p>
       </blockquote>
     </li>
@@ -38,7 +41,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
 
   return (
     <div className={`${CSS}-rooms`}>
-      <div className={`${CSS}-rooms-list-header`}>Select room to join</div>
+      <div className={`${CSS}-rooms-list-header`}>Select Hub room to join</div>
       <ul className={`${CSS}-rooms-list ${CSS}-rooms-list-named`}>
         {!props.rooms.length
           ? noRoom
@@ -65,9 +68,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
       <ul className={`${CSS}-rooms-list ${CSS}-rooms-list-new`}>
         <li>
           <a href="#">
-            <span className={`${CSS}-room-displayname`}>
-              Join room by name
-            </span>
+            <div className={`${CSS}-rooms-list-header`}>Join Hub room by name</div>
             <div className={`${CSS}-room-displayname-input`}>
               <input
                 className="jp-mod-styled"

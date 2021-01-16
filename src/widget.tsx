@@ -43,9 +43,6 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
 
   /** The actual renderer, a no-op until the interface is shown */
   render() {
-    if (!this.isVisible) {
-      return <div />;
-    }
     return (
       <VideoChatComponent
         JitsiMeetExternalAPI={this.model.JitsiMeetExternalAPI}
