@@ -1,4 +1,4 @@
-name: Build
+name: CI
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v1
         with:
-        node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: Install Python
         uses: actions/setup-python@v1
@@ -36,8 +36,8 @@ jobs:
       - name: Install js dependencies
         run: jlpm --ignore-optional
 
-      - name: Lint Lab Extension
-        run: jlpm run eslint:check
+      - name: Lint Lab Extension, etc.
+        run: jlpm run lint:check
 
       - name: Build npm tarball
         run: mkdir dist && jlpm build && mv $(npm pack) dist

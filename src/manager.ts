@@ -8,7 +8,7 @@ import { IVideoChatManager, DEFAULT_JS_API_URL, CSS } from './tokens';
 import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
 
 /** A manager that can add, join, or create Jitsi rooms
-*/
+ */
 export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _rooms: Room[] = [];
   private _currentRoom: Room;
@@ -23,24 +23,24 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   /** all known rooms */
-  get rooms() {
+  get rooms(): Room[] {
     return this._rooms;
   }
 
   /** whether the manager is initialized */
-  get initialized() {
+  get initialized(): boolean {
     return this._initialized;
   }
 
   /** the current room */
-  get currentRoom() {
+  get currentRoom(): Room {
     return this._currentRoom;
   }
 
   /**
    * set the current room, potentially scheduling a trip to the server for an id
    */
-  set currentRoom(room) {
+  set currentRoom(room: Room) {
     this._currentRoom = room;
     this.stateChanged.emit(void 0);
     if (room != null && room.id == null) {
@@ -49,17 +49,17 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   /** the configuration from the server/settings */
-  get config() {
+  get config(): VideoChatConfig {
     return this._config;
   }
 
   /** the current JitsiExternalAPI */
-  get meet() {
+  get meet(): IMeet {
     return this._meet;
   }
 
   /** update the current meet */
-  set meet(meet) {
+  set meet(meet: IMeet) {
     if (this._meet !== meet) {
       this._meet = meet;
       this._meetChanged.emit(void 0);
@@ -67,12 +67,12 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   /** a signal that emits when the current meet changes */
-  get meetChanged() {
+  get meetChanged(): Signal<IVideoChatManager, void> {
     return this._meetChanged;
   }
 
   /** handle updating configuration and rooms from the server */
-  initialize() {
+  initialize(): void {
     Promise.all([this.updateConfig(), this.updateRooms()])
       .then(() => {
         this._initialized = true;
@@ -82,32 +82,32 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   /** request the configuration from the server */
-  async updateConfig() {
+  async updateConfig(): Promise<void> {
     this._config = await requestAPI<VideoChatConfig>('config');
     this.stateChanged.emit(void 0);
   }
 
   /** request the room list from the server */
-  async updateRooms() {
+  async updateRooms(): Promise<void> {
     this._rooms = await requestAPI<Array<Room>>('rooms');
     this.stateChanged.emit(void 0);
   }
 
   /** create a new named room */
-  async createRoom(room: Partial<Room>) {
+  async createRoom(room: Partial<Room>): Promise<Room> {
     const newRoom = await requestAPI<Room>('generate-room', {
       method: 'POST',
-      body: JSON.stringify(room)
+      body: JSON.stringify(room),
     });
     this.currentRoom = newRoom;
     return newRoom;
   }
 
   /** get the JitiExternalAPI script, as loaded from the jitsi server */
-  get JitsiMeetExternalAPI() {
+  get JitsiMeetExternalAPI(): IMeetConstructor | null {
     if (Private.api) {
       return Private.api;
-    } else if(this.config != null) {
+    } else if (this.config != null) {
       let url = DEFAULT_JS_API_URL;
       if (this.config.jitsiServer) {
         url = `https://${this.config.jitsiServer}/external_api.js`;
@@ -168,7 +168,9 @@ namespace Private {
   let _loadPromise: PromiseDelegate<IMeetConstructor>;
 
   /** return a promise that resolves when the Jitsi external JS API is available */
-  export async function ensureExternalAPI(url: string) {
+  export async function ensureExternalAPI(
+    url: string
+  ): Promise<IMeetConstructor> {
     if (_loadPromise == null) {
       _loadPromise = new PromiseDelegate();
       _scriptElement = document.createElement('script');

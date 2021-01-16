@@ -19,7 +19,7 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
   }
 
   /** Ensure the model is initialized after being shown */
-  onAfterShow(msg: Message) {
+  onAfterShow(msg: Message): void {
     super.onAfterShow(msg);
     if (!this.model.initialized) {
       this.model.initialize();
@@ -27,22 +27,22 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
   }
 
   /** Handle selecting a new (or no) room */
-  onRoomSelect = (room: Room | null) => {
+  onRoomSelect = (room: Room | null): void => {
     this.model.currentRoom = room;
   };
 
   /** Create a new room */
-  onCreateRoom = (room: Room) => {
+  onCreateRoom = (room: Room): void => {
     this.model.createRoom(room).catch(console.warn);
   };
 
   /** Set the current meeting */
-  onMeet = (meet: IMeet) => {
+  onMeet = (meet: IMeet): void => {
     this.model.meet = meet;
   };
 
   /** The actual renderer, a no-op until the interface is shown */
-  render() {
+  render(): JSX.Element | JSX.Element[] {
     return (
       <VideoChatComponent
         JitsiMeetExternalAPI={this.model.JitsiMeetExternalAPI}

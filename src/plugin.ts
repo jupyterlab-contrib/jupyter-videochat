@@ -4,7 +4,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
   ILayoutRestorer,
-  IRouter
+  IRouter,
 } from '@jupyterlab/application';
 
 import { ILauncher } from '@jupyterlab/launcher';
@@ -41,7 +41,7 @@ async function activate(
     chat = new VideoChat(manager, {
       onToggleSidebar: () => {
         commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
-      }
+      },
     });
     widget = new Panel();
     widget.addClass(`${CSS}-wrapper`);
@@ -81,7 +81,7 @@ async function activate(
       }
       // Activate the widget
       shell.activateById(widget.id);
-    }
+    },
   });
 
   commands.addCommand(CommandIds.toggleArea, {
@@ -91,12 +91,12 @@ async function activate(
       widget.title.label = area === 'main' ? widget.title.caption : '';
       shell.add(widget, area);
       shell.activateById(widget.id);
-    }
+    },
   });
 
   commands.addCommand(CommandIds.routerStart, {
     label: 'Open Video Chat from URL',
-    execute: args => {
+    execute: (args) => {
       const { request } = args as IRouter.ILocation;
       const url = new URL(`http://example.com${request}`);
       const params = url.searchParams;
@@ -106,12 +106,12 @@ async function activate(
         router.routed.disconnect(chatAfterRoute);
         if (manager.currentRoom?.displayName != displayName) {
           await commands.execute(CommandIds.open);
-          manager.currentRoom = {displayName};
+          manager.currentRoom = { displayName };
         }
       };
 
       router.routed.connect(chatAfterRoute);
-    }
+    },
   });
 
   // Add the commands to the palette.
@@ -122,12 +122,12 @@ async function activate(
   router.register({
     command: CommandIds.routerStart,
     pattern: /.*/,
-    rank: 29
+    rank: 29,
   });
 
   // If available, add a card to the launcher
   if (launcher) {
-    launcher.add({ command: CommandIds.open, args: { area: 'main' }});
+    launcher.add({ command: CommandIds.open, args: { area: 'main' } });
   }
 
   // Return the manager that others extensions can use
@@ -142,7 +142,7 @@ const extension: JupyterFrontEndPlugin<IVideoChatManager> = {
   autoStart: true,
   requires: [ICommandPalette, ILayoutRestorer, IRouter],
   optional: [ILauncher],
-  activate
+  activate,
 };
 
 // In the future, there may be more extensions
