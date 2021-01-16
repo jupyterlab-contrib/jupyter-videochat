@@ -93,7 +93,6 @@ jobs:
           - python-version: "3.6"
             node-version: "10.x"
             artifact-glob: "*.tar.gz"
-        include:
           - python-version: "3.9"
             node-version: "14.x"
             artifact-glob: "*.whl"
