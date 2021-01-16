@@ -45,10 +45,10 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
 
       - name: Install python packaging dependencies
-        run: python -m pip install -U pip wheel setuptools twine
+        run: pip3 install -U pip wheel setuptools twine
 
       - name: Install python dev dependencies
-        run: python -m pip install -r .github/requirements.txt
+        run: pip3 install -r .github/requirements.txt
 
       - name: Validate Environment
         run: |
@@ -134,7 +134,7 @@ jobs:
     - name: Install python packaging dependencies
       run: |
         set -eux
-        python -m pip install -U pip wheel setuptools twine
+        pip install -U pip wheel setuptools twine
 
     - name: Download distributions
       uses: actions/download-artifact@v2
@@ -146,7 +146,7 @@ jobs:
       run: |
         set -eux
         cd dist
-        python -m pip install -vv ${{ matrix.artifact-glob }}
+        pip install -vv ${{ matrix.artifact-glob }}
 
     - name: Validate python environment
       run:
