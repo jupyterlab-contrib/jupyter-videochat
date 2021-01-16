@@ -25,4 +25,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Framework :: Jupyter",
     ],
+    data_files=[
+        ("etc/jupyter/jupyter_notebook_config.d", ["jupyter-config/jupyter_videochat.json"])
+    ]
 )
