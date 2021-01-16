@@ -82,7 +82,7 @@ jobs:
 
   test:
     needs: [build]
-    name: test ${{ matrix.os }}
+    name: test ${{ matrix.os }} py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
@@ -127,7 +127,7 @@ jobs:
       run: python -m pip install -U pip wheel setuptools
 
     - name: Install Python distribution
-      run: python -m pip install "dist/jupyter-videochat*.whl"
+      run: python -m pip install "dist/jupyter_videochat*.whl"
 
     - name: Validate Server Extension
       run: |
