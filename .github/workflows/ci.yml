@@ -39,15 +39,15 @@ jobs:
         with:
           path: ~/.cache/pip
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('setup.py') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('setup.py', '.github/requirements.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
 
       - name: Install python packaging dependencies
         run: python -m pip install -U pip wheel setuptools
 
-      - name: Install python build dependencies
-        run: python -m pip install -U jupyterlab==${{ matrix.lab-version }}
+      - name: Install python dev dependencies
+        run: python -m pip install -r .github/requirements.txt
 
       - name: cache (node)
         uses: actions/cache@v2
@@ -113,7 +113,7 @@ jobs:
       with:
         path: ~/.cache/pip
         key: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('setup.py') }}
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('setup.py', '.github/requirements.txt') }}
         restore-keys: |
           ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
 
@@ -126,8 +126,11 @@ jobs:
     - name: Install python packaging dependencies
       run: python -m pip install -U pip wheel setuptools
 
+    - name: Install python packaging dependencies
+      run: python -m pip install -r .github/requirements.txt
+
     - name: Install Python distribution
-      run: python -m pip install --find-links=dist jupyter-videochat
+      run: python -m pip install --find-links=dist --no-index --ignore-installed --no-deps jupyter-videochat
 
     - name: Validate Server Extension
       run: |

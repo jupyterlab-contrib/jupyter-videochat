@@ -10,8 +10,9 @@ setup(
     author="Yuvi Panda",
     description="Video Chat with peers inside  JupyterLab",
     packages=find_packages(),
+    python_requires=">=3.6",
     install_requires=[
-        "jupyterlab~=2.0",
+        "jupyterlab >=2,<3",
         "escapism"
     ],
     zip_safe=False,
