@@ -59,6 +59,7 @@ jobs:
     name: test ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.6", "3.9"]
         os: ["ubuntu", "windows", "macos"]
@@ -73,7 +74,7 @@ jobs:
     - name: Install Node
       uses: actions/setup-node@v1
       with:
-      node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node-version }}
 
     - name: Install Python
       uses: actions/setup-python@v1
