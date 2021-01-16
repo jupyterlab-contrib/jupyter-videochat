@@ -163,7 +163,7 @@ jobs:
       run: |
         set -eux
         jupyter labextension list
-        jupyter labextension install --no-build --debug "dist/jupyterlab-videochat-*.tgz"
+        jupyter labextension install --no-build --debug $(ls dist/jupyterlab-videochat-*.tgz)
         jupyter labextension list
 
     - name: Build Lab
