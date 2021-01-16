@@ -62,9 +62,9 @@ jobs:
         with:
           path: '**/node_modules'
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-build-${{ hashFiles('yarn.lock') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-node-build-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-build-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-node-build-
 
       - name: Install js dependencies
         run: jlpm --ignore-optional
@@ -127,9 +127,9 @@ jobs:
       with:
         path: ~/.cache/pip
         key: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('setup.py', '.github/requirements.txt') }}
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.py', '.github/requirements.txt') }}
         restore-keys: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-pip-
 
     - name: Install python packaging dependencies
       run: |
@@ -171,9 +171,9 @@ jobs:
       with:
         path: ./.lab
         key: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-lab-${{ hashFiles('yarn.lock') }}
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-lab-${{ hashFiles('yarn.lock') }}
         restore-keys: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-lab-
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-
 
     - name: Install Lab Extension
       run: |
@@ -196,4 +196,4 @@ jobs:
 
     - name: Lab Browser check
       run: |
-        python -m jupyterlab.browser_check
+        python -m jupyterlab.browser_check $APP_DIR
