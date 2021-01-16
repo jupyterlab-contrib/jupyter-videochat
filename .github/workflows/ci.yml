@@ -130,7 +130,7 @@ jobs:
       run: |
         set -eux
         cd dist
-        python -m pip install -vv *.whl
+        python -m pip install -vv $(ls *.whl)
 
     - name: Validate python environment
       run: pip freeze | tee .pip-frozen && pip check
