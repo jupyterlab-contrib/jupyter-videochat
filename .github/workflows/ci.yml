@@ -127,7 +127,7 @@ jobs:
       run: python -m pip install -U pip wheel setuptools
 
     - name: Install Python distribution
-      run: python -m pip install "dist/jupyter_videochat*.whl"
+      run: python -m pip install --find-links=dist jupyter-videochat
 
     - name: Validate Server Extension
       run: |
