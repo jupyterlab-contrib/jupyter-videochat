@@ -130,7 +130,7 @@ jobs:
       run: python -m pip install -r .github/requirements.txt
 
     - name: Install Python distribution
-      run: python -m pip install --find-links=dist --no-index --ignore-installed --no-deps jupyter-videochat
+      run: python -m pip install --find-links=dist --no-index --ignore-installed --no-deps jupyter_videochat
 
     - name: Validate Server Extension
       run: |
