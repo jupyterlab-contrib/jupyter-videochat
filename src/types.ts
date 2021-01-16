@@ -126,13 +126,47 @@ export interface IDeviceMap {
 }
 
 /**
+ * Command strings understood by the Jitsi IFrame API
+ *
+ * @see https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe#commands
+ *
+ * ### Note
+ * These should be extended to e.g. an interface which captures the parameter(s)
+ * and return value types
+ */
+export type TCommand =
+  | 'displayName'
+  | 'password'
+  | 'toggleLobby'
+  | 'sendTones'
+  | 'subject'
+  | 'toggleAudio'
+  | 'toggleVideo'
+  | 'toggleFilmStrip'
+  | 'toggleChat'
+  | 'toggleShareScreen'
+  | 'toggleTileView'
+  | 'hangup'
+  | 'email'
+  | 'avatarUrl'
+  | 'sendEndpointTextMessage'
+  | 'setLargeVideoParticipant'
+  | 'setVideoQuality'
+  | 'muteEveryone'
+  | 'startRecording'
+  | 'stopRecording'
+  | 'intiatePrivateChat'
+  | 'cancelPrivateChat'
+  | 'getContentSharingParticipants';
+
+/**
  * A jitsi meeting
  */
 
 export interface IMeet {
   dispose(): void;
 
-  executeCommand(command: string, ...options: any): void;
+  executeCommand(command: TCommand, ...options: any): void;
   executeCommands(commands: ICommandMap): void;
 
   /* event cruft */

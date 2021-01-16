@@ -4,7 +4,7 @@ import { VDomModel } from '@jupyterlab/apputils';
 import { Signal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
-import { IVideoChatManager, DEFAULT_JS_API_URL } from './tokens';
+import { IVideoChatManager, DEFAULT_JS_API_URL, CSS } from './tokens';
 import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
 
 /** A manager that can add, join, or create Jitsi rooms
@@ -172,7 +172,7 @@ namespace Private {
     if (_loadPromise == null) {
       _loadPromise = new PromiseDelegate();
       _scriptElement = document.createElement('script');
-      _scriptElement.id = 'jp-VideoChat-external-api';
+      _scriptElement.id = `id-${CSS}-external-api`;
       _scriptElement.src = url;
       _scriptElement.async = true;
       _scriptElement.type = 'text/javascript';

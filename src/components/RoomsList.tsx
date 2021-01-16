@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { CSS } from '../tokens';
 import { Room } from '../types';
 import { chatIcon } from '../icons';
 
@@ -36,9 +37,9 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   );
 
   return (
-    <div className="jp-VideoChat-rooms">
-      <div className="jp-VideoChat-rooms-list-header">Select room to join</div>
-      <ul className="jp-VideoChat-rooms-list jp-VideoChat-rooms-list-named">
+    <div className={`${CSS}-rooms`}>
+      <div className={`${CSS}-rooms-list-header`}>Select room to join</div>
+      <ul className={`${CSS}-rooms-list ${CSS}-rooms-list-named`}>
         {!props.rooms.length
           ? noRoom
           : props.rooms.map((value, i) => {
@@ -50,10 +51,10 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
                   }}
                 >
                   <a href="#">
-                    <span className="jp-VideoChat-room-displayname">
+                    <span className={`${CSS}-room-displayname`}>
                       {value.displayName}
                     </span>
-                    <small className="jp-VideoChat-room-description">
+                    <small className={`${CSS}-room-description`}>
                       {value.description}
                     </small>
                   </a>
@@ -61,13 +62,13 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
               );
             })}
       </ul>
-      <ul className="jp-VideoChat-rooms-list jp-VideoChat-rooms-list-new">
+      <ul className={`${CSS}-rooms-list ${CSS}-rooms-list-new`}>
         <li>
           <a href="#">
-            <span className="jp-VideoChat-room-displayname">
+            <span className={`${CSS}-room-displayname`}>
               Join room by name
             </span>
-            <div className="jp-VideoChat-room-displayname-input">
+            <div className={`${CSS}-room-displayname-input`}>
               <input
                 className="jp-mod-styled"
                 placeholder="Room Name"
@@ -81,7 +82,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
                 JOIN
               </button>
             </div>
-            <small className="jp-VideoChat-room-description">
+            <small className={`${CSS}-room-description`}>
               Join (or create) a named room. Share this name with other users of
               your Hub.
             </small>

@@ -3,6 +3,7 @@ import React from 'react';
 import { ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
 
+import { CSS } from '../tokens';
 import { Room, VideoChatConfig, IMeet, IMeetConstructor } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
@@ -22,7 +23,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   const domain = props.config?.jitsiServer;
   return (
     <>
-      <div className="jp-VideoChat-toolbar jp-Toolbar">
+      <div className={`${CSS}-toolbar jp-Toolbar`}>
         <div className="jp-ToolbarButton jp-Toolbar-item">
           <ToolbarButtonComponent
             tooltip="Toggle Video Chat Sidebar"

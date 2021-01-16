@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
+import { CSS } from '../tokens';
 import { Room, IMeetConstructor, IMeet } from '../types';
 
 export type JitsiMeetProps = {
@@ -88,5 +89,5 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     };
   });
 
-  return <div className="jp-VideoChat-jitsi-container" ref={container} />;
+  return <div className={`${CSS}-jitsi-container`} ref={container} />;
 };

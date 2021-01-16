@@ -11,7 +11,7 @@ import { ILauncher } from '@jupyterlab/launcher';
 
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
-import { CommandIds, IVideoChatManager, URL_PARAM, NS } from './tokens';
+import { CommandIds, IVideoChatManager, URL_PARAM, NS, CSS } from './tokens';
 import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
@@ -34,9 +34,7 @@ async function activate(
   let widget: Panel;
   let chat: VideoChat;
 
-  const tracker = new WidgetTracker<Panel>({
-    namespace: NS
-  });
+  const tracker = new WidgetTracker<Panel>({ namespace: NS });
 
   if (!widget || widget.isDisposed) {
     // Create widget
@@ -46,27 +44,31 @@ async function activate(
       }
     });
     widget = new Panel();
-    widget.addClass('jp-VideoChat-wrapper');
+    widget.addClass(`${CSS}-wrapper`);
 
-    widget.id = 'jitsi-jupyterlab';
+    widget.id = `id-${NS}`;
     widget.title.caption = 'Video Chat';
     widget.title.closable = false;
     widget.title.icon = chatIcon;
     widget.addWidget(chat);
   }
+
+  // Add to widget tracker
   if (!tracker.has(widget)) {
     tracker.add(widget).catch(console.warn);
   }
+
+  // Add to shell
   if (!widget.isAttached) {
     shell.add(widget, area);
   }
+
+  // Force an update
   widget.update();
 
+  // Potentially restore position
   restorer
-    .restore(tracker, {
-      command: CommandIds.open,
-      name: () => 'jitsi'
-    })
+    .restore(tracker, { command: CommandIds.open, name: () => NS })
     .catch(console.warn);
 
   commands.addCommand(CommandIds.open, {
@@ -116,19 +118,19 @@ async function activate(
   palette.addItem({ command: CommandIds.open, category });
   palette.addItem({ command: CommandIds.toggleArea, category });
 
+  // Add to the router
   router.register({
     command: CommandIds.routerStart,
     pattern: /.*/,
     rank: 29
   });
 
+  // If available, add a card to the launcher
   if (launcher) {
-    launcher.add({
-      command: CommandIds.open,
-      args: { area: 'main' }
-    });
+    launcher.add({ command: CommandIds.open, args: { area: 'main' }});
   }
 
+  // Return the manager that others extensions can use
   return manager;
 }
 
@@ -136,11 +138,12 @@ async function activate(
  * Initialization data for the jupyter-jitsi extension.
  */
 const extension: JupyterFrontEndPlugin<IVideoChatManager> = {
-  id: 'jupyterlab-videochat',
+  id: NS,
   autoStart: true,
   requires: [ICommandPalette, ILayoutRestorer, IRouter],
   optional: [ILauncher],
   activate
 };
 
-export default extension;
+// In the future, there may be more extensions
+export default [extension];
