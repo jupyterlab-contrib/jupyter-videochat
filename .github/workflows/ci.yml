@@ -103,6 +103,12 @@ jobs:
           - python-version: "3.9"
             node-version: "14.x"
             artifact-glob: "*.whl"
+          - os: windows
+            python-cmd: python
+          - os: ubuntu
+            python-cmd: python3
+          - os: macos
+            python-cmd: python3
 
     defaults:
       run:
@@ -157,7 +163,7 @@ jobs:
     - name: Import smoke test
       run: |
         set -eux
-        python3 -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
+        ${{ matrix.python-cmd }} -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
 
     - name: Validate Server Extension
       run: |
@@ -196,4 +202,4 @@ jobs:
 
     - name: Lab Browser check
       run: |
-        python3 -m jupyterlab.browser_check $APP_DIR
+        ${{ matrix.python-cmd }} -m jupyterlab.browser_check $APP_DIR
