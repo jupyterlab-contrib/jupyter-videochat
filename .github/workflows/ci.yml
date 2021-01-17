@@ -7,7 +7,7 @@ on:
     branches: '*'
 
 env:
-  CACHE_EPOCH: 1
+  CACHE_EPOCH: 2
   APP_DIR: --app-dir ./.lab
 
 jobs:
@@ -24,12 +24,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Select Node
+      - name: Select Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Select Python
+      - name: Select Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
@@ -45,7 +45,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
 
       - name: Install Python packaging dependencies
-        run: pip3 install -U --user pip wheel setuptools twine
+        run: pip3 install -U --user pip wheel setuptools
 
       - name: Install Python dev dependencies
         run: pip3 install -r .github/requirements.txt
@@ -97,18 +97,23 @@ jobs:
         python-version: ["3.6", "3.9"]
         os: ["ubuntu", "windows", "macos"]
         include:
+          # use python as marker for node/distribution test coverage
           - python-version: "3.6"
             node-version: "10.x"
             artifact-glob: "*.tar.gz"
           - python-version: "3.9"
             node-version: "14.x"
             artifact-glob: "*.whl"
+          # os-specific settings
           - os: windows
             python-cmd: python
+            pip-cache: ~\AppData\Local\pip\Cache
           - os: ubuntu
             python-cmd: python3
+            pip-cache: ~/.cache/pip
           - os: macos
             python-cmd: python3
+            pip-cache: ~/Library/Caches/pip
 
     defaults:
       run:
@@ -117,12 +122,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Select Node
+    - name: Select Node ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Select Python
+    - name: Select Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
@@ -131,7 +136,7 @@ jobs:
     - name: cache (pip)
       uses: actions/cache@v2
       with:
-        path: ~/.cache/pip
+        path: ${{ matrix.pip-cache }}
         key: |
           ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.py', '.github/requirements.txt') }}
         restore-keys: |
@@ -140,7 +145,7 @@ jobs:
     - name: Install Python packaging dependencies
       run: |
         set -eux
-        pip3 install -U --user pip wheel setuptools twine
+        pip3 install -U --user pip wheel setuptools
 
     - name: Download distributions
       uses: actions/download-artifact@v2
