@@ -74,4 +74,3 @@ def load_jupyter_server_extension(lab_app):
     videochat = VideoChat(parent=lab_app)
     lab_app.web_app.settings['videochat'] = videochat
     setup_handlers(lab_app.web_app)
-    lab_app.log.info("Registered HelloWorld extension at URL path /jupyter-videochat")

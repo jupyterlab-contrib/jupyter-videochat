@@ -8,12 +8,11 @@ setup(
     version='0.1.1',
     url="https://github.com/yuvipanda/jupyter-videochat",
     author="Yuvi Panda",
-    description="Video Chat with peers inside  JupyterLab",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
+    description="Video Chat with peers inside JupyterLab",
     packages=find_packages(),
+    python_requires=">=3.6",
     install_requires=[
-        "jupyterlab~=2.0",
+        "jupyterlab ==2.*",
         "escapism"
     ],
     zip_safe=False,
@@ -26,4 +25,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Framework :: Jupyter",
     ],
+    data_files=[
+        ("etc/jupyter/jupyter_notebook_config.d", ["jupyter-config/jupyter_videochat.json"])
+    ]
 )

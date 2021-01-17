@@ -1,0 +1,214 @@
+name: CI
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: '*'
+
+env:
+  CACHE_EPOCH: 4
+  APP_DIR: --app-dir ./.lab
+
+jobs:
+  build:
+    name: build
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: ["ubuntu"]
+        python-version: ["3.9"]
+        node-version: ["14.x"]
+        lab-version: ["2"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Select Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Select Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+
+      - name: Cache (Python)
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-
+
+      - name: Install Python packaging dependencies
+        run: pip3 install -U --user pip wheel setuptools
+
+      - name: Install Python dev dependencies
+        run: pip3 install "jupyterlab==${{ matrix.lab-version }}.*"
+
+      - name: Validate Python Environment
+        run: |
+          set -eux
+          pip3 freeze | tee .pip-frozen
+          pip3 check
+
+      - name: Cache (JS)
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-node-build-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-node-build-
+
+      - name: Install JS dependencies
+        run: jlpm --ignore-optional --frozen-lockfile
+
+      - name: Lint Lab Extension, etc.
+        run: jlpm run lint:check
+
+      - name: Build npm tarball
+        run: |
+          set -eux
+          mkdir dist
+          jlpm build
+          mv $(npm pack) dist
+
+      - name: Build Python distributions
+        run: python3 setup.py sdist bdist_wheel
+
+      - name: Generate distribution hashes
+        run: |
+          set -eux
+          cd dist
+          sha256sum * | tee SHA256SUMS
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyter-videochat ${{ github.run_number }} dist
+          path: ./dist
+
+  test:
+    needs: [build]
+    name: test ${{ matrix.os }} py${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      # fail-fast: false
+      matrix:
+        python-version: ["3.6", "3.9"]
+        os: ["ubuntu", "windows", "macos"]
+        lab-version: ["2"]
+        include:
+          # use python as marker for node/distribution test coverage
+          - python-version: "3.6"
+            node-version: "10.x"
+            artifact-glob: "*.tar.gz"
+          - python-version: "3.9"
+            node-version: "14.x"
+            artifact-glob: "*.whl"
+          # os-specific settings
+          - os: windows
+            python-cmd: python
+            pip-cache: ~\AppData\Local\pip\Cache
+          - os: ubuntu
+            python-cmd: python3
+            pip-cache: ~/.cache/pip
+          - os: macos
+            python-cmd: python3
+            pip-cache: ~/Library/Caches/pip
+
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Select Node ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Select Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: 'x64'
+
+    - name: Cache (Python)
+      uses: actions/cache@v2
+      with:
+        path: ${{ matrix.pip-cache }}
+        key: |
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-${{ hashFiles('setup.py') }}
+        restore-keys: |
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-
+
+    - name: Install Python packaging dependencies
+      run: |
+        set -eux
+        pip3 install -U --user pip wheel setuptools
+
+    - name: Download distributions
+      uses: actions/download-artifact@v2
+      with:
+        name: jupyter-videochat ${{ github.run_number }} dist
+        path: ./dist
+
+    - name: Install Python distribution
+      run: |
+        set -eux
+        cd dist
+        pip3 install -v ${{ matrix.artifact-glob }}
+
+    - name: Validate Python environment
+      run:
+        set -eux
+        pip3 freeze | tee .pip-frozen
+        pip3 check
+
+    - name: Import smoke test
+      run: |
+        set -eux
+        ${{ matrix.python-cmd }} -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
+
+    - name: Validate Server Extension
+      run: |
+        set -eux
+        jupyter serverextension list 1>serverextensions 2>&1
+        cat serverextensions
+        cat serverextensions | grep -i "jupyter_videochat.*OK"
+
+    - name: Cache (Lab)
+      uses: actions/cache@v2
+      with:
+        path: ./.lab
+        key: |
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-lab-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-
+
+    - name: Install Lab Extension
+      run: |
+        set -eux
+        jupyter labextension list $APP_DIR
+        jupyter labextension install $APP_DIR --no-build --debug $(ls dist/jupyterlab-videochat-*.tgz)
+        jupyter labextension list $APP_DIR
+
+    - name: Build Lab
+      run: |
+        set -eux
+        jupyter lab build $APP_DIR --debug --dev-build=False --minimize=False
+        jupyter labextension list $APP_DIR
+
+    - name: Validate Lab Extension
+      run: |
+        set -eux
+        jupyter labextension list $APP_DIR 1>labextensions 2>&1
+        cat labextensions
+        cat labextensions | grep -i "jupyterlab-videochat.*OK"

@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-videochat",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Video Chat with peers inside  JupyterLab",
   "keywords": [
     "jupyter",
@@ -15,7 +15,8 @@
   "author": "Yuvi Panda",
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
-    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
+    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
+    "LICENSE"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -26,17 +27,15 @@
   },
   "scripts": {
     "build": "jlpm run build:lib",
-    "build:labextension": "cd jupyter_videochat && rimraf labextension && mkdirp labextension && cd labextension && npm pack ../..",
     "build:lib": "tsc",
-    "build:all": "jlpm run build:labextension",
     "clean": "jlpm run clean:lib",
-    "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
-    "clean:labextension": "rimraf jupyter_videochat/labextension",
-    "clean:all": "jlpm run clean:lib && jlpm run clean:labextension",
-
+    "clean:lib": "rimraf lib",
+    "lint": "jlpm prettier && jlpm eslint",
+    "lint:check": "jlpm prettier:check && jlpm eslint:check",
+    "prettier": "prettier --list-different --write \"*.{json,md}\" \"{.github,jupyter-config,src,style}/*.{yml,json,ts,tsx,css}\"",
+    "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style}/*.{yml,json,ts,tsx,css}\"",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
-    "prepare": "jlpm run clean && jlpm run build",
     "watch": "tsc -w"
   },
   "dependencies": {
@@ -49,15 +48,19 @@
     "@lumino/widgets": "^1.12.2"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-prettier": "^3.1.2",
-    "mkdirp": "^1.0.3",
-    "prettier": "1.16.4",
+    "@jupyterlab/launcher": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "prettier": "^2.1.1",
     "rimraf": "^2.6.1",
-    "typescript": "~3.7.0"
+    "typescript": "~4.1.3"
+  },
+  "peerDependencies": {
+    "@jupyterlab/launcher": "^2.0.0"
   },
   "sideEffects": [
     "style/*.css"
@@ -73,6 +76,10 @@
         }
       }
     },
-    "extension": true
+    "extension": "lib/plugin.js"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "proseWrap": "always"
   }
 }
