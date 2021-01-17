@@ -7,7 +7,7 @@ on:
     branches: '*'
 
 env:
-  CACHE_EPOCH: 2
+  CACHE_EPOCH: 3
   APP_DIR: --app-dir ./.lab
 
 jobs:
@@ -204,7 +204,3 @@ jobs:
         set -eux
         jupyter labextension list $APP_DIR 1>labextensions 2>&1
         cat labextensions | grep -i "jupyterlab-videochat.*OK"
-
-    - name: Lab Browser check
-      run: |
-        ${{ matrix.python-cmd }} -m jupyterlab.browser_check $APP_DIR
