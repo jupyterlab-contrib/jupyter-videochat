@@ -1,2 +1,0 @@
-jupyterlab >=2,<3
-escapism
