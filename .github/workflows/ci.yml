@@ -44,10 +44,10 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
 
-      - name: Install python packaging dependencies
+      - name: Install Python packaging dependencies
         run: pip3 install -U --user pip wheel setuptools twine
 
-      - name: Install python dev dependencies
+      - name: Install Python dev dependencies
         run: pip3 install -r .github/requirements.txt
 
       - name: Validate Environment
@@ -75,8 +75,8 @@ jobs:
       - name: Build npm tarball
         run: mkdir dist && jlpm build && mv $(npm pack) dist
 
-      - name: Build python distributions
-        run: python setup.py sdist bdist_wheel
+      - name: Build Python distributions
+        run: python3 setup.py sdist bdist_wheel
 
       - name: Generate distribution hashes
         run: cd dist && sha256sum * | tee SHA256SUMS
@@ -131,7 +131,7 @@ jobs:
         restore-keys: |
           ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-pip-
 
-    - name: Install python packaging dependencies
+    - name: Install Python packaging dependencies
       run: |
         set -eux
         pip3 install -U --user pip wheel setuptools twine
@@ -148,7 +148,7 @@ jobs:
         cd dist
         pip3 install -vv ${{ matrix.artifact-glob }}
 
-    - name: Validate python environment
+    - name: Validate Python environment
       run:
         set -eux
         pip3 freeze | tee .pip-frozen
@@ -157,7 +157,7 @@ jobs:
     - name: Import smoke test
       run: |
         set -eux
-        python -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
+        python3 -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
 
     - name: Validate Server Extension
       run: |
@@ -196,4 +196,4 @@ jobs:
 
     - name: Lab Browser check
       run: |
-        python -m jupyterlab.browser_check $APP_DIR
+        python3 -m jupyterlab.browser_check $APP_DIR
