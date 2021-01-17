@@ -35,7 +35,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: 'x64'
 
-      - name: Cache (pip)
+      - name: Cache (Python)
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
@@ -50,13 +50,13 @@ jobs:
       - name: Install Python dev dependencies
         run: pip3 install "jupyterlab==${{ matrix.lab-version }}"
 
-      - name: Validate Environment
+      - name: Validate Python Environment
         run: |
           set -eux
           pip3 freeze | tee .pip-frozen
           pip3 check
 
-      - name: Cache (node)
+      - name: Cache (JS)
         uses: actions/cache@v2
         with:
           path: '**/node_modules'
@@ -65,8 +65,8 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-node-build-
 
-      - name: Install js dependencies
-        run: jlpm --ignore-optional
+      - name: Install JS dependencies
+        run: jlpm --ignore-optional --frozen-lockfile
 
       - name: Lint Lab Extension, etc.
         run: jlpm run lint:check
@@ -140,7 +140,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: 'x64'
 
-    - name: Cache (pip)
+    - name: Cache (Python)
       uses: actions/cache@v2
       with:
         path: ${{ matrix.pip-cache }}
