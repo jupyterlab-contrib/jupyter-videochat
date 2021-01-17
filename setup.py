@@ -8,11 +8,11 @@ setup(
     version='0.1.1',
     url="https://github.com/yuvipanda/jupyter-videochat",
     author="Yuvi Panda",
-    description="Video Chat with peers inside  JupyterLab",
+    description="Video Chat with peers inside JupyterLab",
     packages=find_packages(),
     python_requires=">=3.6",
     install_requires=[
-        "jupyterlab >=2,<3",
+        "jupyterlab ==2.*",
         "escapism"
     ],
     zip_safe=False,

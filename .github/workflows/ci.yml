@@ -7,7 +7,7 @@ on:
     branches: '*'
 
 env:
-  CACHE_EPOCH: 3
+  CACHE_EPOCH: 4
   APP_DIR: --app-dir ./.lab
 
 jobs:
@@ -48,7 +48,7 @@ jobs:
         run: pip3 install -U --user pip wheel setuptools
 
       - name: Install Python dev dependencies
-        run: pip3 install "jupyterlab==${{ matrix.lab-version }}"
+        run: pip3 install "jupyterlab==${{ matrix.lab-version }}.*"
 
       - name: Validate Python Environment
         run: |
