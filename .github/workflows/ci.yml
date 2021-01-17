@@ -45,7 +45,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
 
       - name: Install python packaging dependencies
-        run: pip3 install -U pip wheel setuptools twine
+        run: pip3 install -U --user pip wheel setuptools twine
 
       - name: Install python dev dependencies
         run: pip3 install -r .github/requirements.txt
@@ -134,7 +134,7 @@ jobs:
     - name: Install python packaging dependencies
       run: |
         set -eux
-        pip3 install -U pip wheel setuptools twine
+        pip3 install -U --user pip wheel setuptools twine
 
     - name: Download distributions
       uses: actions/download-artifact@v2
