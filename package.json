@@ -27,7 +27,7 @@
   "scripts": {
     "bootstrap": "jlpm --ignore-optional && jlpm clean && jlpm lint && jlpm build",
     "build": "jlpm build:lib && jlpm build:ext",
-    "build:lib": "tsc",
+    "build:lib": "tsc -b",
     "build:ext": "jupyter labextension build .",
     "clean": "jlpm clean:lib && jlpm clean:ext",
     "clean:lib": "rimraf lib",

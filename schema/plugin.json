@@ -1,5 +1,5 @@
 {
-  "jupyter.lab.setting-icon": "jupyterlab-videochat:chat",
+  "jupyter.lab.setting-icon": "jupyterlab-videochat:chat-pretty",
   "jupyter.lab.setting-icon-label": "Video Chat",
   "title": "Video Chat",
   "description": "Video Chat settings",
@@ -16,18 +16,16 @@
       "type": "string"
     },
     "configOverwrite": {
-      "title": "Jitsi Config Overwrite",
+      "title": "Jitsi Configuration",
       "description": "A customized Jitsi [configuration](https://github.com/jitsi/jitsi-meet/blob/master/config.js). The default is as conservative as possible. Set to `null` to enable all features.",
-      "type": {
-        "oneOf": [
-          {
-            "type": "object"
-          },
-          {
-            "type": "null"
-          }
-        ]
-      },
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
       "default": {
         "disableThirdPartyRequests": true
       }
@@ -35,16 +33,14 @@
     "interfaceConfigOverwrite": {
       "title": "Jitsi Interface Configuration",
       "description": "A customized Jitsi [interface configuration](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js) and [feature flags](https://github.com/jitsi/jitsi-meet/blob/master/react/features/base/config/interfaceConfigWhitelist.js). The default is fairly conservative. Set to `null` to enable all features. Known hidden buttons: recording, livestreaming, etherpad, invite, download. Known hidden settings: calendar.",
-      "type": {
-        "oneOf": [
-          {
-            "type": "object"
-          },
-          {
-            "type": "null"
-          }
-        ]
-      },
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
       "default": {
         "TOOLBAR_BUTTONS": [
           "microphone",
