@@ -127,7 +127,11 @@ export interface IJitsiFactory {
   (): IMeetConstructor;
 }
 
-export interface IUserInfo {}
+/** TODO: fill these in more */
+export interface IUserInfo {
+  displayName?: string;
+  email?: string;
+}
 export interface IConfig {}
 export interface IInterfaceConfig {}
 export interface IInvitee {}

@@ -90,13 +90,36 @@ further configured, as can a user's default `displayName` and `email`. The
 defaults provided are generally pretty conservative, and disable as many
 third-party services as possible.
 
+#### Binder Client Example
+
+For example, to enable all thirdy-party features:
+
+- create an `overrides.json`
+
+  ```json
+  {
+    "jupyter-videochat:plugin": {
+      "interfaceConfigOverwrite": null,
+      "configOverwrite": null
+    }
+  }
+  ```
+
+- Copy it to the JupyterLab settings directory
+
+  ```bash
+  # postBuild
+  mkdir -p ${NB_PYTHON_PREFIX}/share/jupyter/lab/settings
+  cp overrides.json ${NB_PYTHON_PREFIX}/share/jupyter/lab/settings
+  ```
+
 ### Start a Meet by URL
 
 Appending `?jvc=room-name` to a JupyterLab URL will automatically open the Meet
 (but not _fully_ start it, as browsers require a user gesture to start
 audio/video).
 
-#### Binder Example
+#### Binder URL Example
 
 On [Binder](https://mybinder.org), use the `urlpath` to append the argument,
 ensuring the arguments get properly URL-encoded
