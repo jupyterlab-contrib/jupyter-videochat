@@ -1,32 +1,32 @@
 /**
- * command args for toggling position in shell
+ * Command args for toggling position in shell
  */
 export interface IChatArgs {
   area?: 'left' | 'right' | 'main';
 }
 
 /**
- * a model of a room
+ * A model of a room
  */
 export type Room = {
-  /** the human-readable name of the room */
+  /** The human-readable name of the room */
   displayName: string;
 
-  /** a machine-friendly mangled version of the name */
+  /** A machine-friendly mangled version of the name */
   id?: string;
 
-  /** human-readable description of the room */
+  /** Human-readable description of the room */
   description?: string;
 };
 
 /**
- * configuration for a video chat
+ * Configuration for a video chat
  */
 export type VideoChatConfig = {
   jitsiServer: string;
 };
 
-/** need to figure out how to use these */
+/** Need to figure out how to use these */
 export type TCommandId = string;
 
 /** @see https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe#events */
@@ -65,7 +65,7 @@ export type TEvent =
   | 'subjectChange'
   | 'suspendDetected';
 
-/** would be nice to be able to use existing libs, sigh */
+/** Would be nice to be able to use existing libs, sigh */
 export interface IEventListener {
   (evt: Event, ...args: any): void;
 }
@@ -78,14 +78,16 @@ export interface ICommandMap {
 }
 
 /**
- * the jitsi meet constructor
+ * The Jitsi Meet constructor
+ *
+ * @see https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe#integration
  */
 export interface IMeetConstructor {
   new (domain: string, options: IMeetOptions): IMeet;
 }
 
 /**
- * options to initialize a jitsi meeting
+ * Options to initialize a jitsi meeting
  */
 export interface IMeetOptions {
   /** name of the room to join. */
@@ -169,7 +171,7 @@ export type TCommand =
   | 'getContentSharingParticipants';
 
 /**
- * A jitsi meeting
+ * A Jitsi Meeting
  */
 
 export interface IMeet {
