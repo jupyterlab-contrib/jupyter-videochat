@@ -7,10 +7,12 @@ import { Room, IMeetConstructor, IMeet } from '../types';
 
 export type JitsiMeetProps = {
   JitsiMeetExternalAPI: IMeetConstructor;
-  room: Room;
-  domain: string;
   onRoomSelect: (room: Room) => void;
   onMeet: (meet: IMeet) => void;
+  room: Room;
+  domain: string;
+  email: string;
+  displayName: string;
 };
 
 export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
@@ -61,7 +63,8 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
         MOBILE_APP_PROMO: false
       },
       userInfo: {
-        displayName: PageConfig.getOption('hubUser') || undefined
+        displayName: props.displayName || PageConfig.getOption('hubUser'),
+        email: props.email
       }
     };
 

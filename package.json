@@ -14,8 +14,7 @@
   "license": "BSD-3-Clause",
   "author": "Yuvi Panda",
   "files": [
-    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
-    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
+    "{lib,style,schema}/**/*.{css,ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
     "LICENSE"
   ],
   "main": "lib/index.js",
@@ -32,8 +31,8 @@
     "clean:lib": "rimraf lib",
     "lint": "jlpm prettier && jlpm eslint",
     "lint:check": "jlpm prettier:check && jlpm eslint:check",
-    "prettier": "prettier --list-different --write \"*.{json,md}\" \"{.github,jupyter-config,src,style}/*.{yml,json,ts,tsx,css}\"",
-    "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style}/*.{yml,json,ts,tsx,css}\"",
+    "prettier": "prettier --list-different --write \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema}/*.{yml,json,ts,tsx,css}\"",
+    "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema}/*.{yml,json,ts,tsx,css}\"",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
     "watch": "tsc -w"
@@ -76,7 +75,8 @@
         }
       }
     },
-    "extension": "lib/plugin.js"
+    "extension": "lib/plugin.js",
+    "schemaDir": "schema"
   },
   "prettier": {
     "singleQuote": true,

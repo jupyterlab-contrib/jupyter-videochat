@@ -1,6 +1,8 @@
 import { Token } from '@lumino/coreutils';
 import { ISignal } from '@lumino/signaling';
 
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
 import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
 
 /** The namespace for key tokens and IDs */
@@ -35,6 +37,7 @@ export interface IVideoChatManager {
   config: VideoChatConfig;
   meet: IMeet;
   meetChanged: ISignal<IVideoChatManager, void>;
+  settings: ISettingRegistry.ISettings;
   JitsiMeetExternalAPI: IMeetConstructor;
 }
 

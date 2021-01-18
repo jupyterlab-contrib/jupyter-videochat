@@ -15,94 +15,7 @@
   display: flex;
   flex-direction: column;
 }
-
-.jp-VideoChat-rooms {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-ul.jp-VideoChat-rooms-list {
-  list-style: none;
-  margin: 0px;
-  padding: 0px;
-}
-
-.jp-VideoChat-rooms-list-named {
-  flex: 1 0 0;
-  overflow-y: auto;
-}
-
-.jp-VideoChat-rooms-list-new {
-  flex: 0;
-  border-top: solid var(--jp-border-width) var(--jp-border-color2);
-}
-
-ul.jp-VideoChat-rooms-list li {
-  display: flex;
-  flex-direction: column;
-}
-
-ul.jp-VideoChat-rooms-list li > a {
-  display: block;
-  /* Offset from left of title */
-  padding: 8px 24px;
-  flex: 1;
-}
-
-ul.jp-VideoChat-rooms-list li:hover > a {
-  background-color: var(--jp-layout-color2);
-  color: unset;
-}
-
-.jp-VideoChat-room-displayname {
-  display: block;
-  font-size: var(--jp-ui-font-size1);
-  font-family: var(--jp-ui-font-family);
-  color: var(--jp-ui-font-color0);
-  text-transform: uppercase;
-  padding-bottom: 1px;
-}
-
-.jp-VideoChat-room-displayname-input {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.jp-VideoChat-room-displayname-input input {
-  flex: 1;
-}
-
-.jp-VideoChat-room-displayname-input button {
-  flex: 0;
-  min-width: 5em;
-}
-
-.jp-VideoChat-room-description {
-  display: block;
-  font-size: var(--jp-ui-font-size1);
-  font-family: var(--jp-ui-font-family);
-  color: var(--jp-ui-font-color2);
-}
-
-.jp-VideoChat-rooms-list-header {
-  flex: 0;
-  font-size: var(--jp-ui-font-size1);
-  font-family: var(--jp-ui-font-family);
-  color: var(--jp-ui-font-color1);
-  border-bottom: solid var(--jp-border-width) var(--jp-border-color2);
-  text-transform: uppercase;
-  padding: 8px 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.jp-VideoChat blockquote {
-  font-size: var(--jp-ui-font-size2);
-  color: var(--jp-ui-font-color1);
-  text-align: center;
-}
+@import './rooms.css';
 
 /*
     from
@@ -126,18 +39,4 @@ body.lm-mod-override-cursor .jp-VideoChat-jitsi-container:before {
   right: 0;
   bottom: 0;
   background: transparent;
-}
-
-/* custom stuff while in main area */
-#jp-main-dock-panel .jp-VideoChat-rooms-list-named {
-  display: flex;
-  padding: 0 1em 1em 0;
-  flex-wrap: wrap;
-}
-
-#jp-main-dock-panel .jp-VideoChat-rooms-list-named li {
-  flex: 1;
-  min-width: 300px;
-  margin: 1em 0 0 1em;
-  border: solid var(--jp-border-width) var(--jp-border-color2);
 }

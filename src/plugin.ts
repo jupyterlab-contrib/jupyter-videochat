@@ -11,6 +11,8 @@ import { ILauncher } from '@jupyterlab/launcher';
 
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
 import { CommandIds, IVideoChatManager, URL_PARAM, NS, CSS } from './tokens';
 import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
@@ -25,6 +27,7 @@ async function activate(
   palette: ICommandPalette,
   restorer: ILayoutRestorer,
   router: IRouter,
+  settingRegistry: ISettingRegistry,
   launcher?: ILauncher
 ): Promise<IVideoChatManager> {
   const manager = new VideoChatManager({});
@@ -84,6 +87,13 @@ async function activate(
     },
   });
 
+  // connect settings
+  settingRegistry
+    .load(plugin.id)
+    .then((settings) => (manager.settings = settings))
+    .catch(console.error);
+
+  // add commands
   commands.addCommand(CommandIds.toggleArea, {
     label: 'Toggle Video Chat Sidebar',
     execute: () => {
@@ -137,13 +147,13 @@ async function activate(
 /**
  * Initialization data for the jupyter-jitsi extension.
  */
-const extension: JupyterFrontEndPlugin<IVideoChatManager> = {
-  id: NS,
+const plugin: JupyterFrontEndPlugin<IVideoChatManager> = {
+  id: `${NS}:plugin`,
   autoStart: true,
-  requires: [ICommandPalette, ILayoutRestorer, IRouter],
+  requires: [ICommandPalette, ILayoutRestorer, IRouter, ISettingRegistry],
   optional: [ILauncher],
   activate,
 };
 
 // In the future, there may be more extensions
-export default [extension];
+export default [plugin];

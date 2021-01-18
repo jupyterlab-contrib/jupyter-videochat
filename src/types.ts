@@ -9,8 +9,13 @@ export interface IChatArgs {
  * a model of a room
  */
 export type Room = {
+  /** the human-readable name of the room */
   displayName: string;
+
+  /** a machine-friendly mangled version of the name */
   id?: string;
+
+  /** human-readable description of the room */
   description?: string;
 };
 

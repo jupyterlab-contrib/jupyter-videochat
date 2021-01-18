@@ -41,7 +41,17 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
     this.model.meet = meet;
   };
 
-  /** The actual renderer, a no-op until the interface is shown */
+  /** Set the user's email address */
+  onEmailChanged = (email: string): void => {
+    this.model.settings?.set('email', email).catch(console.warn);
+  };
+
+  /** Set the user's display name */
+  onDisplayNameChanged = (displayName: string): void => {
+    this.model.settings?.set('displayName', displayName).catch(console.warn);
+  };
+
+  /** The actual renderer */
   render(): JSX.Element | JSX.Element[] {
     return (
       <VideoChatComponent
@@ -49,10 +59,14 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         onToggleSidebar={this.onToggleSidebar}
         onRoomSelect={this.onRoomSelect}
         onCreateRoom={this.onCreateRoom}
+        onEmailChanged={this.onEmailChanged}
+        onDisplayNameChanged={this.onDisplayNameChanged}
         onMeet={this.onMeet}
         currentRoom={this.model.currentRoom}
         config={this.model.config}
         rooms={this.model.rooms}
+        email={`${this.model.settings?.composite.email || ''}`}
+        displayName={`${this.model.settings?.composite.displayName || ''}`}
       />
     );
   }

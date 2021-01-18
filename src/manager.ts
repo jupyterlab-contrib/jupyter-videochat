@@ -4,10 +4,12 @@ import { VDomModel } from '@jupyterlab/apputils';
 import { Signal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
 import { IVideoChatManager, DEFAULT_JS_API_URL, CSS } from './tokens';
 import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
 
-/** A manager that can add, join, or create Jitsi rooms
+/** A manager that can add, join, or create Video Chat rooms
  */
 export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _rooms: Room[] = [];
@@ -16,6 +18,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _config: VideoChatConfig;
   private _meet: IMeet;
   private _meetChanged: Signal<VideoChatManager, void>;
+  private _settings: ISettingRegistry.ISettings;
 
   constructor(options: VideoChatManager.IOptions) {
     super();
@@ -70,6 +73,25 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   get meetChanged(): Signal<IVideoChatManager, void> {
     return this._meetChanged;
   }
+
+  get settings(): ISettingRegistry.ISettings {
+    return this._settings;
+  }
+
+  set settings(settings: ISettingRegistry.ISettings) {
+    if (this._settings) {
+      this._settings.changed.disconnect(this.onSettingsChanged, this);
+    }
+    this._settings = settings;
+    if (this._settings) {
+      this._settings.changed.connect(this.onSettingsChanged, this);
+    }
+    this.stateChanged.emit(void 0);
+  }
+
+  onSettingsChanged = (): void => {
+    this.stateChanged.emit(void 0);
+  };
 
   /** handle updating configuration and rooms from the server */
   initialize(): void {

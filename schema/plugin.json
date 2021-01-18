@@ -1,0 +1,19 @@
+{
+  "jupyter.lab.setting-icon": "jupyterlab-videochat:chat",
+  "jupyter.lab.setting-icon-label": "Video Chat",
+  "title": "Video Chat",
+  "description": "Video Chat settings",
+  "type": "object",
+  "properties": {
+    "displayName": {
+      "title": "My Display Name",
+      "description": "The name to show to other meeting participants",
+      "type": "string"
+    },
+    "email": {
+      "title": "My Email",
+      "description": "The email address to show to other meeting participants. If this address is registered at gravatar.com, your custom icon will be shown",
+      "type": "string"
+    }
+  }
+}

@@ -13,10 +13,14 @@ export type VideoChatProps = {
   currentRoom: Room;
   onCreateRoom: (room: Room) => void;
   onRoomSelect: (room: Room) => void;
+  onEmailChanged: (email: string) => void;
+  onDisplayNameChanged: (displayName: string) => void;
   onToggleSidebar: () => void;
   onMeet: (meet: IMeet) => void;
   rooms: Room[];
   config: VideoChatConfig;
+  email: string;
+  displayName: string;
 };
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
@@ -51,13 +55,19 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
             domain={domain}
             onRoomSelect={props.onRoomSelect}
             onMeet={props.onMeet}
+            email={props.email}
+            displayName={props.displayName}
         />
       ) : (
         <RoomsListComponent
           currentRoom={props.currentRoom}
           onCreateRoom={props.onCreateRoom}
           onRoomSelect={props.onRoomSelect}
+          onEmailChanged={props.onEmailChanged}
+          onDisplayNameChanged={props.onDisplayNameChanged}
           rooms={props.rooms}
+          email={props.email}
+          displayName={props.displayName}
         />
       )}
     </>
