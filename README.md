@@ -70,10 +70,12 @@ you can configure the `VideoChat`:
     "room_prefix": "our-spiffy-room-prefix",
     "rooms": [
       {
+        "id": "stand-up",
         "displayName": "Stand-Up",
         "description": "Daily room for meeting with the team"
       },
       {
+        "id": "all-hands",
         "displayName": "All-Hands",
         "description": "A weekly room for the whole team"
       }
@@ -125,6 +127,6 @@ On [Binder](https://mybinder.org), use the `urlpath` to append the argument,
 ensuring the arguments get properly URL-encoded
 
 ```
-https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3Dstand-up
+https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3DStand-Up
                                                          # URL-encoded  [? ] [=  ]
 ```

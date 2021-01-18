@@ -15,6 +15,7 @@ export type RoomsListProps = {
   email: string;
   displayName: string;
   domain: string;
+  disablePublicRooms: boolean;
 };
 
 const littleIcon: Partial<LabIcon.IReactProps> = {
@@ -74,7 +75,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           />
           <blockquote>
             (optional) Email to show to other chat participants. If an avatar
-            icon is this address is registered with this address at{' '}
+            icon is registered with this address at{' '}
             <a href="https://gravatar.com" {...openBlank}>
               gravatar.com
             </a>
@@ -135,40 +136,51 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
         </li>
       </ul>
 
-      <label id={`id-${CSS}-public-room-list`}>
-        <icons.publicIcon.react {...littleIcon} />
-        Join Public room by name
-      </label>
-      <ul aria-labelledby={`id-${CSS}-public-room-list`}>
-        <li>
-          <div className={`${CSS}-room-displayname-input`}>
-            <input
-              className="jp-mod-styled"
-              placeholder="Public Room ID"
-              onInput={(evt) => setPublicRoomId(evt.currentTarget.value)}
-            />
-            <button
-              className={`jp-mod-styled ${
-                publicRoomId.trim().length ? 'jp-mod-accept' : ''
-              }`}
-              disabled={!publicRoomId.trim().length}
-              onClick={() =>
-                props.onRoomSelect({
-                  displayName: publicRoomId,
-                  id: publicRoomId,
-                })
-              }
-            >
-              JOIN
-            </button>
-          </div>
-          <blockquote>
-            Join (or create) a <b>public</b> room. Share this name with anyone
-            who can access{' '}
-            <a href={`https://${props.domain}`} {...openBlank}>{props.domain}</a>.
-          </blockquote>
-        </li>
-      </ul>
+      {props.disablePublicRooms ? (
+        <></>
+      ) : (
+        <label id={`id-${CSS}-public-room-list`}>
+          <icons.publicIcon.react {...littleIcon} />
+          Join Public room by name
+        </label>
+      )}
+      {props.disablePublicRooms ? (
+        <></>
+      ) : (
+        <ul aria-labelledby={`id-${CSS}-public-room-list`}>
+          <li>
+            <div className={`${CSS}-room-displayname-input`}>
+              <input
+                className="jp-mod-styled"
+                placeholder="Public Room ID"
+                onInput={(evt) => setPublicRoomId(evt.currentTarget.value)}
+              />
+              <button
+                className={`jp-mod-styled ${
+                  publicRoomId.trim().length ? 'jp-mod-accept' : ''
+                }`}
+                disabled={!publicRoomId.trim().length}
+                onClick={() =>
+                  props.onRoomSelect({
+                    displayName: publicRoomId,
+                    id: publicRoomId,
+                  })
+                }
+              >
+                JOIN
+              </button>
+            </div>
+            <blockquote>
+              Join (or create) a <b>public</b> room. Share this name with anyone
+              who can access{' '}
+              <a href={`https://${props.domain}`} {...openBlank}>
+                {props.domain}
+              </a>
+              .
+            </blockquote>
+          </li>
+        </ul>
+      )}
     </div>
   );
 };

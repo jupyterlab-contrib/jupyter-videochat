@@ -53,6 +53,7 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
 
   /** The actual renderer */
   render(): JSX.Element | JSX.Element[] {
+    const { settings } = this.model;
     return (
       <VideoChatComponent
         jitsiAPI={this.model.getJitsiAPI()}
@@ -65,12 +66,11 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         currentRoom={this.model.currentRoom}
         config={this.model.config}
         rooms={this.model.rooms}
-        email={`${this.model.settings?.composite.email || ''}`}
-        displayName={`${this.model.settings?.composite.displayName || ''}`}
-        configOverwrite={this.model.settings?.composite.configOverwrite}
-        interfaceConfigOverwrite={
-          this.model.settings?.composite.interfaceConfigOverwrite
-        }
+        email={`${settings?.composite.email || ''}`}
+        displayName={`${settings?.composite.displayName || ''}`}
+        configOverwrite={settings?.composite.configOverwrite}
+        interfaceConfigOverwrite={settings?.composite.interfaceConfigOverwrite}
+        disablePublicRooms={!!settings?.composite.disablePublicRooms}
       />
     );
   }

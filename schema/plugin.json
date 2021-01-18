@@ -15,8 +15,14 @@
       "description": "The email address to show to other meeting participants. If this address is registered at gravatar.com, your custom icon will be shown",
       "type": "string"
     },
+    "disablePublicRooms": {
+      "title": "Disable Public Rooms (Advanced)",
+      "description": "Do not offer to create even-less-secure public rooms without a prefix",
+      "type": "boolean",
+      "default": true
+    },
     "configOverwrite": {
-      "title": "Jitsi Configuration",
+      "title": "Jitsi Configuration (Advanced)",
       "description": "A customized Jitsi [configuration](https://github.com/jitsi/jitsi-meet/blob/master/config.js). The default is as conservative as possible. Set to `null` to enable all features.",
       "oneOf": [
         {
@@ -31,7 +37,7 @@
       }
     },
     "interfaceConfigOverwrite": {
-      "title": "Jitsi Interface Configuration",
+      "title": "Jitsi Interface Configuration (Advanced)",
       "description": "A customized Jitsi [interface configuration](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js) and [feature flags](https://github.com/jitsi/jitsi-meet/blob/master/react/features/base/config/interfaceConfigWhitelist.js). The default is fairly conservative. Set to `null` to enable all features. Known hidden buttons: recording, livestreaming, etherpad, invite, download. Known hidden settings: calendar.",
       "oneOf": [
         {
