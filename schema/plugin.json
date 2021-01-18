@@ -17,14 +17,34 @@
     },
     "configOverwrite": {
       "title": "Jitsi Config Overwrite",
-      "description": "a customized [Jitsi Configuration](https://github.com/jitsi/jitsi-meet/blob/master/config.js). The default is as conservative as possible.",
+      "description": "A customized Jitsi [configuration](https://github.com/jitsi/jitsi-meet/blob/master/config.js). The default is as conservative as possible.",
+      "type": {
+        "oneOf": [
+          {
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
       "default": {
         "disableThirdPartyRequests": true
       }
     },
     "interfaceConfigOverwrite": {
       "title": "Jitsi Interface Configuration",
-      "description": "a customized [Jitsi Interface Configuration](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js). The default is fairly conservative. Known hidden buttons: recording, livestreaming, etherpad, invite, download. Known hidden config: calendar.",
+      "description": "A customized Jitsi [interface configuration](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js) and [feature flags](https://github.com/jitsi/jitsi-meet/blob/master/react/features/base/config/interfaceConfigWhitelist.js). The default is fairly conservative. Known hidden buttons: recording, livestreaming, etherpad, invite, download. Known hidden settings: calendar.",
+      "type": {
+        "oneOf": [
+          {
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
       "default": {
         "TOOLBAR_BUTTONS": [
           "microphone",
