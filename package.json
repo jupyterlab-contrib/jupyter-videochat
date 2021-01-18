@@ -29,7 +29,7 @@
     "build": "jlpm build:lib && jlpm build:ext",
     "build:lib": "tsc",
     "build:ext": "jupyter labextension build .",
-    "clean": "jlpm run clean:lib",
+    "clean": "jlpm clean:lib && jlpm clean:ext",
     "clean:lib": "rimraf lib",
     "clean:ext": "rimraf ./jupyter_videochat/labextension",
     "dev:ext": "jupyter labextension develop --overwrite .",
