@@ -9,14 +9,13 @@ import {
 
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-import { ITranslator } from '@jupyterlab/translation';
 import { ILauncher } from '@jupyterlab/launcher';
 
 import { CommandIds, IVideoChatManager, URL_PARAM, NS, CSS } from './tokens';
 import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
-import { chatIcon } from './icons';
+import { chatIcon, prettyChatIcon } from './icons';
 
 const category = 'Video Chat';
 let currentArea = 'right';
@@ -26,7 +25,6 @@ async function activate(
   palette: ICommandPalette,
   router: IRouter,
   settingRegistry: ISettingRegistry,
-  translator: ITranslator,
   launcher?: ILauncher,
   restorer?: ILayoutRestorer
 ): Promise<IVideoChatManager> {
@@ -74,8 +72,8 @@ async function activate(
   }
 
   commands.addCommand(CommandIds.open, {
-    label: 'Show Video Chat',
-    icon: chatIcon,
+    label: 'Video Chat',
+    icon: prettyChatIcon,
     execute: (args: IChatArgs) => {
       currentArea = args.area || 'main';
       shell.add(widget, currentArea);

@@ -6,8 +6,23 @@ import GROUP_NEW_ICON from '../style/icons/group-add.svg';
 import PUBLIC_ICON from '../style/icons/public.svg';
 import USER_ICON from '../style/icons/user.svg';
 
+/** Color class that appears in the SVG files */
+const BASE_COLOR = 'jp-icon3';
+
+/** A highlight color, (maybe) close-ish to Jitsi Blue.
+ *
+ * ### Note
+ * Don't use to disinguish between states */
+const PRETTY_COLOR = 'jp-icon-brand0';
+
 /** Main chat icon */
 export const chatIcon = new LabIcon({ name: `${NS}:chat`, svgstr: CHAT_ICON });
+
+/** Pretty chat icon */
+export const prettyChatIcon = new LabIcon({
+  name: `${NS}:chat-pretty`,
+  svgstr: CHAT_ICON.replace(BASE_COLOR, PRETTY_COLOR),
+});
 
 /** Group icon */
 export const groupIcon = new LabIcon({

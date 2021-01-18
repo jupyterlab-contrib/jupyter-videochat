@@ -25,6 +25,7 @@ export type VideoChatProps = {
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   const domain = props.config?.jitsiServer;
+  const isConnected = !!props.currentRoom;
   return (
     <>
       <div className={`${CSS}-toolbar jp-Toolbar`}>
@@ -39,10 +40,9 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
         <div className="jp-Toolbar-item jp-Toolbar-spacer" />
         <div className="jp-ToolbarButton jp-Toolbar-item">
           <ToolbarButtonComponent
-            tooltip={`Disconnect from ${domain}`}
             icon={stopIcon}
-            label="Disconnect"
-            enabled={props.currentRoom !== null}
+            label={isConnected ? `Disconnect ${domain}` : `Not connected to ${domain}`}
+            enabled={isConnected}
             onClick={() => props.onRoomSelect(null)}
           />
         </div>
