@@ -19,7 +19,7 @@ jobs:
         os: ["ubuntu"]
         python-version: ["3.9"]
         node-version: ["14.x"]
-        lab-version: ["2"]
+        lab-version: ["3"]
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -61,9 +61,9 @@ jobs:
         with:
           path: '**/node_modules'
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-node-build-${{ hashFiles('yarn.lock') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrxi.lab-version }}-node-build-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-node-build-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrxi.lab-version }}-node-build-
 
       - name: Install JS dependencies
         run: jlpm --ignore-optional --frozen-lockfile
@@ -102,14 +102,12 @@ jobs:
       matrix:
         python-version: ["3.6", "3.9"]
         os: ["ubuntu", "windows", "macos"]
-        lab-version: ["2"]
+        lab-version: ["3"]
         include:
           # use python as marker for node/distribution test coverage
           - python-version: "3.6"
-            node-version: "10.x"
             artifact-glob: "*.tar.gz"
           - python-version: "3.9"
-            node-version: "14.x"
             artifact-glob: "*.whl"
           # os-specific settings
           - os: windows
@@ -128,11 +126,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-
-    - name: Select Node ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
 
     - name: Select Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
@@ -180,31 +173,9 @@ jobs:
     - name: Validate Server Extension
       run: |
         set -eux
-        jupyter serverextension list 1>serverextensions 2>&1
+        jupyter server extension list 1>serverextensions 2>&1
         cat serverextensions
         cat serverextensions | grep -i "jupyter_videochat.*OK"
-
-    - name: Cache (Lab)
-      uses: actions/cache@v2
-      with:
-        path: ./.lab
-        key: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-lab-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-
-
-    - name: Install Lab Extension
-      run: |
-        set -eux
-        jupyter labextension list $APP_DIR
-        jupyter labextension install $APP_DIR --no-build --debug $(ls dist/jupyterlab-videochat-*.tgz)
-        jupyter labextension list $APP_DIR
-
-    - name: Build Lab
-      run: |
-        set -eux
-        jupyter lab build $APP_DIR --debug --dev-build=False --minimize=False
-        jupyter labextension list $APP_DIR
 
     - name: Validate Lab Extension
       run: |

@@ -3,8 +3,9 @@ import os
 from traitlets.config import Configurable
 from traitlets import Unicode, List, Dict
 
-from ._version import __version__
+from ._version import __version__, __jspackage__
 from .handlers import setup_handlers
+
 
 class VideoChat(Configurable):
     room_prefix = Unicode(
@@ -52,15 +53,18 @@ class VideoChat(Configurable):
         help="""
         Domain of Jitsi server to use
 
-        Must be a domain name, with HTTPS working.
+        Must be a domain name, with HTTPS working, that serves /external_api.js
         """,
         config=True
     )
 
+
 def _jupyter_server_extension_paths():
-    return [{
-        "module": "jupyter_videochat"
-    }]
+    return [{"module": "jupyter_videochat"}]
+
+
+def _jupyter_labextension_paths():
+    return [{"src": "labextension", "dest": __jspackage__["name"]}]
 
 
 def load_jupyter_server_extension(lab_app):

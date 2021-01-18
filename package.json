@@ -25,41 +25,43 @@
     "url": "https://github.com/yuvipanda/jupyter-videochat.git"
   },
   "scripts": {
-    "build": "jlpm run build:lib",
+    "bootstrap": "jlpm --ignore-optional && jlpm clean && jlpm lint && jlpm build",
+    "build": "jlpm build:lib && jlpm build:ext",
     "build:lib": "tsc",
+    "build:ext": "jupyter labextension build .",
     "clean": "jlpm run clean:lib",
     "clean:lib": "rimraf lib",
+    "clean:ext": "rimraf ./jupyter_videochat/labextension",
+    "dev:ext": "jupyter labextension develop --overwrite .",
     "lint": "jlpm prettier && jlpm eslint",
     "lint:check": "jlpm prettier:check && jlpm eslint:check",
     "prettier": "prettier --list-different --write \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema}/*.{yml,json,ts,tsx,css}\"",
     "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema}/*.{yml,json,ts,tsx,css}\"",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
-    "watch": "tsc -w"
+    "watch": "run-p watch:lib watch:ext",
+    "watch:lib": "jlpm build:lib --watch --preserveWatchOutput",
+    "watch:ext": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyterlab/application": "^2.0.0",
-    "@jupyterlab/apputils": "^2.1.1",
-    "@jupyterlab/coreutils": "^4.0.0",
-    "@jupyterlab/services": "^5.0.0",
-    "@jupyterlab/ui-components": "^2.1.1",
-    "@lumino/messaging": "^1.3.3",
-    "@lumino/widgets": "^1.12.2"
+    "@jupyterlab/application": "3"
   },
   "devDependencies": {
-    "@jupyterlab/launcher": "^2.0.0",
+    "@jupyterlab/builder": "^3.0.1",
+    "@jupyterlab/launcher": "3",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
-    "eslint": "^7.14.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.5",
+    "eslint": "^7.14.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.1.1",
     "rimraf": "^2.6.1",
     "typescript": "~4.1.3"
   },
   "peerDependencies": {
-    "@jupyterlab/launcher": "^2.0.0"
+    "@jupyterlab/launcher": "3"
   },
   "sideEffects": [
     "style/*.css"
@@ -76,7 +78,8 @@
       }
     },
     "extension": "lib/plugin.js",
-    "schemaDir": "schema"
+    "schemaDir": "schema",
+    "outputDir": "jupyter_videochat/labextension"
   },
   "prettier": {
     "singleQuote": true,
