@@ -1,13 +1,24 @@
-import { URLExt } from '@jupyterlab/coreutils';
-import { ServerConnection } from '@jupyterlab/services';
-import { VDomModel } from '@jupyterlab/apputils';
 import { Signal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
+import { URLExt } from '@jupyterlab/coreutils';
+import { VDomModel } from '@jupyterlab/apputils';
+import { ServerConnection } from '@jupyterlab/services';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { IVideoChatManager, DEFAULT_JS_API_URL, CSS } from './tokens';
-import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
+import {
+  IVideoChatManager,
+  DEFAULT_DOMAIN,
+  CSS,
+  API_NAMESPACE,
+} from './tokens';
+import {
+  Room,
+  VideoChatConfig,
+  IMeet,
+  IMeetConstructor,
+  IServerResponses,
+} from './types';
 
 /** A manager that can add, join, or create Video Chat rooms
  */
@@ -20,7 +31,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _meetChanged: Signal<VideoChatManager, void>;
   private _settings: ISettingRegistry.ISettings;
 
-  constructor(options: VideoChatManager.IOptions) {
+  constructor(options?: VideoChatManager.IOptions) {
     super();
     this._meetChanged = new Signal(this);
   }
@@ -51,17 +62,17 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     }
   }
 
-  /** the configuration from the server/settings */
+  /** The configuration from the server/settings */
   get config(): VideoChatConfig {
     return this._config;
   }
 
-  /** the current JitsiExternalAPI */
+  /** The current JitsiExternalAPI, as served by `<domain>/external_api.js` */
   get meet(): IMeet {
     return this._meet;
   }
 
-  /** update the current meet */
+  /** Update the current meet */
   set meet(meet: IMeet) {
     if (this._meet !== meet) {
       this._meet = meet;
@@ -69,11 +80,12 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     }
   }
 
-  /** a signal that emits when the current meet changes */
+  /** A signal that emits when the current meet changes */
   get meetChanged(): Signal<IVideoChatManager, void> {
     return this._meetChanged;
   }
 
+  /** The JupyterLab settings bundle */
   get settings(): ISettingRegistry.ISettings {
     return this._settings;
   }
@@ -89,11 +101,12 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this.stateChanged.emit(void 0);
   }
 
-  onSettingsChanged = (): void => {
+  /** A scoped handler for connecting to the settings Signal  */
+  protected onSettingsChanged = (): void => {
     this.stateChanged.emit(void 0);
   };
 
-  /** handle updating configuration and rooms from the server */
+  /** Handle updating configuration and Rooms from the server */
   initialize(): void {
     Promise.all([this.updateConfig(), this.updateRooms()])
       .then(() => {
@@ -103,21 +116,21 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
       .catch(console.warn);
   }
 
-  /** request the configuration from the server */
+  /** Request the configuration from the server */
   async updateConfig(): Promise<void> {
-    this._config = await requestAPI<VideoChatConfig>('config');
+    this._config = await requestAPI('config');
     this.stateChanged.emit(void 0);
   }
 
-  /** request the room list from the server */
+  /** Request the room list from the server */
   async updateRooms(): Promise<void> {
-    this._rooms = await requestAPI<Array<Room>>('rooms');
+    this._rooms = await requestAPI('rooms');
     this.stateChanged.emit(void 0);
   }
 
-  /** create a new named room */
+  /** Create a new named room */
   async createRoom(room: Partial<Room>): Promise<Room> {
-    const newRoom = await requestAPI<Room>('generate-room', {
+    const newRoom = await requestAPI('generate-room', {
       method: 'POST',
       body: JSON.stringify(room),
     });
@@ -125,15 +138,15 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     return newRoom;
   }
 
-  /** get the JitiExternalAPI script, as loaded from the jitsi server */
+  /** Get the JitiExternalAPI script, as loaded from the jitsi server */
   get JitsiMeetExternalAPI(): IMeetConstructor | null {
     if (Private.api) {
       return Private.api;
     } else if (this.config != null) {
-      let url = DEFAULT_JS_API_URL;
-      if (this.config.jitsiServer) {
-        url = `https://${this.config.jitsiServer}/external_api.js`;
-      }
+      const domain = this.config?.jitsiServer
+        ? this.config.jitsiServer
+        : DEFAULT_DOMAIN;
+      const url = `https://${domain}/external_api.js`;
       Private.ensureExternalAPI(url)
         .then(() => this.stateChanged.emit(void 0))
         .catch(console.warn);
@@ -142,10 +155,10 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 }
 
-/** a namespace for video chat manager extras */
+/** A namespace for video chat manager extras */
 export namespace VideoChatManager {
   /** placeholder options for video chat manager */
-  export interface IOptions {}
+  export interface IOptions extends IVideoChatManager.IOptions {}
 }
 /**
  * Call the API extension
@@ -154,17 +167,13 @@ export namespace VideoChatManager {
  * @param init Initial values for the request
  * @returns The response body interpreted as JSON
  */
-export async function requestAPI<T>(
-  endPoint = '',
-  init: RequestInit = {}
-): Promise<T> {
+export async function requestAPI<
+  U extends keyof IServerResponses,
+  T extends IServerResponses[U]
+>(endPoint: U, init: RequestInit = {}): Promise<T> {
   // Make request to Jupyter API
   const settings = ServerConnection.makeSettings();
-  const requestUrl = URLExt.join(
-    settings.baseUrl,
-    'videochat', // API Namespace
-    endPoint
-  );
+  const requestUrl = URLExt.join(settings.baseUrl, API_NAMESPACE, endPoint);
 
   let response: Response;
   try {
@@ -179,7 +188,7 @@ export async function requestAPI<T>(
     throw new ServerConnection.ResponseError(response, data.message);
   }
 
-  return data;
+  return data as T;
 }
 
 /** a private namespace for the singleton jitsi script tag */

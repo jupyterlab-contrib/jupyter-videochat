@@ -33,6 +33,9 @@ application.
 ```bash
 # Watch the source directory in another terminal tab
 jlpm watch
+# ... or, as they are both pretty noisy, run two terminals with
+#   jlpm watch:lib
+#   jlpm watch:ext
 # Run jupyterlab in watch mode in one terminal tab
 jupyter lab
 ```

@@ -7,11 +7,10 @@ import {
   IRouter,
 } from '@jupyterlab/application';
 
-import { ILauncher } from '@jupyterlab/launcher';
-
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
-
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
+import { ITranslator } from '@jupyterlab/translation';
+import { ILauncher } from '@jupyterlab/launcher';
 
 import { CommandIds, IVideoChatManager, URL_PARAM, NS, CSS } from './tokens';
 import { IChatArgs } from './types';
@@ -20,20 +19,20 @@ import { VideoChat } from './widget';
 import { chatIcon } from './icons';
 
 const category = 'Video Chat';
-let area = 'right';
+let currentArea = 'right';
 
 async function activate(
   app: JupyterFrontEnd,
   palette: ICommandPalette,
-  restorer: ILayoutRestorer,
   router: IRouter,
   settingRegistry: ISettingRegistry,
-  launcher?: ILauncher
+  translator: ITranslator,
+  launcher?: ILauncher,
+  restorer?: ILayoutRestorer
 ): Promise<IVideoChatManager> {
-  const manager = new VideoChatManager({});
+  const manager = new VideoChatManager();
 
   const { commands, shell } = app;
-  // Create a blank content widget inside of a MainAreaWidget
   let widget: Panel;
   let chat: VideoChat;
 
@@ -63,25 +62,24 @@ async function activate(
 
   // Add to shell
   if (!widget.isAttached) {
-    shell.add(widget, area);
+    shell.add(widget, currentArea);
   }
 
   // Force an update
   widget.update();
 
-  // Potentially restore position
-  restorer
-    .restore(tracker, { command: CommandIds.open, name: () => NS })
-    .catch(console.warn);
+  // hide the label when in sidebar, as it shows the rotated text
+  function updateTitle() {
+    widget.title.label = currentArea === 'main' ? widget.title.caption : '';
+  }
 
   commands.addCommand(CommandIds.open, {
     label: 'Show Video Chat',
     icon: chatIcon,
     execute: (args: IChatArgs) => {
-      if (args.area) {
-        area = args.area;
-        shell.add(widget, area);
-      }
+      currentArea = args.area || 'main';
+      shell.add(widget, currentArea);
+      updateTitle();
       // Activate the widget
       shell.activateById(widget.id);
     },
@@ -97,9 +95,9 @@ async function activate(
   commands.addCommand(CommandIds.toggleArea, {
     label: 'Toggle Video Chat Sidebar',
     execute: () => {
-      area = area === 'right' ? 'main' : 'right';
-      widget.title.label = area === 'main' ? widget.title.caption : '';
-      shell.add(widget, area);
+      currentArea = ['right', 'left'].includes(currentArea) ? 'main' : 'right';
+      updateTitle();
+      shell.add(widget, currentArea);
       shell.activateById(widget.id);
     },
   });
@@ -140,6 +138,13 @@ async function activate(
     launcher.add({ command: CommandIds.open, args: { area: 'main' } });
   }
 
+  // If available, restore the position
+  if (restorer) {
+    restorer
+      .restore(tracker, { command: CommandIds.open, name: () => `id-${NS}` })
+      .catch(console.warn);
+  }
+
   // Return the manager that others extensions can use
   return manager;
 }
@@ -150,8 +155,8 @@ async function activate(
 const plugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: `${NS}:plugin`,
   autoStart: true,
-  requires: [ICommandPalette, ILayoutRestorer, IRouter, ISettingRegistry],
-  optional: [ILauncher],
+  requires: [ICommandPalette, IRouter, ISettingRegistry],
+  optional: [ILauncher, ILayoutRestorer],
   activate,
 };
 

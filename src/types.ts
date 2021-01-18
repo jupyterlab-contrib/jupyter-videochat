@@ -206,3 +206,10 @@ export interface IMeet {
   // setVideoInputDevice: ƒ setVideoInputDevice(e, t)
   // invite: ƒ invite(e)
 }
+
+/** Expected response types from the serverextension routes */
+export interface IServerResponses {
+  config: VideoChatConfig;
+  rooms: Room[];
+  'generate-room': Room;
+}

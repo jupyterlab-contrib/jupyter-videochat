@@ -68,6 +68,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           rooms={props.rooms}
           email={props.email}
           displayName={props.displayName}
+          domain={domain}
         />
       )}
     </>

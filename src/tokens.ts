@@ -8,6 +8,10 @@ import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
 /** The namespace for key tokens and IDs */
 export const NS = 'jupyterlab-videochat';
 
+/** The serverextension namespace, to be combined with the `base_url`
+ */
+export const API_NAMESPACE = 'videochat';
+
 /** A CSS prefix */
 export const CSS = 'jp-VideoChat';
 
@@ -17,10 +21,10 @@ export const URL_PARAM = 'jvc';
 /** JS assets of last resort
  *
  * ### Note
- * If an alternate Jitsi server is provided, it is assumed `external_api.js`
+ * If an alternate Jitsi server is provided, it is assumed `/external_api.js`
  * is hosted from the root.
  */
-export const DEFAULT_JS_API_URL = 'https://meet.jit.si/external_api.js';
+export const DEFAULT_DOMAIN = 'meet.jit.si';
 
 /**
  * The public interface exposed by the video chat extension
@@ -29,20 +33,46 @@ export const DEFAULT_JS_API_URL = 'https://meet.jit.si/external_api.js';
  * This should likely be
  */
 export interface IVideoChatManager {
+  /** The known Hub `Rooms` from the server */
   rooms: Room[];
+
+  /** The current room */
   currentRoom: Room;
+
+  /** Whether the manager is fully initialized */
   initialized: boolean;
+
+  /** Initialize the manager */
   initialize(): void;
+
+  /** Create a new `Room` */
   createRoom(room: Room): Promise<Room>;
+
+  /** The last-fetched config from the server */
   config: VideoChatConfig;
-  meet: IMeet;
+
+  /** The current Jitsi Meet instance */
+  meet: IMeet | null;
+
+  /** A signal emitted when the current Jitsi Meet has changed */
   meetChanged: ISignal<IVideoChatManager, void>;
+
+  /** The user settings object (usually use `composite`) */
   settings: ISettingRegistry.ISettings;
+
+  /** The IFrame API exposed by Jitsi
+   *
+   * @see https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe
+   */
   JitsiMeetExternalAPI: IMeetConstructor;
 }
 
+/** A namespace for VideoChatManager details */
 export namespace IVideoChatManager {
-  export interface IOptions {}
+  /** Options for constructing a new IVideoChatManager */
+  export interface IOptions {
+    // TBD
+  }
 }
 
 /** The lumino commands exposed by this extension */
@@ -58,6 +88,8 @@ export namespace CommandIds {
 }
 
 /* tslint:disable */
+/** The VideoManager extension point, to be used in other plugins' `activate`
+ * functions */
 export const IVideoChatManager = new Token<IVideoChatManager>(
   `${NS}:IVideoChatManager`
 );

@@ -14,6 +14,7 @@ export type RoomsListProps = {
   rooms: Room[];
   email: string;
   displayName: string;
+  domain: string;
 };
 
 const littleIcon: Partial<LabIcon.IReactProps> = {
@@ -34,6 +35,11 @@ const noRoom = (
     </blockquote>
   </li>
 );
+
+const openBlank = {
+  target: '_blank',
+  rel: 'noopener noreferrer',
+};
 
 export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
   const [roomName, setRoomName] = useState<string>('');
@@ -69,11 +75,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           <blockquote>
             (optional) Email to show to other chat participants. If an avatar
             icon is this address is registered with this address at{' '}
-            <a
-              href="https://gravatar.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://gravatar.com" {...openBlank}>
               gravatar.com
             </a>
             , an icon will be shown.
@@ -117,7 +119,9 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
               onInput={(evt) => setRoomName(evt.currentTarget.value)}
             />
             <button
-              className={`jp-mod-styled ${roomName.trim().length ? 'jp-mod-accept' : ''}`}
+              className={`jp-mod-styled ${
+                roomName.trim().length ? 'jp-mod-accept' : ''
+              }`}
               disabled={!roomName.trim().length}
               onClick={() => props.onCreateRoom({ displayName: roomName })}
             >
@@ -144,16 +148,24 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
               onInput={(evt) => setPublicRoomId(evt.currentTarget.value)}
             />
             <button
-              className={`jp-mod-styled ${publicRoomId.trim().length ? 'jp-mod-accept' : ''}`}
+              className={`jp-mod-styled ${
+                publicRoomId.trim().length ? 'jp-mod-accept' : ''
+              }`}
               disabled={!publicRoomId.trim().length}
-              onClick={() => props.onRoomSelect({ displayName: publicRoomId, id: publicRoomId })}
+              onClick={() =>
+                props.onRoomSelect({
+                  displayName: publicRoomId,
+                  id: publicRoomId,
+                })
+              }
             >
               JOIN
             </button>
           </div>
           <blockquote>
             Join (or create) a <b>public</b> room. Share this name with anyone
-            who can access your Jitsi domain.
+            who can access{' '}
+            <a href={`https://${props.domain}`} {...openBlank}>{props.domain}</a>.
           </blockquote>
         </li>
       </ul>
