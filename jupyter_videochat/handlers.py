@@ -1,7 +1,7 @@
 import json
 
-from notebook.base.handlers import APIHandler
-from notebook.utils import url_path_join
+from jupyter_server.base.handlers import APIHandler
+from jupyter_server.utils import url_path_join
 from escapism import escape
 from copy import deepcopy
 import string

@@ -1,31 +1,33 @@
-from setuptools import find_packages, setup
+from pathlib import Path
+import json
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+from setuptools import setup
 
-setup(
-    name='jupyter-videochat',
-    version='0.1.1',
-    url="https://github.com/yuvipanda/jupyter-videochat",
-    author="Yuvi Panda",
-    description="Video Chat with peers inside JupyterLab",
-    packages=find_packages(),
-    python_requires=">=3.6",
-    install_requires=[
-        "jupyterlab ==2.*",
-        "escapism"
-    ],
-    zip_safe=False,
-    include_package_data=True,
-    license="BSD-3-Clause",
-    platforms="Linux, Mac OS X, Windows",
-    keywords=["Jupyter", "JupyterLab"],
-    classifiers=[
-        "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python :: 3",
-        "Framework :: Jupyter",
-    ],
-    data_files=[
-        ("etc/jupyter/jupyter_notebook_config.d", ["jupyter-config/jupyter_videochat.json"])
-    ]
-)
+HERE = Path(__file__).parent
+EXT_SRC = HERE / "jupyter_videochat" / "labextension"
+PACKAGE_JSON = json.loads((EXT_SRC / "package.json").read_text(encoding="utf-8"))
+
+EXT_DEST = f"""share/jupyter/labextensions/{PACKAGE_JSON["name"]}"""
+
+CONF_D = "etc/jupyter/jupyter_server_config.d"
+
+DATA_FILES = [
+    (
+        f"{EXT_DEST}/{p.parent.relative_to(EXT_SRC).as_posix()}",
+        [str(p.relative_to(HERE).as_posix())]
+    )
+    for p in EXT_SRC.rglob("*") if not p.is_dir()
+]
+
+assert len(DATA_FILES) > 3, "expected some files"
+
+DATA_FILES += [
+    (EXT_DEST, ["install.json"]),
+    (CONF_D, ["jupyter-config/jupyter_videochat.json"]),
+]
+
+if __name__ == "__main__":
+    setup(
+        version=PACKAGE_JSON["version"],
+        data_files=DATA_FILES
+    )

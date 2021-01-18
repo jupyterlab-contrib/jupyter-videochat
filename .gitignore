@@ -110,3 +110,6 @@ dmypy.json
 
 # built npm tarballs
 *.tgz
+
+# built labextension
+jupyter_videochat/labextension
