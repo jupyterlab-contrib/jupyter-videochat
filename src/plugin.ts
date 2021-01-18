@@ -17,6 +17,8 @@ import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
 import { chatIcon, prettyChatIcon } from './icons';
 
+const DEFAULT_LABEL = 'Video Chat';
+
 const category = 'Video Chat';
 let currentArea = 'right';
 
@@ -47,7 +49,7 @@ async function activate(
     widget.addClass(`${CSS}-wrapper`);
 
     widget.id = `id-${NS}`;
-    widget.title.caption = 'Video Chat';
+    widget.title.caption = DEFAULT_LABEL;
     widget.title.closable = false;
     widget.title.icon = chatIcon;
     widget.addWidget(chat);
@@ -66,10 +68,30 @@ async function activate(
   // Force an update
   widget.update();
 
+  let subject: string | null = null;
+
   // hide the label when in sidebar, as it shows the rotated text
   function updateTitle() {
+    if (subject != null) {
+      widget.title.caption = subject;
+    } else {
+      widget.title.caption = DEFAULT_LABEL;
+    }
     widget.title.label = currentArea === 'main' ? widget.title.caption : '';
   }
+
+  // listen for the subject to update the widget title dynamically
+  manager.meetChanged.connect(() => {
+    if (manager.meet) {
+      manager.meet.on('subjectChange', (args: any) => {
+        subject = args.subject;
+        updateTitle();
+      });
+    } else {
+      subject = null;
+    }
+    updateTitle();
+  });
 
   commands.addCommand(CommandIds.open, {
     label: 'Video Chat',
