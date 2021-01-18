@@ -121,6 +121,10 @@ export interface IMeetOptions {
   userInfo?: IUserInfo;
 }
 
+export interface IJitsiFactory {
+  (): IMeetConstructor;
+}
+
 export interface IUserInfo {}
 export interface IConfig {}
 export interface IInterfaceConfig {}

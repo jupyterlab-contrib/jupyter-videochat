@@ -18,6 +18,7 @@ import {
   IMeet,
   IMeetConstructor,
   IServerResponses,
+  IJitsiFactory,
 } from './types';
 
 /** A manager that can add, join, or create Video Chat rooms
@@ -138,20 +139,22 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     return newRoom;
   }
 
-  /** Get the JitiExternalAPI script, as loaded from the jitsi server */
-  get JitsiMeetExternalAPI(): IMeetConstructor | null {
-    if (Private.api) {
-      return Private.api;
-    } else if (this.config != null) {
-      const domain = this.config?.jitsiServer
-        ? this.config.jitsiServer
-        : DEFAULT_DOMAIN;
-      const url = `https://${domain}/external_api.js`;
-      Private.ensureExternalAPI(url)
-        .then(() => this.stateChanged.emit(void 0))
-        .catch(console.warn);
-    }
-    return null;
+  /** Lazily get the JitiExternalAPI script, as loaded from the jitsi server */
+  getJitsiAPI(): IJitsiFactory {
+    return () => {
+      if (Private.api) {
+        return Private.api;
+      } else if (this.config != null) {
+        const domain = this.config?.jitsiServer
+          ? this.config.jitsiServer
+          : DEFAULT_DOMAIN;
+        const url = `https://${domain}/external_api.js`;
+        Private.ensureExternalAPI(url)
+          .then(() => this.stateChanged.emit(void 0))
+          .catch(console.warn);
+      }
+      return null;
+    };
   }
 }
 

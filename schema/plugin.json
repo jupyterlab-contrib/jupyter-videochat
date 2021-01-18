@@ -14,6 +14,47 @@
       "title": "My Email",
       "description": "The email address to show to other meeting participants. If this address is registered at gravatar.com, your custom icon will be shown",
       "type": "string"
+    },
+    "configOverwrite": {
+      "title": "Jitsi Config Overwrite",
+      "description": "a customized [Jitsi Configuration](https://github.com/jitsi/jitsi-meet/blob/master/config.js). The default is as conservative as possible.",
+      "default": {
+        "disableThirdPartyRequests": true
+      }
+    },
+    "interfaceConfigOverwrite": {
+      "title": "Jitsi Interface Configuration",
+      "description": "a customized [Jitsi Interface Configuration](https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js). The default is fairly conservative. Known hidden buttons: recording, livestreaming, etherpad, invite, download. Known hidden config: calendar.",
+      "default": {
+        "TOOLBAR_BUTTONS": [
+          "microphone",
+          "camera",
+          "closedcaptions",
+          "desktop",
+          "fullscreen",
+          "fodeviceselection",
+          "hangup",
+          "profile",
+          "chat",
+          "sharedvideo",
+          "settings",
+          "raisehand",
+          "videoquality",
+          "filmstrip",
+          "feedback",
+          "stats",
+          "shortcuts",
+          "tileview",
+          "videobackgroundblur",
+          "help",
+          "mute-everyone",
+          "e2ee",
+          "security"
+        ],
+        "SETTINGS_SECTIONS": ["devices", "language", "moderator", "profile"],
+        "MOBILE_APP_PROMO": false,
+        "SHOW_CHROME_EXTENSION_BANNER": false
+      }
     }
   }
 }

@@ -55,7 +55,7 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
   render(): JSX.Element | JSX.Element[] {
     return (
       <VideoChatComponent
-        JitsiMeetExternalAPI={this.model.JitsiMeetExternalAPI}
+        jitsiAPI={this.model.getJitsiAPI()}
         onToggleSidebar={this.onToggleSidebar}
         onRoomSelect={this.onRoomSelect}
         onCreateRoom={this.onCreateRoom}
@@ -67,6 +67,10 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         rooms={this.model.rooms}
         email={`${this.model.settings?.composite.email || ''}`}
         displayName={`${this.model.settings?.composite.displayName || ''}`}
+        configOverwrite={this.model.settings?.composite.configOverwrite}
+        interfaceConfigOverwrite={
+          this.model.settings?.composite.interfaceConfigOverwrite
+        }
       />
     );
   }

@@ -1,18 +1,22 @@
 import React, { useEffect } from 'react';
 
+import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
+
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import { CSS } from '../tokens';
-import { Room, IMeetConstructor, IMeet } from '../types';
+import { Room, IMeet, IJitsiFactory } from '../types';
 
 export type JitsiMeetProps = {
-  JitsiMeetExternalAPI: IMeetConstructor;
+  jitsiAPI: IJitsiFactory;
   onRoomSelect: (room: Room) => void;
   onMeet: (meet: IMeet) => void;
   room: Room;
   domain: string;
   email: string;
   displayName: string;
+  configOverwrite: ReadonlyPartialJSONValue | null;
+  interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
 };
 
 export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
@@ -22,58 +26,21 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     const options = {
       roomName: props.room.id,
       parentNode: container.current,
-      interfaceConfigOverwrite: {
-        // Overrides defined from https://github.com/jitsi/jitsi-meet/blob/master/interface_config.js
-        // We want to provide as simple an interface as possible, so we disable a bunch of things
-        // 1. Anything requiring an external login. So no recording, livestreaming or calendars
-        // 2. Anything that redirects to a mobile app. JupyterLab doesn't run on mobiles
-        // 3. Things we don't support - like etherpad, inviting, download, etc
-        TOOLBAR_BUTTONS: [
-          'microphone',
-          'camera',
-          'closedcaptions',
-          'desktop',
-          'fullscreen',
-          'fodeviceselection',
-          'hangup',
-          'profile',
-          'chat' /* 'recording', */,
-          /* 'livestreaming', 'etherpad', */ 'sharedvideo',
-          'settings',
-          'raisehand',
-          'videoquality',
-          'filmstrip',
-          /* 'invite', */ 'feedback',
-          'stats',
-          'shortcuts',
-          'tileview',
-          'videobackgroundblur',
-          /* 'download', */ 'help',
-          'mute-everyone',
-          'e2ee',
-          'security'
-        ],
-        SETTINGS_SECTIONS: [
-          'devices',
-          'language',
-          'moderator',
-          'profile' /* 'calendar' */
-        ],
-        // Users can't join with mobile app here
-        MOBILE_APP_PROMO: false
-      },
+      configOverwrite: props.configOverwrite,
+      interfaceConfigOverwrite: props.interfaceConfigOverwrite,
       userInfo: {
         displayName: props.displayName || PageConfig.getOption('hubUser'),
-        email: props.email
-      }
+        email: props.email,
+      },
     };
 
     let meet: IMeet;
+    let Jitsi = props.jitsiAPI();
 
-    try {
-      meet = new props.JitsiMeetExternalAPI(props.domain, options);
-    } catch (err) {
-      console.warn('Jitsi API not yet ready, will retry when available');
+    if (Jitsi == null) {
+      console.info('Jitsi API not yet loaded, will try again in a moment');
+    } else {
+      meet = new Jitsi(props.domain, options);
     }
 
     if (meet) {

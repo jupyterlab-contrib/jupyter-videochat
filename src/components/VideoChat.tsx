@@ -1,15 +1,17 @@
 import React from 'react';
 
+import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
+
 import { ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
 
 import { CSS } from '../tokens';
-import { Room, VideoChatConfig, IMeet, IMeetConstructor } from '../types';
+import { Room, VideoChatConfig, IMeet, IJitsiFactory } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
 
 export type VideoChatProps = {
-  JitsiMeetExternalAPI: IMeetConstructor;
+  jitsiAPI: IJitsiFactory;
   currentRoom: Room;
   onCreateRoom: (room: Room) => void;
   onRoomSelect: (room: Room) => void;
@@ -21,6 +23,8 @@ export type VideoChatProps = {
   config: VideoChatConfig;
   email: string;
   displayName: string;
+  configOverwrite: ReadonlyPartialJSONValue | null;
+  interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
 };
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
@@ -50,13 +54,15 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
 
       {domain != null && props.currentRoom?.id != null ? (
         <JitsiMeetComponent
-            JitsiMeetExternalAPI={props.JitsiMeetExternalAPI}
+            jitsiAPI={props.jitsiAPI}
             room={props.currentRoom}
             domain={domain}
             onRoomSelect={props.onRoomSelect}
             onMeet={props.onMeet}
             email={props.email}
             displayName={props.displayName}
+            configOverwrite={props.configOverwrite}
+            interfaceConfigOverwrite={props.interfaceConfigOverwrite}
         />
       ) : (
         <RoomsListComponent

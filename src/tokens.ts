@@ -3,7 +3,7 @@ import { ISignal } from '@lumino/signaling';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { Room, VideoChatConfig, IMeet, IMeetConstructor } from './types';
+import { Room, VideoChatConfig, IMeet, IJitsiFactory } from './types';
 
 /** The namespace for key tokens and IDs */
 export const NS = 'jupyterlab-videochat';
@@ -64,7 +64,7 @@ export interface IVideoChatManager {
    *
    * @see https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe
    */
-  JitsiMeetExternalAPI: IMeetConstructor;
+  getJitsiAPI(): IJitsiFactory;
 }
 
 /** A namespace for VideoChatManager details */
