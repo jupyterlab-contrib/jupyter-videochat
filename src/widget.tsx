@@ -1,5 +1,4 @@
 import React from 'react';
-import { Message } from '@lumino/messaging';
 import { VDomRenderer } from '@jupyterlab/apputils';
 import { VideoChatComponent } from './components/VideoChat';
 import { CSS } from './tokens';
@@ -16,14 +15,6 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
     super(model);
     this.onToggleSidebar = options.onToggleSidebar;
     this.addClass(CSS);
-  }
-
-  /** Ensure the model is initialized after being shown */
-  onAfterShow(msg: Message): void {
-    super.onAfterShow(msg);
-    if (!this.model.initialized) {
-      this.model.initialize();
-    }
   }
 
   /** Handle selecting a new (or no) room */

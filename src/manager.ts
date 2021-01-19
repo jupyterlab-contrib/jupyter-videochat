@@ -26,7 +26,8 @@ import {
 export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _rooms: Room[] = [];
   private _currentRoom: Room;
-  private _initialized = false;
+  private _isInitialized = false;
+  private _initialized = new PromiseDelegate<void>();
   private _config: VideoChatConfig;
   private _meet: IMeet;
   private _meetChanged: Signal<VideoChatManager, void>;
@@ -43,8 +44,13 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   /** whether the manager is initialized */
-  get initialized(): boolean {
-    return this._initialized;
+  get isInitialized(): boolean {
+    return this._isInitialized;
+  }
+
+  /** A `Promise` that resolves when fully initialized */
+  get initialized(): Promise<void> {
+    return this._initialized.promise;
   }
 
   /** the current room */
@@ -111,7 +117,8 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   initialize(): void {
     Promise.all([this.updateConfig(), this.updateRooms()])
       .then(() => {
-        this._initialized = true;
+        this._isInitialized = true;
+        this._initialized.resolve(void 0);
         this.stateChanged.emit(void 0);
       })
       .catch(console.warn);

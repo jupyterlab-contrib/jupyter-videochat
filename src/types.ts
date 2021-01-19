@@ -3,6 +3,7 @@
  */
 export interface IChatArgs {
   area?: 'left' | 'right' | 'main';
+  displayName?: string;
 }
 
 /**

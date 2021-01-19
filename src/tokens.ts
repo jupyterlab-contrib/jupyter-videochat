@@ -40,7 +40,10 @@ export interface IVideoChatManager {
   currentRoom: Room;
 
   /** Whether the manager is fully initialized */
-  initialized: boolean;
+  isInitialized: boolean;
+
+  /** A `Promise` that resolves when fully initialized */
+  initialized: Promise<void>;
 
   /** Initialize the manager */
   initialize(): void;

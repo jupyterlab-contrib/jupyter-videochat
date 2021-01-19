@@ -35,6 +35,7 @@ async function activate(
   const { commands, shell } = app;
   let widget: Panel;
   let chat: VideoChat;
+  let subject: string | null = null;
 
   const tracker = new WidgetTracker<Panel>({ namespace: NS });
 
@@ -55,21 +56,6 @@ async function activate(
     widget.addWidget(chat);
   }
 
-  // Add to widget tracker
-  if (!tracker.has(widget)) {
-    tracker.add(widget).catch(console.warn);
-  }
-
-  // Add to shell
-  if (!widget.isAttached) {
-    shell.add(widget, currentArea);
-  }
-
-  // Force an update
-  widget.update();
-
-  let subject: string | null = null;
-
   // hide the label when in sidebar, as it shows the rotated text
   function updateTitle() {
     if (subject != null) {
@@ -78,6 +64,19 @@ async function activate(
       widget.title.caption = DEFAULT_LABEL;
     }
     widget.title.label = currentArea === 'main' ? widget.title.caption : '';
+  }
+
+  // add to shell, update tracker, title, etc.
+  function addToShell(area?: string) {
+    area = area || currentArea;
+    shell.add(widget, area);
+    updateTitle();
+    widget.update();
+    if (!tracker.has(widget)) {
+      tracker.add(widget).catch(void 0);
+    } else if (area == 'main') {
+      shell.activateById(widget.id);
+    }
   }
 
   // listen for the subject to update the widget title dynamically
@@ -93,17 +92,7 @@ async function activate(
     updateTitle();
   });
 
-  commands.addCommand(CommandIds.open, {
-    label: 'Video Chat',
-    icon: prettyChatIcon,
-    execute: (args: IChatArgs) => {
-      currentArea = args.area || 'main';
-      shell.add(widget, currentArea);
-      updateTitle();
-      // Activate the widget
-      shell.activateById(widget.id);
-    },
-  });
+  addToShell();
 
   // connect settings
   settingRegistry
@@ -112,19 +101,31 @@ async function activate(
     .catch(console.error);
 
   // add commands
+  commands.addCommand(CommandIds.open, {
+    label: 'Video Chat',
+    icon: prettyChatIcon,
+    execute: async (args: IChatArgs) => {
+      await manager.initialized;
+      currentArea = args.area || 'main';
+      addToShell(currentArea);
+      // Potentially navigate to new room
+      if (manager.currentRoom?.displayName !== args.displayName) {
+        manager.currentRoom = { displayName: args.displayName };
+      }
+    },
+  });
+
   commands.addCommand(CommandIds.toggleArea, {
     label: 'Toggle Video Chat Sidebar',
-    execute: () => {
+    execute: async () => {
       currentArea = ['right', 'left'].includes(currentArea) ? 'main' : 'right';
-      updateTitle();
-      shell.add(widget, currentArea);
-      shell.activateById(widget.id);
+      addToShell();
     },
   });
 
   commands.addCommand(CommandIds.routerStart, {
     label: 'Open Video Chat from URL',
-    execute: (args) => {
+    execute: async (args) => {
       const { request } = args as IRouter.ILocation;
       const url = new URL(`http://example.com${request}`);
       const params = url.searchParams;
@@ -133,8 +134,7 @@ async function activate(
       const chatAfterRoute = async () => {
         router.routed.disconnect(chatAfterRoute);
         if (manager.currentRoom?.displayName != displayName) {
-          await commands.execute(CommandIds.open);
-          manager.currentRoom = { displayName };
+          await commands.execute(CommandIds.open, { displayName });
         }
       };
 
@@ -164,6 +164,8 @@ async function activate(
       .restore(tracker, { command: CommandIds.open, name: () => `id-${NS}` })
       .catch(console.warn);
   }
+
+  manager.initialize();
 
   // Return the manager that others extensions can use
   return manager;
