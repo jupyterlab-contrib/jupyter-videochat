@@ -58,9 +58,17 @@ DATA_FILES += [
     (CONF_D, ["jupyter-config/jupyter_videochat.json"]),
 ]
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     setup(
         version=__jspackage__["version"],
-        data_files=DATA_FILES
+        url=__jspackage__["homepage"],
+        description=__jspackage__["description"],
+        data_files=DATA_FILES,
+        author=__jspackage__["author"],
+        license=__jspackage__["license"],
+        project_urls={
+            "Bug Tracker": __jspackage__["bugs"]["url"],
+            "Source Code": __jspackage__["repository"]["url"]
+        }
     )

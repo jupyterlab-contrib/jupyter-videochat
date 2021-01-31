@@ -1,24 +1,31 @@
 # jupyter-videochat
 
-![Github Actions Status](https://github.com/yuvipanda/jupyter-videochat/workflows/Build/badge.svg)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/master?urlpath=lab)
+> Video Chat with JupyterHub peers inside JupyterLab, powered by [Jitsi].
 
-JuVideo Chat with peers inside JupyterLab
+[![install from pypi][pypi-badge]][pypi] [![reuse from npm][npm-badge]][npm]
+[![continuous integration][workflow-badge]][workflow]
+[![interactive demo][binder-badge]][binder] [![][changelog-badge]][changelog]
+[![][contributing-badge]][contributing]
 
 This extension is composed of:
 
 - a Python package named `jupyter_videochat`, which offers:
   - a `jupyter_server` extension which provides convenient, configurable
-    defaults for rooms on a
-    [JupyterHub](https://github.com/jupyterhub/jupyterhub)
-  - an NPM package named `jupyter-videochat` for the JupyterLab extension
-    - for more about the TypeScript/JS API, see
-      [CONTRIBUTING](https://github.com/yuvipanda/jupyter-videochat/blob/master/CONTRIBUTING.md)
+    defaults for rooms on a [JupyterHub]
+  - a JupyterLab _federated extension_ named `jupyter-videochat`
+    - also distributed on [npm]
+    - for more about the TypeScript/JS API, see [CONTRIBUTING]
+
+[npm]: https://www.npmjs.com/package/jupyterlab-videochat
+[jupyterhub]: https://github.com/jupyterhub/jupyterhub
 
 ## Requirements
 
 - `jupyterlab ==3.*`
 
 ## Install
+
+Install the serverextension and labextension with `pip`:
 
 ```bash
 pip install jupyter_videochat
@@ -31,6 +38,7 @@ server extension is enabled:
 
 ```bash
 jupyter serverextension list
+jupyter serverextension enable --sys-prefix --py jupyter_videochat
 ```
 
 If the server extension is installed and enabled but you are not seeing the
@@ -124,9 +132,27 @@ audio/video).
 #### Binder URL Example
 
 On [Binder](https://mybinder.org), use the `urlpath` to append the argument,
-ensuring the arguments get properly URL-encoded
+ensuring the arguments get properly URL-encoded.
 
 ```
 https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3DStand-Up
                                                          # URL-encoded  [? ] [=  ]
 ```
+
+[workflow]:
+  https://github.com/yuvipanda/jupyter-videochat/actions?query=workflow%3ACI+branch%3Amaster
+[workflow-badge]:
+  https://github.com/yuvipanda/jupyter-videochat/workflows/CI/badge.svg
+[binder]:
+  https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=lab
+[binder-badge]: https://mybinder.org/badge_logo.svg
+[pypi-badge]: https://img.shields.io/pypi/v/jupyter-videochat
+[pypi]: https://pypi.org/project/jupyter-videochat/
+[npm-badge]: https://img.shields.io/npm/v/jupyterlab-videochat
+[changelog]:
+  https://github.com/yuvipanda/jupyter-videochat/blob/master/CHANGELOG.md
+[changelog-badge]: https://img.shields.io/badge/CHANGELOG-md-000
+[contributing-badge]: https://img.shields.io/badge/CONTRIBUTING-md-000
+[contributing]:
+  https://github.com/yuvipanda/jupyter-videochat/blob/master/CONTRIBUTING.md
+[jitsi]: https://jitsi.org
