@@ -173,13 +173,13 @@ jobs:
     - name: Validate Server Extension
       run: |
         set -eux
-        jupyter serverextension list 1>serverextensions 2>&1
+        jupyter serverextension list --debug 1>serverextensions 2>&1
         cat serverextensions
         cat serverextensions | grep -i "jupyter_videochat.*OK"
 
     - name: Validate Lab Extension
       run: |
         set -eux
-        jupyter labextension list 1>labextensions 2>&1
+        jupyter labextension list --debug 1>labextensions 2>&1
         cat labextensions
         cat labextensions | grep -i "jupyterlab-videochat.*OK"
