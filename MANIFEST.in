@@ -1,9 +1,6 @@
-include LICENSE
-include README.md
+include LICENSE README.md install.json
 
-include jupyter-config/jupyter_videochat.json
-include install.json
-
+recursive-include jupyter-config *.json
 recursive-include jupyter_videochat/labextension *.*
 
 # Javascript files

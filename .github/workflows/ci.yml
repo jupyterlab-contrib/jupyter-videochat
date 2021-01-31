@@ -8,7 +8,6 @@ on:
 
 env:
   CACHE_EPOCH: 4
-  APP_DIR: --app-dir ./.lab
 
 jobs:
   build:
@@ -171,16 +170,23 @@ jobs:
         cd dist
         ${{ matrix.python-cmd }} -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
 
-    - name: Validate Server Extension
+    - name: Validate Server Extension (server)
       run: |
         set -eux
-        jupyter server extension list 1>serverextensions 2>&1
+        jupyter server extension list --debug 1>serverextensions 2>&1
         cat serverextensions
         cat serverextensions | grep -i "jupyter_videochat.*OK"
+
+    - name: Validate Server Extension (notebook)
+      run: |
+        set -eux
+        jupyter serverextension list --debug 1>server_extensions 2>&1
+        cat server_extensions
+        cat server_extensions | grep -i "jupyter_videochat.*OK"
 
     - name: Validate Lab Extension
       run: |
         set -eux
-        jupyter labextension list $APP_DIR 1>labextensions 2>&1
+        jupyter labextension list --debug 1>labextensions 2>&1
         cat labextensions
         cat labextensions | grep -i "jupyterlab-videochat.*OK"

@@ -3,7 +3,7 @@ import json
 
 from setuptools import setup
 
-CONF_D = "etc/jupyter/jupyter_server_config.d"
+ETC = "etc/jupyter"
 
 HERE = Path(__file__).parent
 EXT_SRC = HERE / "jupyter_videochat" / "labextension"
@@ -54,13 +54,26 @@ assert not [p for p in ALL_FILES if "build_log.json" in p], f"""
 DATA_FILES += [
     # percolates up to the UI about the installed labextension
     (EXT_DEST, ["install.json"]),
-    # enables the serverextension
-    (CONF_D, ["jupyter-config/jupyter_videochat.json"]),
+    # enables the serverextension under various apps
+    *[
+        (
+            f"{ETC}/jupyter_{app}_config.d",
+            [f"jupyter-config/jupyter_{app}_config.d/jupyter_videochat.json"]
+        )
+        for app in ["notebook", "server"]
+    ]
 ]
 
 if __name__ == "__main__":
-
     setup(
         version=__jspackage__["version"],
-        data_files=DATA_FILES
+        url=__jspackage__["homepage"],
+        description=__jspackage__["description"],
+        data_files=DATA_FILES,
+        author=__jspackage__["author"],
+        license=__jspackage__["license"],
+        project_urls={
+            "Bug Tracker": __jspackage__["bugs"]["url"],
+            "Source Code": __jspackage__["repository"]["url"]
+        }
     )

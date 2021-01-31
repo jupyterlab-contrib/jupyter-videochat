@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-videochat",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Video Chat with peers inside  JupyterLab",
   "keywords": [
     "jupyter",
@@ -47,7 +47,7 @@
     "@jupyterlab/application": "3"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "^3.0.1",
+    "@jupyterlab/builder": "^3.0.2",
     "@jupyterlab/launcher": "3",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
@@ -73,7 +73,7 @@
           "pip"
         ],
         "base": {
-          "name": "jupyter_videochat"
+          "name": "jupyter-videochat"
         }
       }
     },
