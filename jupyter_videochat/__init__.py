@@ -78,3 +78,7 @@ def load_jupyter_server_extension(lab_app):
     videochat = VideoChat(parent=lab_app)
     lab_app.web_app.settings['videochat'] = videochat
     setup_handlers(lab_app.web_app)
+
+
+# For backward compatibility
+_load_jupyter_server_extension = load_jupyter_server_extension
