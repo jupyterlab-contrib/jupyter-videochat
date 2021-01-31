@@ -1,12 +1,10 @@
 include LICENSE
 include README.md
-include pyproject.toml
 
 include jupyter-config/jupyter_videochat.json
+include install.json
 
-include package.json
-include ts*.json
-include jupyter_videochat/labextension/*.tgz
+recursive-include jupyter_videochat/labextension *.*
 
 # Javascript files
 graft src

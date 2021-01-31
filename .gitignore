@@ -107,3 +107,9 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/python
+
+# built npm tarballs
+*.tgz
+
+# built labextension
+jupyter_videochat/labextension

@@ -2,91 +2,131 @@
 
 ![Github Actions Status](https://github.com/yuvipanda/jupyter-videochat/workflows/Build/badge.svg)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/master?urlpath=lab)
 
-JuVideo Chat with peers inside  JupyterLab
+JuVideo Chat with peers inside JupyterLab
 
+This extension is composed of:
 
-This extension is composed of a Python package named `jupyter_videochat`
-for the server extension and a NPM package named `jupyter-videochat`
-for the frontend extension.
-
+- a Python package named `jupyter_videochat`, which offers:
+  - a `jupyter_server` extension which provides convenient, configurable
+    defaults for rooms on a
+    [JupyterHub](https://github.com/jupyterhub/jupyterhub)
+  - an NPM package named `jupyter-videochat` for the JupyterLab extension
+    - for more about the TypeScript/JS API, see
+      [CONTRIBUTING](https://github.com/yuvipanda/jupyter-videochat/blob/master/CONTRIBUTING.md)
 
 ## Requirements
 
-* JupyterLab >= 2.0
+- `jupyterlab ==3.*`
 
 ## Install
 
-Note: You will need NodeJS to install the extension.
-
 ```bash
 pip install jupyter_videochat
-jupyter lab build
 ```
 
 ## Troubleshoot
 
-If you are seeing the frontend extension but it is not working, check
-that the server extension is enabled:
+If you are seeing the frontend extension but it is not working, check that the
+server extension is enabled:
 
 ```bash
 jupyter serverextension list
 ```
 
-If the server extension is installed and enabled but you are not seeing
-the frontend, check the frontend is installed:
+If the server extension is installed and enabled but you are not seeing the
+frontend, check the frontend is installed:
 
 ```bash
 jupyter labextension list
 ```
 
-If it is installed, try:
-
-```bash
-jupyter lab clean
-jupyter lab build
-```
-
-## Contributing
-
-### Install
-
-The `jlpm` command is JupyterLab's pinned version of
-[yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
-`yarn` or `npm` in lieu of `jlpm` below.
-
-```bash
-# Clone the repo to your local environment
-# Move to jupyter-videochat directory
-
-# Install server extension
-pip install -e .
-# Register server extension
-jupyter serverextension enable --py jupyter_videochat
-
-# Install dependencies
-jlpm
-# Build Typescript source
-jlpm build
-# Link your development version of the extension with JupyterLab
-jupyter labextension link .
-# Rebuild Typescript source after making changes
-jlpm build
-# Rebuild JupyterLab after making any changes
-jupyter lab build
-```
-
-You can watch the source directory and run JupyterLab in watch mode to watch for changes in the extension's source and automatically rebuild the extension and application.
-
-```bash
-# Watch the source directory in another terminal tab
-jlpm watch
-# Run jupyterlab in watch mode in one terminal tab
-jupyter lab --watch
-```
-
-### Uninstall
+## Uninstall
 
 ```bash
 pip uninstall jupyter_videochat
-jupyter labextension uninstall jupyter-videochat
+```
+
+## Configuration
+
+### Server Configuration
+
+In your `jupyter_server_config.json` (or equivalent `.py` or `conf.d/*.json`),
+you can configure the `VideoChat`:
+
+- `room_prefix`, a prefix used for your group, by default a URL-frieldy version
+  of your JupyterHub's hostname
+  - can be overriden with the `JUPYTER_VIDEOCHAT_ROOM_PREFIX` environment
+    variable
+- `jitsi_server`, an HTTPS host that serves the Jitsi web application, by
+  default `meet.jit.si`
+- `rooms`, a list of Room descriptions that everyone on your Hub will be able to
+  join
+
+#### Example
+
+```json
+{
+  "VideoChat": {
+    "room_prefix": "our-spiffy-room-prefix",
+    "rooms": [
+      {
+        "id": "stand-up",
+        "displayName": "Stand-Up",
+        "description": "Daily room for meeting with the team"
+      },
+      {
+        "id": "all-hands",
+        "displayName": "All-Hands",
+        "description": "A weekly room for the whole team"
+      }
+    ],
+    "jitsi_server": "jitsi.example.com"
+  }
+}
+```
+
+### Client Configuration
+
+In the JupyterLab _Advanced Settings_ panel, the _Video Chat_ settings can be
+further configured, as can a user's default `displayName` and `email`. The
+defaults provided are generally pretty conservative, and disable as many
+third-party services as possible.
+
+#### Binder Client Example
+
+For example, to enable all thirdy-party features:
+
+- create an `overrides.json`
+
+  ```json
+  {
+    "jupyter-videochat:plugin": {
+      "interfaceConfigOverwrite": null,
+      "configOverwrite": null
+    }
+  }
+  ```
+
+- Copy it to the JupyterLab settings directory
+
+  ```bash
+  # postBuild
+  mkdir -p ${NB_PYTHON_PREFIX}/share/jupyter/lab/settings
+  cp overrides.json ${NB_PYTHON_PREFIX}/share/jupyter/lab/settings
+  ```
+
+### Start a Meet by URL
+
+Appending `?jvc=room-name` to a JupyterLab URL will automatically open the Meet
+(but not _fully_ start it, as browsers require a user gesture to start
+audio/video).
+
+#### Binder URL Example
+
+On [Binder](https://mybinder.org), use the `urlpath` to append the argument,
+ensuring the arguments get properly URL-encoded
+
+```
+https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3DStand-Up
+                                                         # URL-encoded  [? ] [=  ]
 ```

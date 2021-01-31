@@ -1,0 +1,128 @@
+.jp-VideoChat-rooms {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  background-color: var(--jp-layout-color2);
+}
+
+.jp-VideoChat-rooms ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jp-VideoChat-rooms a {
+  color: var(--jp-brand-color1);
+}
+
+.jp-VideoChat-rooms ul {
+  padding: 0 1em 1em 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.jp-VideoChat-rooms li {
+  min-width: 300px;
+  max-width: 500px;
+  margin: 1em 0 0 1em;
+  border: solid var(--jp-border-width) var(--jp-border-color2);
+  padding: 1em;
+  flex: 1;
+}
+
+.jp-VideoChat-rooms li {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  color: var(--jp-ui-font-color2);
+  align-items: center;
+  background-color: var(--jp-layout-color1);
+}
+
+.jp-VideoChat-rooms li label {
+  display: block;
+  font-size: var(--jp-ui-font-size2);
+  font-family: var(--jp-ui-font-family);
+  color: var(--jp-ui-font-color0);
+  flex: 1;
+  font-weight: bold;
+}
+
+.jp-VideoChat-rooms li button {
+  flex: 0;
+}
+
+.jp-VideoChat-room-displayname-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.jp-VideoChat-room-displayname-input input {
+  margin-right: 1em;
+  flex: 1;
+}
+
+.jp-VideoChat-room-displayname-input button {
+  flex: 0;
+  min-width: 5em;
+}
+
+.jp-VideoChat-room-description {
+  display: block;
+  font-size: var(--jp-ui-font-size1);
+  font-family: var(--jp-ui-font-family);
+  color: var(--jp-ui-font-color2);
+}
+
+.jp-VideoChat-rooms > label {
+  font-size: var(--jp-ui-font-size1);
+  font-family: var(--jp-ui-font-family);
+  color: var(--jp-ui-font-color1);
+  padding: 0.5em 1em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background-color: var(--jp-layout-color2);
+}
+
+.jp-VideoChat-rooms label svg {
+  margin-right: 0.5em;
+}
+
+.jp-VideoChat-rooms blockquote {
+  font-size: var(--jp-ui-font-size1);
+  color: var(--jp-ui-font-color1);
+  padding: 0;
+  margin: 0;
+  margin-top: 0.5em;
+  width: 100%;
+}
+
+.jp-VideoChat-user-info {
+  list-style: none;
+  margin: 0;
+  padding: 1em;
+}
+
+.jp-VideoChat-input-group {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 1em;
+  align-items: baseline;
+}
+
+.jp-VideoChat-input-group label {
+  color: var(--jp-ui-font-color1);
+  flex: 0;
+  padding: 0 1em 0 0;
+}
+
+.jp-VideoChat-input-group input {
+  flex: 1;
+}
