@@ -19,6 +19,11 @@ This extension is composed of:
 [npm]: https://www.npmjs.com/package/jupyterlab-videochat
 [jupyterhub]: https://github.com/jupyterhub/jupyterhub
 
+![jupyter-videochat screenshot][lab-screenshot]
+
+[lab-screenshot]:
+  https://user-images.githubusercontent.com/45380/106391412-312d0400-63bb-11eb-9ed9-af3c4fe85ee4.png
+
 ## Requirements
 
 - `jupyterlab ==3.*`
@@ -139,12 +144,45 @@ https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3
                                                          # URL-encoded  [? ] [=  ]
 ```
 
+#### nbgitpuller
+
+If you have two repos (or branches) that contain:
+
+- content that changes frequently
+- a stable environment
+
+...you can use [nbgitpuller](https://jupyterhub.github.io/nbgitpuller/link) to
+have fast-building, (almost) single-click URLs that launch right into JupyterLab
+showing your meeting and content. For example, to use...
+
+- the [Python Data Science Handbook] as `master`
+- this project's repo, at `HEAD` (_not recommended, as it's pretty
+  [minimal][binder-reqs]_)
+
+...and launch directly into JupyterLab showing
+
+- the _Preface_ notebook
+- the _Office Hours_ room
+
+...the doubly-escaped URL would be something like:
+
+```http
+https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?
+urlpath=git-pull
+  %3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fjakevdp%252FPythonDataScienceHandbook
+  %26branch%3Dmaster
+  %26urlpath%3Dlab%252Ftree%252FPythonDataScienceHandbook%252Fnotebooks%252F00.00-Preface.ipynb
+  %253Fjvc%253DOffice%2BHours
+```
+
 [workflow]:
   https://github.com/yuvipanda/jupyter-videochat/actions?query=workflow%3ACI+branch%3Amaster
 [workflow-badge]:
   https://github.com/yuvipanda/jupyter-videochat/workflows/CI/badge.svg
 [binder]:
   https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=lab
+[binder-reqs]:
+  https://github.com/yuvipanda/jupyter-videochat/blob/master/binder/requirements.txt
 [binder-badge]: https://mybinder.org/badge_logo.svg
 [pypi-badge]: https://img.shields.io/pypi/v/jupyter-videochat
 [pypi]: https://pypi.org/project/jupyter-videochat/
@@ -156,3 +194,5 @@ https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3
 [contributing]:
   https://github.com/yuvipanda/jupyter-videochat/blob/master/CONTRIBUTING.md
 [jitsi]: https://jitsi.org
+[python data science handbook]:
+  https://github.com/jakevdp/PythonDataScienceHandbook
