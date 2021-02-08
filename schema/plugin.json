@@ -5,6 +5,13 @@
   "description": "Video Chat settings",
   "type": "object",
   "properties": {
+    "area": {
+      "title": "Chat Area",
+      "description": "Where to draw the video chat UI",
+      "type": "string",
+      "default": "right",
+      "enum": ["right", "left", "main"]
+    },
     "displayName": {
       "title": "My Display Name",
       "description": "The name to show to other meeting participants",

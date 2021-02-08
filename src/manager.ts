@@ -108,6 +108,14 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this.stateChanged.emit(void 0);
   }
 
+  get currentArea(): string {
+    return (this.settings?.composite['area'] || 'right') as string;
+  }
+
+  set currentArea(currentArea: string) {
+    this.settings.set('area', currentArea).catch(void 0);
+  }
+
   /** A scoped handler for connecting to the settings Signal  */
   protected onSettingsChanged = (): void => {
     this.stateChanged.emit(void 0);

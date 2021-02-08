@@ -20,7 +20,6 @@ import { chatIcon, prettyChatIcon } from './icons';
 const DEFAULT_LABEL = 'Video Chat';
 
 const category = 'Video Chat';
-let currentArea = 'right';
 
 async function activate(
   app: JupyterFrontEnd,
@@ -63,20 +62,20 @@ async function activate(
     } else {
       widget.title.caption = DEFAULT_LABEL;
     }
-    widget.title.label = currentArea === 'main' ? widget.title.caption : '';
+    widget.title.label =
+      manager.currentArea === 'main' ? widget.title.caption : '';
   }
 
   // add to shell, update tracker, title, etc.
   function addToShell(area?: string) {
-    area = area || currentArea;
+    area = area || manager.currentArea;
     shell.add(widget, area);
     updateTitle();
     widget.update();
     if (!tracker.has(widget)) {
       tracker.add(widget).catch(void 0);
-    } else if (area == 'main') {
-      shell.activateById(widget.id);
     }
+    shell.activateById(widget.id);
   }
 
   // listen for the subject to update the widget title dynamically
@@ -92,13 +91,15 @@ async function activate(
     updateTitle();
   });
 
-  addToShell();
-
   // connect settings
   settingRegistry
     .load(plugin.id)
-    .then((settings) => (manager.settings = settings))
-    .catch(console.error);
+    .then((settings) => {
+      manager.settings = settings;
+      settings.changed.connect(() => addToShell());
+      addToShell();
+    })
+    .catch(() => addToShell());
 
   // add commands
   commands.addCommand(CommandIds.open, {
@@ -106,8 +107,7 @@ async function activate(
     icon: prettyChatIcon,
     execute: async (args: IChatArgs) => {
       await manager.initialized;
-      currentArea = args.area || 'main';
-      addToShell(currentArea);
+      addToShell();
       // Potentially navigate to new room
       if (manager.currentRoom?.displayName !== args.displayName) {
         manager.currentRoom = { displayName: args.displayName };
@@ -118,8 +118,9 @@ async function activate(
   commands.addCommand(CommandIds.toggleArea, {
     label: 'Toggle Video Chat Sidebar',
     execute: async () => {
-      currentArea = ['right', 'left'].includes(currentArea) ? 'main' : 'right';
-      addToShell();
+      manager.currentArea = ['right', 'left'].includes(manager.currentArea)
+        ? 'main'
+        : 'right';
     },
   });
 
