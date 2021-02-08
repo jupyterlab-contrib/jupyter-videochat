@@ -95,5 +95,43 @@ issue/screenshot on the GitHub repository!
   )
   ```
 
+## Releasing
+
+- Start a release issue with a checklist of tasks
+  - see previous releases for examples
+- Ensure the version has been updated, roughly following [semver]
+  - Basically, any _removal_ or _data_ constraint would trigger a `0.x+1.0`
+  - Otherwise it's probably `0.x.y+1`
+- Ensure the [CHANGELOG](./CHANGELOG.md) and [README](./README.md) are
+  up-to-date
+- Wait until CI passes on `master`
+- Validate on Binder
+- Download the release assets from the latest CI run
+- From the GitHub web UI, create a new tag/release
+  - name the tag `v0.x.y`
+  - upload all of the release assets (including `SHA256SUMS`!)
+- Upload to pypi.org
+  ```bash
+  twine upload jupyter-videochat*
+  ```
+- Upload to npm.com
+  ```bash
+  npm login
+  npm publish jupyterlab-videochat*
+  ```
+- Make a new PR bumping to the next point release
+  - just in case a quick fix is needed
+- Validate the as-released assets in a clean environment
+  - e.g. on Binder with a simple `requirements.txt` gist
+  ```bash
+  jupyter-videochat ==0.x.y
+  ```
+- Wait for the [conda-forge feedstock] to get an automated PR
+  - validate and merge
+- Close the release issue!
+
+[semver]: https://semver.org/
+[conda-forge feedstock]:
+  https://github.com/conda-forge/jupyter-videochat-feedstock
 [jupyterlab extensions]:
   https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html
