@@ -4,9 +4,11 @@
 
 - adds missing `provides` to allow downstreams extensions to use (and not just
   import) `IVideoChatManager` ([#21])
+- moves current Lab UI area (e.g. `right`, `main`) to user settings ([#22])
 
 [0.5.1]: https://pypi.org/project/jupyter-videochat/0.5.1
 [#21]: https://github.com/yuvipanda/jupyter-videochat/issues/21
+[#22]: https://github.com/yuvipanda/jupyter-videochat/pull/22
 
 ## jupyter-videochat [0.5.0]
 
