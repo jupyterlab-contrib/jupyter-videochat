@@ -179,6 +179,7 @@ const plugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   autoStart: true,
   requires: [ICommandPalette, IRouter, ISettingRegistry],
   optional: [ILauncher, ILayoutRestorer],
+  provides: IVideoChatManager,
   activate,
 };
 

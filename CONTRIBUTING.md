@@ -20,7 +20,7 @@ jlpm build
 # Install server extension
 pip install -e .
 # Register server extension
-jupyter serverextension enable --py jupyter_videochat
+jupyter server extension enable --py jupyter_videochat
 # Symlink your development version of the extension with JupyterLab
 jupyter labextension develop --overwrite .
 # Rebuild Typescript source after making changes
@@ -46,9 +46,12 @@ jupyter lab
 
 ## Extending
 
-Other JupyterLab extensions can use `IVideoChatManager` to interact with the
+Other [JupyterLab extensions] can use the `IVideoChatManager` to interact with
+the
 [Jitsi Meet API](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe)
-instance, which has many _commands_, _functions_ and _events_.
+instance, which has many _commands_, _functions_ and _events_. Nobody has yet,
+_that we know of_: if you are successful, please consider posting an
+issue/screenshot on the GitHub repository!
 
 - Add `jupyterlab-videochat` as a `package.json` dependency
 
@@ -70,7 +73,7 @@ instance, which has many _commands_, _functions_ and _events_.
     activate: (app: JupyterLabFrontEnd, videochat: IVideoChatManager) => {
       videochat.meetChanged.connect(() => {
         if (videochat.meet) {
-          // do something clever with the Meet
+          // do something clever with the Meet!
         }
       });
     },
@@ -79,14 +82,18 @@ instance, which has many _commands_, _functions_ and _events_.
   export default plugin;
   ```
 
-  > _The typings provided are **best-effort**, PRs welcome to improve them._
+  > _The typings provided for the Jitsit API are **best-effort**, PRs welcome to
+  > improve them._
 
-- (Probably) add `jupyter_videochat` to your extension's python dependencies,
+- (Probably) add `jupyter-videochat` to your extension's python dependencies,
   e.g.
 
   ```py
   # setup.py
   setup(
-      install_requires=["jupyter_videochat"]
+      install_requires=["jupyter-videochat"]
   )
   ```
+
+[jupyterlab extensions]:
+  https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html
