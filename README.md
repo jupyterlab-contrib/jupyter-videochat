@@ -129,7 +129,8 @@ third-party services as possible. Additionally, access to
 
 #### Binder Client Example
 
-For example, to enable all third-party features and public rooms:
+For example, to enable all third-party features, public rooms, and open in the
+`main` area by default:
 
 - create an `overrides.json`
 
@@ -138,7 +139,8 @@ For example, to enable all third-party features and public rooms:
     "jupyter-videochat:plugin": {
       "interfaceConfigOverwrite": null,
       "configOverwrite": null,
-      "disablePublicRooms": false
+      "disablePublicRooms": false,
+      "area": "main"
     }
   }
   ```
