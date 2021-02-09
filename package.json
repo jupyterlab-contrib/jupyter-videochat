@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-videochat",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Video Chat with peers inside  JupyterLab",
   "keywords": [
     "jupyter",

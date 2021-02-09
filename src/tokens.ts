@@ -28,9 +28,6 @@ export const DEFAULT_DOMAIN = 'meet.jit.si';
 
 /**
  * The public interface exposed by the video chat extension
- *
- * ### Notes
- * This should likely be
  */
 export interface IVideoChatManager {
   /** The known Hub `Rooms` from the server */
@@ -68,6 +65,13 @@ export interface IVideoChatManager {
    * @see https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe
    */
   getJitsiAPI(): IJitsiFactory;
+
+  /** The area in the JupyterLab UI where the chat UI will be shown
+   *
+   * ### Notes
+   * probably one of: left, right, main
+   */
+  currentArea: string;
 }
 
 /** A namespace for VideoChatManager details */

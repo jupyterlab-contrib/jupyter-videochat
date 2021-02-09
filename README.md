@@ -2,7 +2,9 @@
 
 > Video Chat with JupyterHub peers inside JupyterLab, powered by [Jitsi].
 
-[![install from pypi][pypi-badge]][pypi] [![reuse from npm][npm-badge]][npm]
+[![install from pypi][pypi-badge]][pypi]
+[![install from conda-forge][conda-forge-badge]][conda-forge]
+[![reuse from npm][npm-badge]][npm]
 [![continuous integration][workflow-badge]][workflow]
 [![interactive demo][binder-badge]][binder] [![][changelog-badge]][changelog]
 [![][contributing-badge]][contributing]
@@ -26,14 +28,21 @@ This extension is composed of:
 
 ## Requirements
 
+- `python >=3.6`
 - `jupyterlab ==3.*`
 
 ## Install
 
-Install the serverextension and labextension with `pip`:
+Install the server extension and JupyterLab extension with `pip`:
 
 ```bash
-pip install jupyter_videochat
+pip install -U jupyter-videochat
+```
+
+...or `conda`:
+
+```bash
+conda install -c conda-forge jupyter-videochat
 ```
 
 ## Troubleshoot
@@ -42,9 +51,17 @@ If you are seeing the frontend extension but it is not working, check that the
 server extension is enabled:
 
 ```bash
-jupyter serverextension list
-jupyter serverextension enable --sys-prefix --py jupyter_videochat
+jupyter server extension list
+jupyter server extension enable --sys-prefix --py jupyter_videochat
 ```
+
+> If you launch your Jupyter server with `jupyter notebook`, as Binder does, the
+> equivalent commands are:
+>
+> ```bash
+> jupyter serverextension list
+> jupyter serverextension enable --sys-prefix --py jupyter_videochat
+> ```
 
 If the server extension is installed and enabled but you are not seeing the
 frontend, check the frontend is installed:
@@ -53,10 +70,14 @@ frontend, check the frontend is installed:
 jupyter labextension list
 ```
 
+If you do not see `jupyterlab-videochat`, the best course of action is to
+[uninstall](#Uninstall) and [reinstall](#Install), and carefully watch the log
+output.
+
 ## Uninstall
 
 ```bash
-pip uninstall jupyter_videochat
+pip uninstall jupyter-videochat
 ```
 
 ## Configuration
@@ -103,11 +124,13 @@ you can configure the `VideoChat`:
 In the JupyterLab _Advanced Settings_ panel, the _Video Chat_ settings can be
 further configured, as can a user's default `displayName` and `email`. The
 defaults provided are generally pretty conservative, and disable as many
-third-party services as possible.
+third-party services as possible. Additionally, access to
+**globally-accessible** public rooms may be enabled.
 
 #### Binder Client Example
 
-For example, to enable all thirdy-party features:
+For example, to enable all third-party features, public rooms, and open in the
+`main` area by default:
 
 - create an `overrides.json`
 
@@ -115,7 +138,9 @@ For example, to enable all thirdy-party features:
   {
     "jupyter-videochat:plugin": {
       "interfaceConfigOverwrite": null,
-      "configOverwrite": null
+      "configOverwrite": null,
+      "disablePublicRooms": false,
+      "area": "main"
     }
   }
   ```
@@ -186,6 +211,9 @@ urlpath=git-pull
 [binder-badge]: https://mybinder.org/badge_logo.svg
 [pypi-badge]: https://img.shields.io/pypi/v/jupyter-videochat
 [pypi]: https://pypi.org/project/jupyter-videochat/
+[conda-forge-badge]:
+  https://img.shields.io/conda/vn/conda-forge/jupyter-videochat
+[conda-forge]: https://anaconda.org/conda-forge/jupyter-videochat
 [npm-badge]: https://img.shields.io/npm/v/jupyterlab-videochat
 [changelog]:
   https://github.com/yuvipanda/jupyter-videochat/blob/master/CHANGELOG.md

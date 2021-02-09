@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## jupyter-videochat [0.5.1]
+
+- adds missing `provides` to allow downstreams extensions to use (and not just
+  import) `IVideoChatManager` ([#21])
+- moves current Lab UI area (e.g. `right`, `main`) to user settings ([#22])
+
+[0.5.1]: https://pypi.org/project/jupyter-videochat/0.5.1
+[#21]: https://github.com/yuvipanda/jupyter-videochat/issues/21
+[#22]: https://github.com/yuvipanda/jupyter-videochat/pull/22
+
 ## jupyter-videochat [0.5.0]
 
 - overhaul for JupyterLab 3 ([#12], [#14])
@@ -16,7 +26,7 @@
 - adds URL router
   - open a chat directly with `?jvc=<room name>` ([#7])
 
-[0.5.0]: https://pypi.org/project/jupyter-videochat/0.1.1
+[0.5.0]: https://pypi.org/project/jupyter-videochat/0.5.0
 [#12]: https://github.com/yuvipanda/jupyter-videochat/issues/12
 [#7]: https://github.com/yuvipanda/jupyter-videochat/issues/7
 [#14]: https://github.com/yuvipanda/jupyter-videochat/pull/14

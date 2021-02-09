@@ -20,7 +20,7 @@ jlpm build
 # Install server extension
 pip install -e .
 # Register server extension
-jupyter serverextension enable --py jupyter_videochat
+jupyter server extension enable --py jupyter_videochat
 # Symlink your development version of the extension with JupyterLab
 jupyter labextension develop --overwrite .
 # Rebuild Typescript source after making changes
@@ -46,9 +46,12 @@ jupyter lab
 
 ## Extending
 
-Other JupyterLab extensions can use `IVideoChatManager` to interact with the
+Other [JupyterLab extensions] can use the `IVideoChatManager` to interact with
+the
 [Jitsi Meet API](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe)
-instance, which has many _commands_, _functions_ and _events_.
+instance, which has many _commands_, _functions_ and _events_. Nobody has yet,
+_that we know of_: if you are successful, please consider posting an
+issue/screenshot on the GitHub repository!
 
 - Add `jupyterlab-videochat` as a `package.json` dependency
 
@@ -70,7 +73,7 @@ instance, which has many _commands_, _functions_ and _events_.
     activate: (app: JupyterLabFrontEnd, videochat: IVideoChatManager) => {
       videochat.meetChanged.connect(() => {
         if (videochat.meet) {
-          // do something clever with the Meet
+          // do something clever with the Meet!
         }
       });
     },
@@ -79,14 +82,56 @@ instance, which has many _commands_, _functions_ and _events_.
   export default plugin;
   ```
 
-  > _The typings provided are **best-effort**, PRs welcome to improve them._
+  > _The typings provided for the Jitsit API are **best-effort**, PRs welcome to
+  > improve them._
 
-- (Probably) add `jupyter_videochat` to your extension's python dependencies,
+- (Probably) add `jupyter-videochat` to your extension's python dependencies,
   e.g.
 
   ```py
   # setup.py
   setup(
-      install_requires=["jupyter_videochat"]
+      install_requires=["jupyter-videochat"]
   )
   ```
+
+## Releasing
+
+- Start a release issue with a checklist of tasks
+  - see previous releases for examples
+- Ensure the version has been updated, roughly following [semver]
+  - Basically, any _removal_ or _data_ constraint would trigger a `0.x+1.0`
+  - Otherwise it's probably `0.x.y+1`
+- Ensure the [CHANGELOG](./CHANGELOG.md) and [README](./README.md) are
+  up-to-date
+- Wait until CI passes on `master`
+- Validate on Binder
+- Download the release assets from the latest CI run
+- From the GitHub web UI, create a new tag/release
+  - name the tag `v0.x.y`
+  - upload all of the release assets (including `SHA256SUMS`!)
+- Upload to pypi.org
+  ```bash
+  twine upload jupyter-videochat*
+  ```
+- Upload to npm.com
+  ```bash
+  npm login
+  npm publish jupyterlab-videochat*
+  ```
+- Make a new PR bumping to the next point release
+  - just in case a quick fix is needed
+- Validate the as-released assets in a clean environment
+  - e.g. on Binder with a simple `requirements.txt` gist
+  ```bash
+  jupyter-videochat ==0.x.y
+  ```
+- Wait for the [conda-forge feedstock] to get an automated PR
+  - validate and merge
+- Close the release issue!
+
+[semver]: https://semver.org/
+[conda-forge feedstock]:
+  https://github.com/conda-forge/jupyter-videochat-feedstock
+[jupyterlab extensions]:
+  https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html
