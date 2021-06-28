@@ -7,8 +7,8 @@
 - moves current Lab UI area (e.g. `right`, `main`) to user settings ([#22])
 
 [0.5.1]: https://pypi.org/project/jupyter-videochat/0.5.1
-[#21]: https://github.com/yuvipanda/jupyter-videochat/issues/21
-[#22]: https://github.com/yuvipanda/jupyter-videochat/pull/22
+[#21]: https://github.com/jupyterlab-contrib/jupyter-videochat/issues/21
+[#22]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/22
 
 ## jupyter-videochat [0.5.0]
 
@@ -27,9 +27,9 @@
   - open a chat directly with `?jvc=<room name>` ([#7])
 
 [0.5.0]: https://pypi.org/project/jupyter-videochat/0.5.0
-[#12]: https://github.com/yuvipanda/jupyter-videochat/issues/12
-[#7]: https://github.com/yuvipanda/jupyter-videochat/issues/7
-[#14]: https://github.com/yuvipanda/jupyter-videochat/pull/14
+[#12]: https://github.com/jupyterlab-contrib/jupyter-videochat/issues/12
+[#7]: https://github.com/jupyterlab-contrib/jupyter-videochat/issues/7
+[#14]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/14
 
 ## jupyter-videochat [0.4.0]
 
@@ -37,4 +37,4 @@
 - last release compatible with JupyterLab 2
 
 [0.4.0]: https://www.npmjs.com/package/jupyterlab-videochat
-[#2]: https://github.com/yuvipanda/jupyter-videochat/issues/2
+[#2]: https://github.com/jupyterlab-contrib/jupyter-videochat/issues/2

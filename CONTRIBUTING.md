@@ -10,7 +10,7 @@ The `jlpm` command is JupyterLab's pinned version of
 
 ```bash
 # Clone the project repository
-git clone https://github.com/yuvipanda/jupyter-videochat
+git clone https://github.com/jupyterlab-contrib/jupyter-videochat
 # Move to jupyter-videochat directory
 cd jupyter-videochat
 # Install JS dependencies
