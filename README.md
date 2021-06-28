@@ -165,7 +165,7 @@ On [Binder](https://mybinder.org), use the `urlpath` to append the argument,
 ensuring the arguments get properly URL-encoded.
 
 ```
-https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3DStand-Up
+https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3DStand-Up
                                                          # URL-encoded  [? ] [=  ]
 ```
 
@@ -192,7 +192,7 @@ showing your meeting and content. For example, to use...
 ...the doubly-escaped URL would be something like:
 
 ```http
-https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?
+https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/HEAD?
 urlpath=git-pull
   %3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fjakevdp%252FPythonDataScienceHandbook
   %26branch%3Dmaster
@@ -201,13 +201,13 @@ urlpath=git-pull
 ```
 
 [workflow]:
-  https://github.com/yuvipanda/jupyter-videochat/actions?query=workflow%3ACI+branch%3Amaster
+  https://github.com/jupyterlab-contrib/jupyter-videochat/actions?query=workflow%3ACI+branch%3Amaster
 [workflow-badge]:
-  https://github.com/yuvipanda/jupyter-videochat/workflows/CI/badge.svg
+  https://github.com/jupyterlab-contrib/jupyter-videochat/workflows/CI/badge.svg
 [binder]:
-  https://mybinder.org/v2/gh/yuvipanda/jupyter-videochat/HEAD?urlpath=lab
+  https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/HEAD?urlpath=lab
 [binder-reqs]:
-  https://github.com/yuvipanda/jupyter-videochat/blob/master/binder/requirements.txt
+  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/binder/requirements.txt
 [binder-badge]: https://mybinder.org/badge_logo.svg
 [pypi-badge]: https://img.shields.io/pypi/v/jupyter-videochat
 [pypi]: https://pypi.org/project/jupyter-videochat/
@@ -216,11 +216,11 @@ urlpath=git-pull
 [conda-forge]: https://anaconda.org/conda-forge/jupyter-videochat
 [npm-badge]: https://img.shields.io/npm/v/jupyterlab-videochat
 [changelog]:
-  https://github.com/yuvipanda/jupyter-videochat/blob/master/CHANGELOG.md
+  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/CHANGELOG.md
 [changelog-badge]: https://img.shields.io/badge/CHANGELOG-md-000
 [contributing-badge]: https://img.shields.io/badge/CONTRIBUTING-md-000
 [contributing]:
-  https://github.com/yuvipanda/jupyter-videochat/blob/master/CONTRIBUTING.md
+  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/CONTRIBUTING.md
 [jitsi]: https://jitsi.org
 [python data science handbook]:
   https://github.com/jakevdp/PythonDataScienceHandbook

@@ -7,9 +7,9 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/yuvipanda/jupyter-videochat",
+  "homepage": "https://github.com/jupyterlab-contrib/jupyter-videochat",
   "bugs": {
-    "url": "https://github.com/yuvipanda/jupyter-videochat/issues"
+    "url": "https://github.com/jupyterlab-contrib/jupyter-videochat/issues"
   },
   "license": "BSD-3-Clause",
   "author": "Yuvi Panda",
@@ -22,7 +22,7 @@
   "style": "style/index.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yuvipanda/jupyter-videochat.git"
+    "url": "https://github.com/jupyterlab-contrib/jupyter-videochat.git"
   },
   "scripts": {
     "bootstrap": "jlpm --ignore-optional && jlpm clean && jlpm lint && jlpm build",
