@@ -1,18 +1,11 @@
 #!/usr/bin/env bash
 set -eux
 
-jlpm bootstrap
-
-python -m pip install -e . --ignore-installed --no-deps -vv
-
 # squash build warning
 jupyter labextension disable jupyter-offlinenotebook || echo "not enabled"
-jupyter labextension uninstall --no-build jupyter-offlinenotebook || echo "not installed"
+python -m pip uninstall -y jupyter-offlinenotebook || echo "not installed"
 
-# install our extensions
-jupyter labextension develop --overwrite .
-jupyter serverextension enable --sys-prefix --py jupyter_videochat
-jupyter server extension enable --sys-prefix --py jupyter_videochat
+python -m pip install jupyter-videochat
 
 # list all extensions
 jupyter server extension list
