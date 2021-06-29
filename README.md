@@ -165,7 +165,7 @@ On [Binder](https://mybinder.org), use the `urlpath` to append the argument,
 ensuring the arguments get properly URL-encoded.
 
 ```
-https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/HEAD?urlpath=tree%3Fjvc%3DStand-Up
+https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/demo?urlpath=tree%3Fjvc%3DStand-Up
                                                          # URL-encoded  [? ] [=  ]
 ```
 
@@ -181,7 +181,7 @@ have fast-building, (almost) single-click URLs that launch right into JupyterLab
 showing your meeting and content. For example, to use...
 
 - the [Python Data Science Handbook] as `master`
-- this project's repo, at `HEAD` (_not recommended, as it's pretty
+- this project's repo, at `demo` (_not recommended, as it's pretty
   [minimal][binder-reqs]_)
 
 ...and launch directly into JupyterLab showing
@@ -192,7 +192,7 @@ showing your meeting and content. For example, to use...
 ...the doubly-escaped URL would be something like:
 
 ```http
-https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/HEAD?
+https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/demo?
 urlpath=git-pull
   %3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fjakevdp%252FPythonDataScienceHandbook
   %26branch%3Dmaster
@@ -205,7 +205,7 @@ urlpath=git-pull
 [workflow-badge]:
   https://github.com/jupyterlab-contrib/jupyter-videochat/workflows/CI/badge.svg
 [binder]:
-  https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/HEAD?urlpath=lab
+  https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/demo?urlpath=lab
 [binder-reqs]:
   https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/binder/requirements.txt
 [binder-badge]: https://mybinder.org/badge_logo.svg
