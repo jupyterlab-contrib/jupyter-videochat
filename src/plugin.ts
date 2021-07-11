@@ -68,7 +68,7 @@ async function activateCore(
   }
 
   // add to shell, update tracker, title, etc.
-  function addToShell(area?: string) {
+  function addToShell(area?: string, activate = true) {
     area = area || manager.currentArea;
     shell.add(widget, area);
     updateTitle();
@@ -76,7 +76,9 @@ async function activateCore(
     if (!tracker.has(widget)) {
       tracker.add(widget).catch(void 0);
     }
-    shell.activateById(widget.id);
+    if (activate) {
+      shell.activateById(widget.id);
+    }
   }
 
   // listen for the subject to update the widget title dynamically
@@ -98,9 +100,9 @@ async function activateCore(
     .then((settings) => {
       manager.settings = settings;
       settings.changed.connect(() => addToShell());
-      addToShell();
+      addToShell(null, false);
     })
-    .catch(() => addToShell());
+    .catch(() => addToShell(null, false));
 
   // add commands
   commands.addCommand(CommandIds.open, {
@@ -108,7 +110,7 @@ async function activateCore(
     icon: prettyChatIcon,
     execute: async (args: IChatArgs) => {
       await manager.initialized;
-      addToShell();
+      addToShell(null, true);
       // Potentially navigate to new room
       if (manager.currentRoom?.displayName !== args.displayName) {
         manager.currentRoom = { displayName: args.displayName };
