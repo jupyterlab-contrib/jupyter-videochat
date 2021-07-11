@@ -27,9 +27,27 @@ export const URL_PARAM = 'jvc';
 export const DEFAULT_DOMAIN = 'meet.jit.si';
 
 /**
+ * An interface for sources of Jitsi Rooms
+ */
+export interface IRoomProvider {
+  /**
+   * Fetch available rooms
+   */
+  updateRooms: () => Promise<Room[]>;
+  /**
+   * Create a new room, filling in missing details
+   */
+  createRoom: (room: Partial<Room>) => Promise<Room | null>;
+  /**
+   * Fetch the config
+   */
+  updateConfig: () => Promise<VideoChatConfig>;
+}
+
+/**
  * The public interface exposed by the video chat extension
  */
-export interface IVideoChatManager {
+export interface IVideoChatManager extends IRoomProvider {
   /** The known Hub `Rooms` from the server */
   rooms: Room[];
 
@@ -41,12 +59,6 @@ export interface IVideoChatManager {
 
   /** A `Promise` that resolves when fully initialized */
   initialized: Promise<void>;
-
-  /** Initialize the manager */
-  initialize(): void;
-
-  /** Create a new `Room` */
-  createRoom(room: Room): Promise<Room>;
 
   /** The last-fetched config from the server */
   config: VideoChatConfig;
@@ -72,6 +84,16 @@ export interface IVideoChatManager {
    * probably one of: left, right, main
    */
   currentArea: string;
+
+  /**
+   * Add a new room provider.
+   */
+  registerRoomProvider(options: IVideoChatManager.IProviderOptions): void;
+
+  /**
+   * A signal for when room providers change
+   */
+  roomProvidersChanged: ISignal<IVideoChatManager, void>;
 }
 
 /** A namespace for VideoChatManager details */
@@ -79,6 +101,16 @@ export namespace IVideoChatManager {
   /** Options for constructing a new IVideoChatManager */
   export interface IOptions {
     // TBD
+  }
+  export interface IProviderOptions {
+    /** a unique identifier for the provider */
+    id: string;
+    /** a human-readable label for the provider */
+    label: string;
+    /** a rank for preference */
+    rank: number;
+    /** the provider implementation */
+    provider: IRoomProvider;
   }
 }
 

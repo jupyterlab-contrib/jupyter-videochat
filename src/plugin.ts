@@ -16,12 +16,13 @@ import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
 import { chatIcon, prettyChatIcon } from './icons';
+import { ServerRoomProvider } from './server';
 
 const DEFAULT_LABEL = 'Video Chat';
 
 const category = 'Video Chat';
 
-async function activate(
+async function activateCore(
   app: JupyterFrontEnd,
   palette: ICommandPalette,
   router: IRouter,
@@ -93,7 +94,7 @@ async function activate(
 
   // connect settings
   settingRegistry
-    .load(plugin.id)
+    .load(corePlugin.id)
     .then((settings) => {
       manager.settings = settings;
       settings.changed.connect(() => addToShell());
@@ -166,23 +167,43 @@ async function activate(
       .catch(console.warn);
   }
 
-  manager.initialize();
-
   // Return the manager that others extensions can use
   return manager;
 }
 
 /**
- * Initialization data for the jupyter-jitsi extension.
+ * Initialization data for the jupyter-videochat extension.
  */
-const plugin: JupyterFrontEndPlugin<IVideoChatManager> = {
+const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: `${NS}:plugin`,
   autoStart: true,
   requires: [ICommandPalette, IRouter, ISettingRegistry],
   optional: [ILauncher, ILayoutRestorer],
   provides: IVideoChatManager,
-  activate,
+  activate: activateCore,
+};
+
+function activateServerRooms(
+  app: JupyterFrontEnd,
+  chat: IVideoChatManager
+): void {
+  const provider = new ServerRoomProvider({
+    serverSettings: app.serviceManager.serverSettings,
+  });
+  chat.registerRoomProvider({
+    id: 'server',
+    label: 'Server',
+    rank: 0,
+    provider,
+  });
+}
+
+const serverRoomsPlugin: JupyterFrontEndPlugin<void> = {
+  id: `${NS}:server-room-provider`,
+  autoStart: true,
+  requires: [IVideoChatManager],
+  activate: activateServerRooms,
 };
 
 // In the future, there may be more extensions
-export default [plugin];
+export default [corePlugin, serverRoomsPlugin];
