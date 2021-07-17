@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { CSS } from '../tokens';
+import { CSS, IVideoChatManager } from '../tokens';
 import { Room } from '../types';
 import * as icons from '../icons';
 import { LabIcon } from '@jupyterlab/ui-components';
@@ -10,6 +10,7 @@ export type RoomsListProps = {
   onCreateRoom: (room: Room) => void;
   onEmailChanged: (email: string) => void;
   onDisplayNameChanged: (displayName: string) => void;
+  providerForRoom: (room: Room) => IVideoChatManager.IProviderOptions;
   currentRoom: Room;
   rooms: Room[];
   email: string;
@@ -86,7 +87,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
 
       <label id={`id-${CSS}-hub-room-list`}>
         <icons.groupIcon.react {...littleIcon} />
-        Select Hub room to join
+        Select Room to join
       </label>
       <ul aria-labelledby={`id-${CSS}-hub-room-list`}>
         {!props.rooms.length
@@ -94,7 +95,9 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           : props.rooms.map((value, i) => {
               return (
                 <li key={value.id}>
-                  <label>{value.displayName}</label>
+                  <label>
+                    {value.displayName}
+                  </label>
                   <button
                     className={`jp-mod-styled jp-mod-accept`}
                     onClick={() => props.onRoomSelect(value)}
@@ -102,6 +105,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
                     JOIN
                   </button>
                   <blockquote>{value.description}</blockquote>
+                  <span>{props.providerForRoom(value)?.label}</span>
                 </li>
               );
             })}

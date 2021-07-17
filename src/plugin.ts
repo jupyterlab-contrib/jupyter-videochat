@@ -16,7 +16,7 @@ import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
 import { chatIcon, prettyChatIcon } from './icons';
-import { ServerRoomProvider } from './server';
+import { ServerRoomProvider } from './rooms-server';
 
 const DEFAULT_LABEL = 'Video Chat';
 
@@ -127,6 +127,23 @@ async function activateCore(
     },
   });
 
+  commands.addCommand(CommandIds.togglePublicRooms, {
+    label: 'Toggle Video Chat Public Rooms',
+    isVisible: () => !!manager.settings,
+    isToggleable: true,
+    isToggled: () => !manager.settings?.composite.disablePublicRooms,
+    execute: async () => {
+      if (!manager.settings) {
+        console.warn('Video chat settings not loaded');
+        return;
+      }
+      await manager.settings.set(
+        'disablePublicRooms',
+        !manager.settings?.composite.disablePublicRooms
+      );
+    },
+  });
+
   commands.addCommand(CommandIds.routerStart, {
     label: 'Open Video Chat from URL',
     execute: async (args) => {
@@ -149,6 +166,7 @@ async function activateCore(
   // Add the commands to the palette.
   palette.addItem({ command: CommandIds.open, category });
   palette.addItem({ command: CommandIds.toggleArea, category });
+  palette.addItem({ command: CommandIds.togglePublicRooms, category });
 
   // Add to the router
   router.register({
@@ -174,7 +192,10 @@ async function activateCore(
 }
 
 /**
- * Initialization data for the jupyter-videochat extension.
+ * Initialization data for the jupyterlab-videochat extension.
+ *
+ * This only rooms provided are opt-in, global rooms without any room name
+ * obfuscation.
  */
 const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: `${NS}:plugin`,
@@ -192,6 +213,7 @@ function activateServerRooms(
   const provider = new ServerRoomProvider({
     serverSettings: app.serviceManager.serverSettings,
   });
+
   chat.registerRoomProvider({
     id: 'server',
     label: 'Server',
@@ -200,8 +222,11 @@ function activateServerRooms(
   });
 }
 
+/**
+ * The server rooms plugin, provided by the serverextension
+ */
 const serverRoomsPlugin: JupyterFrontEndPlugin<void> = {
-  id: `${NS}:server-room-provider`,
+  id: `${NS}:rooms-server`,
   autoStart: true,
   requires: [IVideoChatManager],
   activate: activateServerRooms,

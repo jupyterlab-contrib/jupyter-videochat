@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## jupyter-videochat [0.6.0] (unreleased)
+
+### UI
+
+- Rooms now show their provider, presently _Server_ or _Global_
+- Adopt _Card_ styling, like the _Launcher_
+
+### API
+
+- _Global_ rooms remain part of core, and can be opted-in by command or
+  _Advanced Settings_
+  - compatible with [JupyterLite]
+- _Server_ rooms moved to standalone plugin
+
+[0.6.0]: https://pypi.org/project/jupyter-videochat/0.6.0
+[jupyterlite]: https://github.com/jupyterlite/jupyterlite
+
 ## jupyter-videochat [0.5.1]
 
 - adds missing `provides` to allow downstreams extensions to use (and not just

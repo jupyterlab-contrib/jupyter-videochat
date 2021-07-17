@@ -28,6 +28,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     string,
     IVideoChatManager.IProviderOptions
   >();
+  private _roomProvidedBy = new WeakMap<Room, string>();
   private _roomProvidersChanged: Signal<VideoChatManager, void>;
 
   constructor(options?: VideoChatManager.IOptions) {
@@ -108,6 +109,10 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this._settings = settings;
     if (this._settings) {
       this._settings.changed.connect(this.onSettingsChanged, this);
+      if (!this.isInitialized) {
+        this._isInitialized = true;
+        this._initialized.resolve(void 0);
+      }
     }
     this.stateChanged.emit(void 0);
   }
@@ -126,13 +131,29 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   };
 
   /**
-   * Add a new room providers: no UI will be shown until the first provider
-   * is registered.
+   * Add a new room provider.
    */
   registerRoomProvider(options: IVideoChatManager.IProviderOptions): void {
     this._roomProviders.set(options.id, options);
+
+    const { stateChanged } = options.provider;
+
+    if (stateChanged) {
+      stateChanged.connect(
+        async () => await Promise.all([this.updateConfig(), this.updateRooms()])
+      );
+    }
+
     this._roomProvidersChanged.emit(void 0);
   }
+
+  providerForRoom = (room: Room): IVideoChatManager.IProviderOptions => {
+    const key = this._roomProvidedBy.get(room) || null;
+    if (key) {
+      return this._roomProviders.get(key);
+    }
+    return null;
+  };
 
   /**
    * Handle room providers changing
@@ -140,10 +161,8 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   protected async onRoomProvidersChanged(): Promise<void> {
     try {
       await Promise.all([this.updateConfig(), this.updateRooms()]);
-      this._isInitialized = true;
-      this._initialized.resolve(void 0);
     } catch (err) {
-      this._initialized.reject(err);
+      console.warn(err);
     }
     this.stateChanged.emit(void 0);
   }
@@ -164,6 +183,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
         config = { ...config, ...(await provider.updateConfig()) };
       } catch (err) {
         console.warn(`Failed to load config from ${id}`);
+        console.trace(err);
       }
     }
     this._config = config;
@@ -176,11 +196,17 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
    */
   async updateRooms(): Promise<Room[]> {
     let rooms: Room[] = [];
+    let providerRooms: Room[];
     for (const { provider, id } of this.rankedProviders) {
       try {
-        rooms = [...rooms, ...(await provider.updateRooms())];
+        providerRooms = await provider.updateRooms();
+        for (const room of providerRooms) {
+          this._roomProvidedBy.set(room, id);
+        }
+        rooms = [...rooms, ...providerRooms];
       } catch (err) {
         console.warn(`Failed to load rooms from ${id}`);
+        console.trace(err);
       }
     }
     this._rooms = rooms;

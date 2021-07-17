@@ -5,7 +5,7 @@ import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
 import { ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
 
-import { CSS } from '../tokens';
+import { CSS, IVideoChatManager } from '../tokens';
 import { Room, VideoChatConfig, IMeet, IJitsiFactory } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
@@ -19,6 +19,7 @@ export type VideoChatProps = {
   onDisplayNameChanged: (displayName: string) => void;
   onToggleSidebar: () => void;
   onMeet: (meet: IMeet) => void;
+  providerForRoom: (room: Room) => IVideoChatManager.IProviderOptions;
   rooms: Room[];
   config: VideoChatConfig;
   email: string;
@@ -64,6 +65,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
             displayName={props.displayName}
             configOverwrite={props.configOverwrite}
             interfaceConfigOverwrite={props.interfaceConfigOverwrite}
+            providerForRoom={props.providerForRoom}
         />
       ) : (
         <RoomsListComponent
@@ -77,6 +79,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           displayName={props.displayName}
           domain={domain}
           disablePublicRooms={props.disablePublicRooms}
+          providerForRoom={props.providerForRoom}
         />
       )}
     </>

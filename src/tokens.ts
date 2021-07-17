@@ -35,13 +35,17 @@ export interface IRoomProvider {
    */
   updateRooms: () => Promise<Room[]>;
   /**
-   * Create a new room, filling in missing details
+   * Create a new room, filling in missing details.
    */
   createRoom: (room: Partial<Room>) => Promise<Room | null>;
   /**
    * Fetch the config
    */
   updateConfig: () => Promise<VideoChatConfig>;
+  /**
+   * A signal that updates
+   */
+  stateChanged?: ISignal<IRoomProvider, void>;
 }
 
 /**
@@ -91,6 +95,11 @@ export interface IVideoChatManager extends IRoomProvider {
   registerRoomProvider(options: IVideoChatManager.IProviderOptions): void;
 
   /**
+   * Get the provider for a specific room.
+   */
+  providerForRoom(room: Room): IVideoChatManager.IProviderOptions | null;
+
+  /**
    * A signal for when room providers change
    */
   roomProvidersChanged: ISignal<IVideoChatManager, void>;
@@ -121,6 +130,9 @@ export namespace CommandIds {
 
   /** The command id for switching the area of the UI */
   export const toggleArea = `${NS}:togglearea`;
+
+  /** The command id for enabling public rooms */
+  export const togglePublicRooms = `${NS}:togglepublic`;
 
   /** The special command used during routing */
   export const routerStart = `${NS}:router`;
