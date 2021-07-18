@@ -14,9 +14,13 @@ This extension is composed of:
 - a Python package named `jupyter_videochat`, which offers:
   - a `jupyter_server` extension which provides convenient, configurable
     defaults for rooms on a [JupyterHub]
-  - a JupyterLab _federated extension_ named `jupyter-videochat`
+  - a JupyterLab _pre-built_ or _federated extension_ named `jupyter-videochat`
     - also distributed on [npm]
-    - for more about the TypeScript/JS API, see [CONTRIBUTING]
+      - for more about the TypeScript/JS API, see [CONTRIBUTING]
+    - at JupyterLab runtime, three _Plugins_ which can be independently disabled
+      - `jupyterlab-videochat:plugin` which is required by:
+      - `jupyterlab-videochat:rooms-server`
+      - `jupyterlab-videochat:rooms-public`
 
 [npm]: https://www.npmjs.com/package/jupyterlab-videochat
 [jupyterhub]: https://github.com/jupyterhub/jupyterhub
@@ -153,6 +157,41 @@ For example, to enable all third-party features, public rooms, and open in the
   cp overrides.json ${NB_PYTHON_PREFIX}/share/jupyter/lab/settings
   ```
 
+#### JupyterLite Client Example
+
+> Note: _JupyterLite_ is still alpha software, and the API is likely to change.
+
+`jupyter lite build`
+
+`jupyter_lite_config_.json`
+
+```json
+{
+  "LabBuildConfig": {
+    "federated_extensions": [
+      "https://pypi.io/.../jupyterlab-videochat-0.6.0.whl"
+    ]
+  }
+}
+```
+
+And a runtime `jupyter-lite.json`:
+
+```
+{
+  "jupyter-config-data": {
+    "disabledExtensions": [
+      "jupyterlab-videochat:rooms-server"
+    ],
+    "configOverrides": {
+      "jupyterlab-videochat:plugin": {
+        "disablePublicRooms": false
+      }
+    }
+  }
+}
+```
+
 ### Start a Meet by URL
 
 Appending `?jvc=room-name` to a JupyterLab URL will automatically open the Meet
@@ -169,7 +208,7 @@ https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/demo?urlpath=tre
                                                          # URL-encoded  [? ] [=  ]
 ```
 
-#### nbgitpuller
+##### nbgitpuller
 
 If you have two repos (or branches) that contain:
 
@@ -199,6 +238,26 @@ urlpath=git-pull
   %26urlpath%3Dlab%252Ftree%252FPythonDataScienceHandbook%252Fnotebooks%252F00.00-Preface.ipynb
   %253Fjvc%253DOffice%2BHours
 ```
+
+#### JupyterLite Example
+
+Additionally, `?JVC-PUBLIC=a-very-long-and-well-thought-key` can be enabled,
+providing a similar experience, but for unobfuscated, publicly-visible rooms.
+**Use with care**, and as a moderator take additional whatever steps you can
+from within the Jitsi security UI, including:
+
+- _lobbies_
+- _passwords_
+- _end-to-end encryption_
+
+Once properly configured above, a JupyterLite site can be `git push`ed to GitHub
+Pages, where a URL is far less obfuscated.
+
+```
+https://example.github.io/my-repo/lab?JVC-PUBLIC=a-very-long-and-well-thought-key
+```
+
+- probably _don't_ click on links shorter than about ten characters
 
 [workflow]:
   https://github.com/jupyterlab-contrib/jupyter-videochat/actions?query=workflow%3ACI+branch%3Amaster

@@ -9,8 +9,8 @@
 
 ### API
 
-- _Global_ rooms remain part of core, and can be opted-in by command or
-  _Advanced Settings_
+- _Global_ rooms remain part of core, and can be opted-in via _Command Palette_
+  or _Advanced Settings_ (and therefore `overrides.json`)
   - compatible with [JupyterLite]
 - _Server_ rooms moved to standalone plugin
 

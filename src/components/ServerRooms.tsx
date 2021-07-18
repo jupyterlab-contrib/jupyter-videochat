@@ -1,0 +1,75 @@
+import React, { useState } from 'react';
+
+import { CSS, RoomsListProps } from '../tokens';
+import * as icons from '../icons';
+
+import { noRoom, littleIcon } from './RoomsList';
+
+export const openBlank = {
+  target: '_blank',
+  rel: 'noopener noreferrer',
+};
+
+/**
+ * a component for rendering server rooms
+ */
+export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
+  const [roomName, setRoomName] = useState<string>('');
+
+  return (
+    <div className={`${CSS}-rooms`}>
+      <label id={`id-${CSS}-server-room-list`}>
+        <icons.groupIcon.react {...littleIcon} />
+        Select Room to join
+      </label>
+      <ul aria-labelledby={`id-${CSS}-server-room-list`}>
+        {!props.rooms.length
+          ? noRoom
+          : props.rooms.map((value, i) => {
+              return (
+                <li key={value.id}>
+                  <label>{value.displayName}</label>
+                  <button
+                    className={`jp-mod-styled jp-mod-accept`}
+                    onClick={() => props.onRoomSelect(value)}
+                  >
+                    JOIN
+                  </button>
+                  <blockquote>{value.description}</blockquote>
+                  <span>{props.providerForRoom(value)?.label}</span>
+                </li>
+              );
+            })}
+      </ul>
+
+      <label id={`id-${CSS}-new-server-room-list`}>
+        <icons.newGroupIcon.react {...littleIcon} />
+        Join Hub room by name
+      </label>
+      <ul aria-labelledby={`id-${CSS}-new-server-room-list`}>
+        <li>
+          <div className={`${CSS}-room-displayname-input`}>
+            <input
+              className="jp-mod-styled"
+              placeholder="Hub Room Name"
+              onInput={(evt) => setRoomName(evt.currentTarget.value)}
+            />
+            <button
+              className={`jp-mod-styled ${
+                roomName.trim().length ? 'jp-mod-accept' : ''
+              }`}
+              disabled={!roomName.trim().length}
+              onClick={() => props.onCreateRoom({ displayName: roomName })}
+            >
+              JOIN
+            </button>
+          </div>
+          <blockquote>
+            Join (or create) a named room. Share this name with other users of
+            your Hub.
+          </blockquote>
+        </li>
+      </ul>
+    </div>
+  );
+};

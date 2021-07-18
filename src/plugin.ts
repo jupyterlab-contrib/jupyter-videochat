@@ -11,7 +11,14 @@ import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { ILauncher } from '@jupyterlab/launcher';
 
-import { CommandIds, IVideoChatManager, URL_PARAM, NS, CSS } from './tokens';
+import {
+  CommandIds,
+  IVideoChatManager,
+  SERVER_URL_PARAM,
+  NS,
+  CSS,
+  PUBLIC_URL_PARAM,
+} from './tokens';
 import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
@@ -22,17 +29,20 @@ const DEFAULT_LABEL = 'Video Chat';
 
 const category = 'Video Chat';
 
+/**
+ * Handle application-level concerns
+ */
 async function activateCore(
   app: JupyterFrontEnd,
-  palette: ICommandPalette,
-  router: IRouter,
   settingRegistry: ISettingRegistry,
+  palette?: ICommandPalette,
   launcher?: ILauncher,
   restorer?: ILayoutRestorer
 ): Promise<IVideoChatManager> {
+  const { commands, shell } = app;
+
   const manager = new VideoChatManager();
 
-  const { commands, shell } = app;
   let widget: Panel;
   let chat: VideoChat;
   let subject: string | null = null;
@@ -127,53 +137,11 @@ async function activateCore(
     },
   });
 
-  commands.addCommand(CommandIds.togglePublicRooms, {
-    label: 'Toggle Video Chat Public Rooms',
-    isVisible: () => !!manager.settings,
-    isToggleable: true,
-    isToggled: () => !manager.settings?.composite.disablePublicRooms,
-    execute: async () => {
-      if (!manager.settings) {
-        console.warn('Video chat settings not loaded');
-        return;
-      }
-      await manager.settings.set(
-        'disablePublicRooms',
-        !manager.settings?.composite.disablePublicRooms
-      );
-    },
-  });
-
-  commands.addCommand(CommandIds.routerStart, {
-    label: 'Open Video Chat from URL',
-    execute: async (args) => {
-      const { request } = args as IRouter.ILocation;
-      const url = new URL(`http://example.com${request}`);
-      const params = url.searchParams;
-      const displayName = params.get(URL_PARAM);
-
-      const chatAfterRoute = async () => {
-        router.routed.disconnect(chatAfterRoute);
-        if (manager.currentRoom?.displayName != displayName) {
-          await commands.execute(CommandIds.open, { displayName });
-        }
-      };
-
-      router.routed.connect(chatAfterRoute);
-    },
-  });
-
-  // Add the commands to the palette.
-  palette.addItem({ command: CommandIds.open, category });
-  palette.addItem({ command: CommandIds.toggleArea, category });
-  palette.addItem({ command: CommandIds.togglePublicRooms, category });
-
-  // Add to the router
-  router.register({
-    command: CommandIds.routerStart,
-    pattern: /.*/,
-    rank: 29,
-  });
+  // If available, add the commands to the palette
+  if (palette) {
+    palette.addItem({ command: CommandIds.open, category });
+    palette.addItem({ command: CommandIds.toggleArea, category });
+  }
 
   // If available, add a card to the launcher
   if (launcher) {
@@ -192,7 +160,7 @@ async function activateCore(
 }
 
 /**
- * Initialization data for the jupyterlab-videochat extension.
+ * Initialization data for the `jupyterlab-videochat:plugin`.
  *
  * This only rooms provided are opt-in, global rooms without any room name
  * obfuscation.
@@ -200,16 +168,24 @@ async function activateCore(
 const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: `${NS}:plugin`,
   autoStart: true,
-  requires: [ICommandPalette, IRouter, ISettingRegistry],
-  optional: [ILauncher, ILayoutRestorer],
+  requires: [ISettingRegistry],
+  optional: [ICommandPalette, ILauncher, ILayoutRestorer],
   provides: IVideoChatManager,
   activate: activateCore,
 };
 
+/**
+ * Create the server room plugin
+ *
+ * In the future, this might `provide` itself with some reasonable API,
+ * but is already accessible from the manager, which is likely preferable.
+ */
 function activateServerRooms(
   app: JupyterFrontEnd,
-  chat: IVideoChatManager
+  chat: IVideoChatManager,
+  router?: IRouter
 ): void {
+  const { commands } = app;
   const provider = new ServerRoomProvider({
     serverSettings: app.serviceManager.serverSettings,
   });
@@ -219,18 +195,150 @@ function activateServerRooms(
     label: 'Server',
     rank: 0,
     provider,
+    component: async () =>
+      (await import('./components/ServerRooms')).ServerRoomsComponent,
   });
+
+  // If available, Add to the router
+  if (router) {
+    commands.addCommand(CommandIds.serverRouterStart, {
+      label: 'Open Server Video Chat from URL',
+      execute: async (args) => {
+        const { request } = args as IRouter.ILocation;
+        const url = new URL(`http://example.com${request}`);
+        const params = url.searchParams;
+        const displayName = params.get(SERVER_URL_PARAM);
+
+        const chatAfterRoute = async () => {
+          router.routed.disconnect(chatAfterRoute);
+          if (chat.currentRoom?.displayName != displayName) {
+            await commands.execute(CommandIds.open, { displayName });
+          }
+        };
+
+        router.routed.connect(chatAfterRoute);
+      },
+    });
+
+    router.register({
+      command: CommandIds.serverRouterStart,
+      pattern: /.*/,
+      rank: 29,
+    });
+  }
 }
 
 /**
- * The server rooms plugin, provided by the serverextension
+ * Initialization data for the `jupyterlab-videochat:rooms-server` plugin, provided
+ * by the serverextension REST API
  */
 const serverRoomsPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:rooms-server`,
   autoStart: true,
   requires: [IVideoChatManager],
+  optional: [IRouter],
   activate: activateServerRooms,
 };
 
+/**
+ * Initialization data for the `jupyterlab-videochat:rooms-public` plugin, which
+ * offers no persistence or even best-effort guarantee of privacy
+ */
+const publicRoomsPlugin: JupyterFrontEndPlugin<void> = {
+  id: `${NS}:rooms-public`,
+  autoStart: true,
+  requires: [IVideoChatManager],
+  optional: [IRouter, ICommandPalette],
+  activate: activatePublicRooms,
+};
+
+/**
+ * Create the public room plugin
+ *
+ * In the future, this might `provide` itself with some reasonable API,
+ * but is already accessible from the manager, which is likely preferable.
+ */
+async function activatePublicRooms(
+  app: JupyterFrontEnd,
+  chat: IVideoChatManager,
+  router?: IRouter,
+  palette?: ICommandPalette
+): Promise<void> {
+  const { commands } = app;
+
+  function isEnabled() {
+    return !chat.settings?.composite.disablePublicRooms;
+  }
+
+  chat.registerRoomProvider({
+    id: 'public',
+    label: 'Public',
+    rank: 999,
+    isEnabled,
+    provider: {
+      updateRooms: async () => [],
+      createRoom: () => null,
+      updateConfig: async () => {
+        return {} as any;
+      },
+    },
+    component: async () =>
+      (await import('./components/PublicRooms')).PublicRoomsComponent,
+  });
+
+  commands.addCommand(CommandIds.togglePublicRooms, {
+    label: 'Toggle Video Chat Public Rooms',
+    isVisible: () => !!chat.settings,
+    isToggleable: true,
+    isToggled: () => !chat.settings?.composite.disablePublicRooms,
+    execute: async () => {
+      if (!chat.settings) {
+        console.warn('Video chat settings not loaded');
+        return;
+      }
+      await chat.settings.set(
+        'disablePublicRooms',
+        !chat.settings?.composite.disablePublicRooms
+      );
+    },
+  });
+
+  // If available, Add to the router
+  if (router) {
+    commands.addCommand(CommandIds.publicRouterStart, {
+      label: 'Open Public Video Chat from URL',
+      execute: async (args) => {
+        const { request } = args as IRouter.ILocation;
+        const url = new URL(`http://example.com${request}`);
+        const params = url.searchParams;
+        const roomId = params.get(PUBLIC_URL_PARAM);
+
+        const chatAfterRoute = async () => {
+          router.routed.disconnect(chatAfterRoute);
+          if (chat.currentRoom?.displayName != roomId) {
+            chat.currentRoom = {
+              id: roomId,
+              displayName: roomId,
+              description: 'A Public Room',
+            };
+          }
+        };
+
+        router.routed.connect(chatAfterRoute);
+      },
+    });
+
+    router.register({
+      command: CommandIds.publicRouterStart,
+      pattern: /.*/,
+      rank: 99,
+    });
+  }
+
+  if (palette) {
+    palette.addItem({ command: CommandIds.togglePublicRooms, category });
+  }
+}
+
 // In the future, there may be more extensions
-export default [corePlugin, serverRoomsPlugin];
+export default [corePlugin, serverRoomsPlugin, publicRoomsPlugin];

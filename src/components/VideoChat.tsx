@@ -5,7 +5,7 @@ import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
 import { ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
 
-import { CSS, IVideoChatManager } from '../tokens';
+import { CSS, IVideoChatManager, TRoomComponent } from '../tokens';
 import { Room, VideoChatConfig, IMeet, IJitsiFactory } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
@@ -27,6 +27,7 @@ export type VideoChatProps = {
   configOverwrite: ReadonlyPartialJSONValue | null;
   interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
   disablePublicRooms: boolean;
+  providerComponents: TRoomComponent[];
 };
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
@@ -80,6 +81,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           domain={domain}
           disablePublicRooms={props.disablePublicRooms}
           providerForRoom={props.providerForRoom}
+          providerComponents={props.providerComponents}
         />
       )}
     </>

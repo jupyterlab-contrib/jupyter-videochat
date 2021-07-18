@@ -16,7 +16,9 @@ export const API_NAMESPACE = 'videochat';
 export const CSS = 'jp-VideoChat';
 
 /** The URL parameter (specified with `&` or `?`) which will trigger a re-route */
-export const URL_PARAM = 'jvc';
+export const SERVER_URL_PARAM = 'jvc';
+
+export const PUBLIC_URL_PARAM = 'JVC-PUBLIC';
 
 /** JS assets of last resort
  *
@@ -105,6 +107,12 @@ export interface IVideoChatManager extends IRoomProvider {
   roomProvidersChanged: ISignal<IVideoChatManager, void>;
 }
 
+export interface IRoomListProps {}
+
+export type TRoomComponent = (props: RoomsListProps) => JSX.Element;
+
+export type TLazyRoomComponent = () => Promise<TRoomComponent>;
+
 /** A namespace for VideoChatManager details */
 export namespace IVideoChatManager {
   /** Options for constructing a new IVideoChatManager */
@@ -120,6 +128,10 @@ export namespace IVideoChatManager {
     rank: number;
     /** the provider implementation */
     provider: IRoomProvider;
+    /** a promsie that resolves a react component for drawing the provider's rooms */
+    component: TLazyRoomComponent;
+    /** whether the provider should be considered for rooms and rendering */
+    isEnabled?: () => boolean;
   }
 }
 
@@ -134,8 +146,11 @@ export namespace CommandIds {
   /** The command id for enabling public rooms */
   export const togglePublicRooms = `${NS}:togglepublic`;
 
-  /** The special command used during routing */
-  export const routerStart = `${NS}:router`;
+  /** The special command used during server routing */
+  export const serverRouterStart = `${NS}:routerserver`;
+
+  /** The special command used during public routing */
+  export const publicRouterStart = `${NS}:routerpublic`;
 }
 
 /* tslint:disable */
@@ -145,3 +160,18 @@ export const IVideoChatManager = new Token<IVideoChatManager>(
   `${NS}:IVideoChatManager`
 );
 /* tslint:enable */
+
+export type RoomsListProps = {
+  onRoomSelect: (room: Room) => void;
+  onCreateRoom: (room: Room) => void;
+  onEmailChanged: (email: string) => void;
+  onDisplayNameChanged: (displayName: string) => void;
+  providerForRoom: (room: Room) => IVideoChatManager.IProviderOptions;
+  currentRoom: Room;
+  rooms: Room[];
+  email: string;
+  displayName: string;
+  domain: string;
+  disablePublicRooms: boolean;
+  providerComponents: TRoomComponent[];
+};
