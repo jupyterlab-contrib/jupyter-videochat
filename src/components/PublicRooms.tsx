@@ -18,11 +18,11 @@ export const PublicRoomsComponent = (props: RoomsListProps): JSX.Element => {
         Join Public room by name
       </label>
       <ul aria-labelledby={`id-${CSS}-public-room-list`}>
-        <li>
+        <li className={`${CSS}-has-input`}>
           <div className={`${CSS}-room-displayname-input`}>
             <input
               className="jp-mod-styled"
-              placeholder="Public Room ID"
+              placeholder="  Public Room ID"
               onInput={(evt) => setPublicRoomId(evt.currentTarget.value)}
             />
             <button

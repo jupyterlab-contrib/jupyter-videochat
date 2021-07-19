@@ -4,12 +4,7 @@ import { PromiseDelegate } from '@lumino/coreutils';
 import { VDomModel } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import {
-  IVideoChatManager,
-  DEFAULT_DOMAIN,
-  CSS,
-  TRoomComponent,
-} from './tokens';
+import { IVideoChatManager, DEFAULT_DOMAIN, CSS } from './tokens';
 import {
   Room,
   VideoChatConfig,
@@ -35,7 +30,6 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   >();
   private _roomProvidedBy = new WeakMap<Room, string>();
   private _roomProvidersChanged: Signal<VideoChatManager, void>;
-  private _allProviderComponents = new Map<string, TRoomComponent>();
 
   constructor(options?: VideoChatManager.IOptions) {
     super();
@@ -57,17 +51,6 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   /** A `Promise` that resolves when fully initialized */
   get initialized(): Promise<void> {
     return this._initialized.promise;
-  }
-
-  get providerComponents(): TRoomComponent[] {
-    let providerComponents = [];
-    for (const provider of this.rankedProviders) {
-      let component = this._allProviderComponents.get(provider.id);
-      if (component && (provider.isEnabled == null || provider.isEnabled())) {
-        providerComponents.push(component);
-      }
-    }
-    return providerComponents;
   }
 
   /** the current room */
@@ -177,32 +160,10 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
    */
   protected async onRoomProvidersChanged(): Promise<void> {
     try {
-      await Promise.all([
-        this.updateConfig(),
-        this.updateRooms(),
-        this.updateProviderComponents(),
-      ]);
+      await Promise.all([this.updateConfig(), this.updateRooms()]);
     } catch (err) {
       console.warn(err);
     }
-    this.stateChanged.emit(void 0);
-  }
-
-  /**
-   * load all providers, regardless of whether they are enabled.
-   */
-  async updateProviderComponents(): Promise<void> {
-    for (const provider of this.rankedProviders) {
-      try {
-        this._allProviderComponents.set(
-          provider.id,
-          await provider.component()
-        );
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-
     this.stateChanged.emit(void 0);
   }
 

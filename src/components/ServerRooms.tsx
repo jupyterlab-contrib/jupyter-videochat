@@ -44,14 +44,14 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
 
       <label id={`id-${CSS}-new-server-room-list`}>
         <icons.newGroupIcon.react {...littleIcon} />
-        Join Hub room by name
+        Join Server room by name
       </label>
       <ul aria-labelledby={`id-${CSS}-new-server-room-list`}>
-        <li>
+        <li className={`${CSS}-has-input`}>
           <div className={`${CSS}-room-displayname-input`}>
             <input
               className="jp-mod-styled"
-              placeholder="Hub Room Name"
+              placeholder="  Server Room Name"
               onInput={(evt) => setRoomName(evt.currentTarget.value)}
             />
             <button
@@ -66,7 +66,7 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
           </div>
           <blockquote>
             Join (or create) a named room. Share this name with other users of
-            your Hub.
+            your Hub, Binder, or others that can share a server key.
           </blockquote>
         </li>
       </ul>

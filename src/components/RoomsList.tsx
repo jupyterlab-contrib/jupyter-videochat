@@ -31,7 +31,6 @@ export const openBlank = {
 };
 
 export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
-
   return (
     <div className={`${CSS}-rooms`}>
       <label id={`id-${CSS}-user-info`}>
@@ -51,8 +50,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           <blockquote>
             (optional) Default name to show to other chat participants
           </blockquote>
-        </li>
-        <li className={`${CSS}-input-group`}>
+          <hr />
           <label>Email</label>
           <input
             className="jp-mod-styled"

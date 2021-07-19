@@ -63,7 +63,6 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         configOverwrite={settings?.composite.configOverwrite}
         interfaceConfigOverwrite={settings?.composite.interfaceConfigOverwrite}
         disablePublicRooms={!!settings?.composite.disablePublicRooms}
-        providerComponents={this.model.providerComponents}
       />
     );
   }

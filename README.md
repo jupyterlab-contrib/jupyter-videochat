@@ -175,14 +175,14 @@ For example, to enable all third-party features, public rooms, and open in the
 }
 ```
 
-And a runtime `jupyter-lite.json`:
+Add a runtime `jupyter-lite.json` (or a build time `overrides.json`) to disable
+server rooms.
 
-```
+```json
 {
+  "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "disabledExtensions": [
-      "jupyterlab-videochat:rooms-server"
-    ],
+    "disabledExtensions": ["jupyterlab-videochat:rooms-server"],
     "configOverrides": {
       "jupyterlab-videochat:plugin": {
         "disablePublicRooms": false
@@ -190,6 +190,12 @@ And a runtime `jupyter-lite.json`:
     }
   }
 }
+```
+
+This can then be tested with:
+
+```bash
+jupyter lite serve
 ```
 
 ### Start a Meet by URL

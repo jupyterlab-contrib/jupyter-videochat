@@ -128,10 +128,6 @@ export namespace IVideoChatManager {
     rank: number;
     /** the provider implementation */
     provider: IRoomProvider;
-    /** a promsie that resolves a react component for drawing the provider's rooms */
-    component: TLazyRoomComponent;
-    /** whether the provider should be considered for rooms and rendering */
-    isEnabled?: () => boolean;
   }
 }
 
@@ -173,5 +169,4 @@ export type RoomsListProps = {
   displayName: string;
   domain: string;
   disablePublicRooms: boolean;
-  providerComponents: TRoomComponent[];
 };

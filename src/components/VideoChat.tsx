@@ -5,7 +5,7 @@ import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
 import { ToolbarButtonComponent } from '@jupyterlab/apputils';
 import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
 
-import { CSS, IVideoChatManager, TRoomComponent } from '../tokens';
+import { CSS, IVideoChatManager } from '../tokens';
 import { Room, VideoChatConfig, IMeet, IJitsiFactory } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
@@ -27,7 +27,6 @@ export type VideoChatProps = {
   configOverwrite: ReadonlyPartialJSONValue | null;
   interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
   disablePublicRooms: boolean;
-  providerComponents: TRoomComponent[];
 };
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
@@ -45,10 +44,21 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           />
         </div>
         <div className="jp-Toolbar-item jp-Toolbar-spacer" />
+        <div
+          className={`${CSS}-room-activate-room-name jp-Toolbar-item`}
+          title={`${props.currentRoom?.id}`}
+        >
+          {`${props.currentRoom?.displayName || props.currentRoom?.id || ''}`}
+        </div>
+        <div className="jp-Toolbar-item jp-Toolbar-spacer" />
         <div className="jp-ToolbarButton jp-Toolbar-item">
           <ToolbarButtonComponent
             icon={stopIcon}
-            label={isConnected ? `Disconnect ${domain}` : `Not connected to ${domain}`}
+            label={
+              isConnected
+                ? `Disconnect ${domain}`
+                : `Not connected to ${domain}`
+            }
             enabled={isConnected}
             onClick={() => props.onRoomSelect(null)}
           />
@@ -57,16 +67,16 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
 
       {domain != null && props.currentRoom?.id != null ? (
         <JitsiMeetComponent
-            jitsiAPI={props.jitsiAPI}
-            room={props.currentRoom}
-            domain={domain}
-            onRoomSelect={props.onRoomSelect}
-            onMeet={props.onMeet}
-            email={props.email}
-            displayName={props.displayName}
-            configOverwrite={props.configOverwrite}
-            interfaceConfigOverwrite={props.interfaceConfigOverwrite}
-            providerForRoom={props.providerForRoom}
+          jitsiAPI={props.jitsiAPI}
+          room={props.currentRoom}
+          domain={domain}
+          onRoomSelect={props.onRoomSelect}
+          onMeet={props.onMeet}
+          email={props.email}
+          displayName={props.displayName}
+          configOverwrite={props.configOverwrite}
+          interfaceConfigOverwrite={props.interfaceConfigOverwrite}
+          providerForRoom={props.providerForRoom}
         />
       ) : (
         <RoomsListComponent
@@ -81,7 +91,6 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           domain={domain}
           disablePublicRooms={props.disablePublicRooms}
           providerForRoom={props.providerForRoom}
-          providerComponents={props.providerComponents}
         />
       )}
     </>

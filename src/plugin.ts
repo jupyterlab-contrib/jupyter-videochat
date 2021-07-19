@@ -195,8 +195,6 @@ function activateServerRooms(
     label: 'Server',
     rank: 0,
     provider,
-    component: async () =>
-      (await import('./components/ServerRooms')).ServerRoomsComponent,
   });
 
   // If available, Add to the router
@@ -266,15 +264,10 @@ async function activatePublicRooms(
 ): Promise<void> {
   const { commands } = app;
 
-  function isEnabled() {
-    return !chat.settings?.composite.disablePublicRooms;
-  }
-
   chat.registerRoomProvider({
     id: 'public',
     label: 'Public',
     rank: 999,
-    isEnabled,
     provider: {
       updateRooms: async () => [],
       createRoom: () => null,
@@ -282,8 +275,6 @@ async function activatePublicRooms(
         return {} as any;
       },
     },
-    component: async () =>
-      (await import('./components/PublicRooms')).PublicRoomsComponent,
   });
 
   commands.addCommand(CommandIds.togglePublicRooms, {
