@@ -113,3 +113,4 @@ dmypy.json
 
 # built labextension
 jupyter_videochat/labextension
+docs/_build/
