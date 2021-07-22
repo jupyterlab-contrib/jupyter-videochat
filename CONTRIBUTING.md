@@ -102,8 +102,7 @@ issue/screenshot on the GitHub repository!
 - Ensure the version has been updated, roughly following [semver]
   - Basically, any _removal_ or _data_ constraint would trigger a `0.x+1.0`
   - Otherwise it's probably `0.x.y+1`
-- Ensure the [CHANGELOG](./CHANGELOG.md) and [README](./README.md) are
-  up-to-date
+- Ensure the [CHANGELOG] and [README] are up-to-date
 - Wait until CI passes on `master`
 - Validate on Binder
 - Download the release assets from the latest CI run
@@ -130,6 +129,10 @@ issue/screenshot on the GitHub repository!
   - validate and merge
 - Close the release issue!
 
+[changelog]:
+  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/CHANGELOG.md
+[readme]:
+  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/README.md
 [semver]: https://semver.org/
 [conda-forge feedstock]:
   https://github.com/conda-forge/jupyter-videochat-feedstock

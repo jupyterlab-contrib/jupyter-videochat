@@ -1,0 +1,23 @@
+name: jupyter-videochat-docs
+
+channels:
+  - conda-forge
+
+dependencies:
+  # run
+  - escapism
+  - jupyterlab >=3,<4
+  - python >=3,6,<3.10
+  # build
+  - nodejs >=14,<15
+  - pip
+  - twine
+  # docs
+  - myst-nb
+  - pydata-sphinx-theme
+  - sphinx
+  - sphinx-jsonschema
+  # check
+  - pytest-check-links
+  - hunspell
+  - hunspell-en
