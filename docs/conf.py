@@ -15,7 +15,7 @@ APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
 
 SETUP_CFG = ROOT / "setup.cfg"
 SETUP_DATA = ConfigParser()
-SETUP_DATA.read_file(SETUP_CFG)
+SETUP_DATA.read_file(SETUP_CFG.open())
 
 # metadata
 author = APP_DATA["author"]
@@ -80,12 +80,10 @@ execution_excludepatterns = [
 
 # theme
 html_theme = "pydata_sphinx_theme"
-# html_logo = "_static/wordmark.svg"
+html_logo = "_static/logo.svg"
 html_theme_options = {
     "github_url": APP_DATA["homepage"],
     "use_edit_page_button": True,
-    "navbar_start": ["launch.html"],
-    "navbar_center": ["navbar-logo.html", "navbar-nav.html"],
 }
 
 html_context = {

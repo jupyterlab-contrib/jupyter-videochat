@@ -4,3 +4,4 @@ node_modules
 **/package.json
 **/build
 **/dist
+docs/_build/
