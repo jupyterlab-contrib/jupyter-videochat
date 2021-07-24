@@ -4,6 +4,9 @@ channels:
   - conda-forge
 
 dependencies:
+  # DEMO
+  - jupyterlab >=3.1.0rc2  # TODO: remove
+  - retrolab
   # run
   - escapism
   - jupyterlab >=3,<4

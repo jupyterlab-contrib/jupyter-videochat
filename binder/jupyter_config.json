@@ -1,0 +1,21 @@
+{
+  "VideoChat": {
+    "rooms": [
+      {
+        "displayName": "Demo",
+        "description": "A demo of jupyter-videochat"
+      },
+      {
+        "displayName": "Breakout Room 🍏",
+        "description": "Another room"
+      },
+      {
+        "displayName": "Breakout Room 🐧",
+        "description": "Yet another room"
+      }
+    ]
+  },
+  "LabApp": {
+    "collaborative": true
+  }
+}
