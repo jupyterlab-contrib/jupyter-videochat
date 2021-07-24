@@ -6,3 +6,4 @@ jupyterlab >=3
 jupyterlab ==3.1.0rc2
 retrolab >=0.3.0rc1
 nbgitpuller
+jupyterlab-link-share
