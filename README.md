@@ -1,6 +1,7 @@
 # jupyter-videochat
 
-> Video Chat with JupyterHub peers inside JupyterLab, powered by [Jitsi].
+> Video Chat with JupyterHub peers (or the world) inside JupyterLab, powered by
+> [Jitsi].
 
 [![install from pypi][pypi-badge]][pypi]
 [![install from conda-forge][conda-forge-badge]][conda-forge]
@@ -75,7 +76,7 @@ jupyter labextension list
 ```
 
 If you do not see `jupyterlab-videochat`, the best course of action is to
-[uninstall](#Uninstall) and [reinstall](#Install), and carefully watch the log
+[uninstall](#uninstall) and [reinstall](#install), and carefully watch the log
 output.
 
 ## Uninstall
@@ -236,7 +237,7 @@ showing your meeting and content. For example, to use...
 
 ...the doubly-escaped URL would be something like:
 
-```http
+```
 https://mybinder.org/v2/gh/jupyterlab-contrib/jupyter-videochat/demo?
 urlpath=git-pull
   %3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fjakevdp%252FPythonDataScienceHandbook

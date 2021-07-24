@@ -1,7 +1,7 @@
 {
   "name": "jupyterlab-videochat",
   "version": "0.6.0",
-  "description": "Video Chat with peers inside  JupyterLab",
+  "description": "Video Chat with peers inside JupyterLab",
   "keywords": [
     "jupyter",
     "jupyterlab",
@@ -35,8 +35,8 @@
     "dev:ext": "jupyter labextension develop --overwrite .",
     "lint": "jlpm prettier && jlpm eslint",
     "lint:check": "jlpm prettier:check && jlpm eslint:check",
-    "prettier": "prettier --list-different --write \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema}/*.{yml,json,ts,tsx,css}\"",
-    "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema}/*.{yml,json,ts,tsx,css}\"",
+    "prettier": "prettier --list-different --write \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema,docs}/*.{yml,json,ts,tsx,css}\"",
+    "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema,docs}/*.{yml,json,ts,tsx,css}\"",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
     "watch": "run-p watch:lib watch:ext",
