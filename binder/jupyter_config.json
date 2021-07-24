@@ -2,15 +2,18 @@
   "VideoChat": {
     "rooms": [
       {
-        "displayName": "Demo",
+        "id": "demo",
+        "displayName": "📹 Demo",
         "description": "A demo of jupyter-videochat"
       },
       {
-        "displayName": "Breakout Room 🍏",
+        "id": "breakout-1-apple",
+        "displayName": "🍏 Breakout Room 1",
         "description": "Another room"
       },
       {
-        "displayName": "Breakout Room 🐧",
+        "id": "breakout-2-penguin",
+        "displayName": "🐧 Breakout Room 2",
         "description": "Yet another room"
       }
     ]

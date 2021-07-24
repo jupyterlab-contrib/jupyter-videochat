@@ -5,7 +5,7 @@ channels:
 
 dependencies:
   # DEMO
-  - jupyterlab >=3.1.0rc2  # TODO: remove
+  - jupyterlab >=3.1.0rc2 # TODO: remove
   - retrolab
   # run
   - escapism
