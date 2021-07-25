@@ -23,10 +23,11 @@
 ### Docs
 
 - A documentation site is now maintained on [ReadTheDocs] ([#43])
-  - It includes a one-click, no-install [jupyterlite] demo
+  - It includes a one-click, no-install demo powered by [JupyterLite] ([#40])
 
 [0.6.0]: https://pypi.org/project/jupyter-videochat/0.6.0
 [#38]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/38
+[#40]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/40
 [#43]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/43
 [jupyterlite]: https://github.com/jupyterlite/jupyterlite
 [readthedocs]: https://jupyter-videochat.rtfd.io
