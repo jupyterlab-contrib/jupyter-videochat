@@ -9,9 +9,6 @@
     "settingsOverrides": {
       "jupyterlab-videochat:plugin": {
         "disablePublicRooms": false
-      },
-      "@jupyterlab/docmanager-extension:plugin": {
-        "nameFileOnSave": false
       }
     }
   }
