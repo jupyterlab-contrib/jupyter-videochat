@@ -113,4 +113,8 @@ dmypy.json
 
 # built labextension
 jupyter_videochat/labextension
+
+# docs
 docs/_build/
+.jupyterlite*
+docs/_static/lite

@@ -21,6 +21,7 @@ jlpm build
 pip install -e .
 # Register server extension
 jupyter server extension enable --py jupyter_videochat
+jupyter serverextension enable --py jupyter_videochat
 # Symlink your development version of the extension with JupyterLab
 jupyter labextension develop --overwrite .
 # Rebuild Typescript source after making changes
@@ -45,6 +46,8 @@ jupyter lab
 ```
 
 ## Extending
+
+### Jitsi Meet API
 
 Other [JupyterLab extensions] can use the `IVideoChatManager` to interact with
 the
@@ -95,6 +98,29 @@ issue/screenshot on the GitHub repository!
   )
   ```
 
+### Room Provider
+
+Other [JupyterLab extensions] may add additional sources of _Rooms_ by
+registering a _provider_. See the core implementations of server and public
+rooms for examples of how to use the `IVideoChatManager.registerRoomProvider`
+API.
+
+_Providers_ are able to:
+
+- fetch configuration information to set up a connection to a Jitsi server
+- create new _Rooms_ that other users can join.
+- find additional _Rooms_
+
+If providing new rooms, it is important to have a scheme for generating room
+names that are:
+
+- unique
+- hard-to-guess
+
+While _passwords_, _lobbies_, and _end-to-end encryption_ are also available to
+moderators, the room name is the first line of defense in avoiding unexpected
+visitors during a Jitsi meeting.
+
 ## Releasing
 
 - Start a release issue with a checklist of tasks
@@ -102,7 +128,8 @@ issue/screenshot on the GitHub repository!
 - Ensure the version has been updated, roughly following [semver]
   - Basically, any _removal_ or _data_ constraint would trigger a `0.x+1.0`
   - Otherwise it's probably `0.x.y+1`
-- Ensure the [CHANGELOG] and [README] are up-to-date
+- Ensure the [CHANGELOG](./CHANGELOG.md) and [README](./README.md) are
+  up-to-date
 - Wait until CI passes on `master`
 - Validate on Binder
 - Download the release assets from the latest CI run
@@ -129,10 +156,6 @@ issue/screenshot on the GitHub repository!
   - validate and merge
 - Close the release issue!
 
-[changelog]:
-  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/CHANGELOG.md
-[readme]:
-  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/README.md
 [semver]: https://semver.org/
 [conda-forge feedstock]:
   https://github.com/conda-forge/jupyter-videochat-feedstock

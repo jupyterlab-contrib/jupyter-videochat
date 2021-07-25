@@ -1,15 +1,58 @@
-"""documentation for jupyterlite"""
+"""documentation for jupyter-videochat"""
 import datetime
 import json
 import os
+import subprocess
+import sys
 from pathlib import Path
 from configparser import ConfigParser
-
-RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
 
 CONF_PY = Path(__file__)
 HERE = CONF_PY.parent
 ROOT = HERE.parent
+
+PY = sys.executable
+PIP = [PY, "-m", "pip"]
+JPY = [PY, "-m", "jupyter"]
+
+RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
+# extra tasks peformed on ReadTheDocs
+RTD_TASKS = [
+    [ROOT, ["jlpm", "--ignore-optional"]],
+    [ROOT, ["jlpm", "build"]],
+    [ROOT, [PY, "setup.py", "bdist_wheel"]],
+    [
+        ROOT,
+        [
+            *PIP,
+            "install",
+            "-vv",
+            "--no-deps",
+            "--ignore-installed",
+            "--no-index",
+            "--find-links",
+            ROOT / "dist",
+            "jupyter_videochat",
+        ],
+    ],
+    # TODO: fix this
+    [
+        ROOT,
+        [
+            "git",
+            "clean",
+            "-dxf",
+            HERE / "_build",
+            HERE / "_static/lite",
+            HERE / ".jupyterlite.doit.db",
+        ],
+    ],
+    [HERE, [*JPY, "lite", "init"]],
+    [HERE, [*JPY, "lite", "build"]],
+    [HERE, [*JPY, "lite", "archive"]],
+]
+
+
 APP_PKG = ROOT / "package.json"
 APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
 
@@ -47,7 +90,8 @@ myst_heading_anchors = 3
 suppress_warnings = ["autosectionlabel.*"]
 
 # files
-# templates_path = ["_templates"]
+templates_path = ["_templates"]
+
 # html_favicon = "../app/lab/favicon.ico"
 # rely on the order of these to patch json, labextensions correctly
 html_static_path = [
@@ -85,10 +129,35 @@ html_theme_options = {
     "github_url": APP_DATA["homepage"],
     "use_edit_page_button": True,
 }
+html_sidebars = {
+    "**": [
+        "demo.html",
+        "search-field.html",
+        "sidebar-nav-bs.html",
+        "sidebar-ethical-ads.html",
+    ]
+}
 
 html_context = {
     "github_user": "jupyterlab-contrib",
     "github_repo": "jupyter-videochat",
     "github_version": "master",
     "doc_path": "docs",
+    "demo_tarball": f"_static/jupyter-videochat-lite-{release}.tgz",
 }
+
+
+def before_rtd_build(app, error):
+    """performs the full frontend build"""
+    for cwd, task in RTD_TASKS:
+        str_args = [*map(str, task)]
+        print(
+            f"[jupyter-videochat-docs] {cwd.relative_to(ROOT)}: {' '.join(str_args)}",
+            flush=True,
+        )
+        subprocess.check_call(str_args, cwd=str(cwd))
+
+
+def setup(app):
+    if RTD:
+        app.connect("config-inited", before_rtd_build)

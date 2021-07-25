@@ -1,7 +1,6 @@
 # jupyter-videochat
 
-> Video Chat with JupyterHub peers (or the world) inside JupyterLab, powered by
-> [Jitsi].
+> Video Chat with JupyterHub peers inside JupyterLab, powered by [Jitsi].
 
 [![install from pypi][pypi-badge]][pypi]
 [![install from conda-forge][conda-forge-badge]][conda-forge]
@@ -184,7 +183,7 @@ server rooms.
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
     "disabledExtensions": ["jupyterlab-videochat:rooms-server"],
-    "configOverrides": {
+    "settingsOverrides": {
       "jupyterlab-videochat:plugin": {
         "disablePublicRooms": false
       }

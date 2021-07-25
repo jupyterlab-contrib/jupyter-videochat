@@ -2,6 +2,7 @@ name: jupyter-videochat-docs
 
 channels:
   - conda-forge
+  - conda-forge/label/jupyterlab_rc
 
 dependencies:
   # run
@@ -16,3 +17,9 @@ dependencies:
   - pydata-sphinx-theme
   - sphinx
   - sphinx-jsonschema
+
+  # lite
+  - jupyterlab >=3.1.0rc2,<4
+  - pip:
+    - jupyterlite ==0.1.0a6
+    - retrolab >=0.3.0rc1
