@@ -17,6 +17,7 @@ dependencies:
   - pydata-sphinx-theme
   - sphinx
   - sphinx-jsonschema
+  - pytest-check-links
 
   # lite
   - jupyterlab >=3.1.0rc2,<4
