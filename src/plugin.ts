@@ -1,23 +1,33 @@
 import { Panel } from '@lumino/widgets';
 
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+
 import {
-  JupyterFrontEnd,
-  JupyterFrontEndPlugin,
+  ILabShell,
   ILayoutRestorer,
   IRouter,
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin,
+  LabShell,
 } from '@jupyterlab/application';
 
-import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
+import {
+  CommandToolbarButton,
+  ICommandPalette,
+  WidgetTracker,
+} from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { ILauncher } from '@jupyterlab/launcher';
+import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import {
   CommandIds,
-  IVideoChatManager,
-  SERVER_URL_PARAM,
-  NS,
   CSS,
+  FORCE_URL_PARAM,
+  IVideoChatManager,
+  NS,
   PUBLIC_URL_PARAM,
+  SERVER_URL_PARAM,
 } from './tokens';
 import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
@@ -29,6 +39,10 @@ const DEFAULT_LABEL = 'Video Chat';
 
 const category = 'Video Chat';
 
+function isFullLab(app: JupyterFrontEnd) {
+  return !!(app.shell as ILabShell).layoutModified;
+}
+
 /**
  * Handle application-level concerns
  */
@@ -37,9 +51,12 @@ async function activateCore(
   settingRegistry: ISettingRegistry,
   palette?: ICommandPalette,
   launcher?: ILauncher,
-  restorer?: ILayoutRestorer
+  restorer?: ILayoutRestorer,
+  mainmenu?: IMainMenu
 ): Promise<IVideoChatManager> {
   const { commands, shell } = app;
+
+  const labShell = isFullLab(app) ? (shell as LabShell) : null;
 
   const manager = new VideoChatManager();
 
@@ -53,7 +70,8 @@ async function activateCore(
     // Create widget
     chat = new VideoChat(manager, {
       onToggleSidebar: () => {
-        commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
+        labShell &&
+          commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
       },
     });
     widget = new Panel();
@@ -78,16 +96,25 @@ async function activateCore(
   }
 
   // add to shell, update tracker, title, etc.
-  function addToShell(area?: string, activate = true) {
+  function addToShell(area?: ILabShell.Area, activate = true) {
     area = area || manager.currentArea;
-    shell.add(widget, area);
-    updateTitle();
-    widget.update();
-    if (!tracker.has(widget)) {
-      tracker.add(widget).catch(void 0);
-    }
-    if (activate) {
-      shell.activateById(widget.id);
+    if (labShell) {
+      labShell.add(widget, area);
+      updateTitle();
+      widget.update();
+      if (!tracker.has(widget)) {
+        tracker.add(widget).catch(void 0);
+      }
+      if (activate) {
+        shell.activateById(widget.id);
+      }
+    } else if (window.location.search.indexOf(FORCE_URL_PARAM) !== -1) {
+      document.title = [document.title.split(' - ')[0], 'Video Chat'].join(
+        ' - '
+      );
+      app.shell.currentWidget.dispose();
+      app.shell.add(widget, 'main', { rank: 0 });
+      widget.parent.addClass(`${CSS}-main-parent`);
     }
   }
 
@@ -155,6 +182,11 @@ async function activateCore(
       .catch(console.warn);
   }
 
+  // If available, add to the file->new menu.... new tab handled in retroPlugin
+  if (mainmenu && labShell) {
+    mainmenu.fileMenu.newMenu.addGroup([{ command: CommandIds.open }]);
+  }
+
   // Return the manager that others extensions can use
   return manager;
 }
@@ -169,7 +201,7 @@ const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: `${NS}:plugin`,
   autoStart: true,
   requires: [ISettingRegistry],
-  optional: [ICommandPalette, ILauncher, ILayoutRestorer],
+  optional: [ICommandPalette, ILauncher, ILayoutRestorer, IMainMenu],
   provides: IVideoChatManager,
   activate: activateCore,
 };
@@ -331,5 +363,56 @@ async function activatePublicRooms(
   }
 }
 
+/**
+ * Initialization for retrolab (no-op in full)
+ */
+const retroPlugin: JupyterFrontEndPlugin<void> = {
+  id: `${NS}:retro`,
+  autoStart: true,
+  requires: [IVideoChatManager, IFileBrowserFactory],
+  optional: [IMainMenu],
+  activate: activateRetro,
+};
+
+function activateRetro(
+  app: JupyterFrontEnd,
+  chat: IVideoChatManager,
+  filebrowser: IFileBrowserFactory,
+  mainmenu?: IMainMenu
+): void {
+  if (isFullLab(app)) {
+    return;
+  }
+
+  const { commands } = app;
+  const browser = filebrowser.defaultBrowser;
+
+  commands.addCommand(CommandIds.openTab, {
+    label: 'New Video Chat',
+    icon: prettyChatIcon,
+    execute: (args: any) => {
+      let { origin, pathname, search } = window.location;
+
+      window.open(
+        `${origin}${pathname}?${search}${search ? '&' : ''}${FORCE_URL_PARAM}`,
+        '_blank'
+      );
+    },
+  });
+
+  browser.toolbar.insertItem(
+    3,
+    'new-videochat',
+    new CommandToolbarButton({
+      commands,
+      id: CommandIds.openTab,
+    })
+  );
+
+  if (mainmenu) {
+    mainmenu.fileMenu.newMenu.addGroup([{ command: CommandIds.openTab }]);
+  }
+}
+
 // In the future, there may be more extensions
-export default [corePlugin, serverRoomsPlugin, publicRoomsPlugin];
+export default [corePlugin, serverRoomsPlugin, publicRoomsPlugin, retroPlugin];

@@ -12,6 +12,7 @@ import {
   IMeetConstructor,
   IJitsiFactory,
 } from './types';
+import { ILabShell } from '@jupyterlab/application';
 
 /** A manager that can add, join, or create Video Chat rooms
  */
@@ -117,11 +118,11 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this.stateChanged.emit(void 0);
   }
 
-  get currentArea(): string {
-    return (this.settings?.composite['area'] || 'right') as string;
+  get currentArea(): ILabShell.Area {
+    return (this.settings?.composite['area'] || 'right') as ILabShell.Area;
   }
 
-  set currentArea(currentArea: string) {
+  set currentArea(currentArea: ILabShell.Area) {
     this.settings.set('area', currentArea).catch(void 0);
   }
 

@@ -4,6 +4,7 @@ import { ISignal } from '@lumino/signaling';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { Room, VideoChatConfig, IMeet, IJitsiFactory } from './types';
+import { ILabShell } from '@jupyterlab/application';
 
 /** The namespace for key tokens and IDs */
 export const NS = 'jupyterlab-videochat';
@@ -27,6 +28,11 @@ export const PUBLIC_URL_PARAM = 'JVC-PUBLIC';
  * is hosted from the root.
  */
 export const DEFAULT_DOMAIN = 'meet.jit.si';
+
+/**
+ * A URL param that will enable chat, even in non-full Lab
+ */
+export const FORCE_URL_PARAM = 'show-videochat';
 
 /**
  * An interface for sources of Jitsi Rooms
@@ -89,7 +95,7 @@ export interface IVideoChatManager extends IRoomProvider {
    * ### Notes
    * probably one of: left, right, main
    */
-  currentArea: string;
+  currentArea: ILabShell.Area;
 
   /**
    * Add a new room provider.
@@ -135,6 +141,9 @@ export namespace IVideoChatManager {
 export namespace CommandIds {
   /** The command id for opening a specific room */
   export const open = `${NS}:open`;
+
+  /** The command id for opening a specific room in a tabs */
+  export const openTab = `${NS}:open-tab`;
 
   /** The command id for switching the area of the UI */
   export const toggleArea = `${NS}:togglearea`;

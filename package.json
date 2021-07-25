@@ -44,7 +44,9 @@
     "watch:ext": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyterlab/application": "3"
+    "@jupyterlab/application": "3",
+    "@jupyterlab/filebrowser": "3",
+    "@jupyterlab/mainmenu": "3"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^3.0.2",

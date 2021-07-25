@@ -40,3 +40,15 @@ body.lm-mod-override-cursor .jp-VideoChat-jitsi-container:before {
   bottom: 0;
   background: transparent;
 }
+
+/* some overrides for retro-like applications */
+#main-panel.jp-VideoChat-main-parent {
+  max-width: unset;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#main-panel.jp-VideoChat-main-parent .jp-VideoChat-wrapper {
+  height: 100%;
+}
