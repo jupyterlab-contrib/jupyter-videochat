@@ -5,13 +5,7 @@ import { VDomModel } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { IVideoChatManager, DEFAULT_DOMAIN, CSS } from './tokens';
-import {
-  Room,
-  VideoChatConfig,
-  IMeet,
-  IMeetConstructor,
-  IJitsiFactory,
-} from './types';
+import { Room, VideoChatConfig, IMeet, IMeetConstructor, IJitsiFactory } from './types';
 import { ILabShell } from '@jupyterlab/application';
 
 /** A manager that can add, join, or create Video Chat rooms
@@ -25,10 +19,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _meet: IMeet;
   private _meetChanged: Signal<VideoChatManager, void>;
   private _settings: ISettingRegistry.ISettings;
-  private _roomProviders = new Map<
-    string,
-    IVideoChatManager.IProviderOptions
-  >();
+  private _roomProviders = new Map<string, IVideoChatManager.IProviderOptions>();
   private _roomProvidedBy = new WeakMap<Room, string>();
   private _roomProvidersChanged: Signal<VideoChatManager, void>;
 
@@ -264,9 +255,7 @@ namespace Private {
   let _loadPromise: PromiseDelegate<IMeetConstructor>;
 
   /** return a promise that resolves when the Jitsi external JS API is available */
-  export async function ensureExternalAPI(
-    url: string
-  ): Promise<IMeetConstructor> {
+  export async function ensureExternalAPI(url: string): Promise<IMeetConstructor> {
     if (_loadPromise == null) {
       _loadPromise = new PromiseDelegate();
       _scriptElement = document.createElement('script');

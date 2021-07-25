@@ -9,10 +9,10 @@
 
 ### API
 
-- _Public_ rooms are still configured as part of core, and can be opted-in via
-  _Command Palette_ or _Advanced Settings_ (and therefore `overrides.json`)
-- the _Public_ implementation, compatible with [JupyterLite], is in a separate,
-  optional plugin
+- _Public_ rooms are still configured as part of core, and can be opted-in via _Command
+  Palette_ or _Advanced Settings_ (and therefore `overrides.json`)
+- the _Public_ implementation, compatible with [JupyterLite], is in a separate, optional
+  plugin
 - _Server_ rooms similarly moved to a separate, optional plugin
 
 [0.6.0]: https://pypi.org/project/jupyter-videochat/0.6.0
@@ -20,8 +20,8 @@
 
 ## jupyter-videochat [0.5.1]
 
-- adds missing `provides` to allow downstreams extensions to use (and not just
-  import) `IVideoChatManager` ([#21])
+- adds missing `provides` to allow downstreams extensions to use (and not just import)
+  `IVideoChatManager` ([#21])
 - moves current Lab UI area (e.g. `right`, `main`) to user settings ([#22])
 
 [0.5.1]: https://pypi.org/project/jupyter-videochat/0.5.1
@@ -34,8 +34,8 @@
   - `pip install jupyter-videochat`, no more `jupyter labextension install`
     - `npm` tarballs will continue to be released for downstream extensions
       - user install via `jupyter labextension install` is no longer tested
-  - exposes `IVideoChatManager` for other extensions to interact with the
-    current Jitsi Meet intance
+  - exposes `IVideoChatManager` for other extensions to interact with the current Jitsi
+    Meet intance
   - fully configurable via _Advanced Settings_
     - Jitsi configuration
     - persistent display name/avatar

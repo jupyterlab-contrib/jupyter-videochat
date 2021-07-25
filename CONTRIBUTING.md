@@ -2,11 +2,11 @@
 
 ## Install
 
-The `jlpm` command is JupyterLab's pinned version of
-[yarn](https://yarnpkg.com/) that is installed with JupyterLab.
+The `jlpm` command is JupyterLab's pinned version of [yarn](https://yarnpkg.com/) that
+is installed with JupyterLab.
 
-> You may use `yarn` or `npm` in lieu of `jlpm` below, but internally some
-> subcommands will use still use `jlpm`.
+> You may use `yarn` or `npm` in lieu of `jlpm` below, but internally some subcommands
+> will use still use `jlpm`.
 
 ```bash
 # Clone the project repository
@@ -30,8 +30,8 @@ jlpm build
 
 ## Live Development
 
-You can watch the `src` directory for changes and automatically rebuild the JS
-files and webpacked extension.
+You can watch the `src` directory for changes and automatically rebuild the JS files and
+webpacked extension.
 
 ```bash
 # Watch the source directory in another terminal tab
@@ -49,12 +49,11 @@ jupyter lab
 
 ### Jitsi Meet API
 
-Other [JupyterLab extensions] can use the `IVideoChatManager` to interact with
-the
+Other [JupyterLab extensions] can use the `IVideoChatManager` to interact with the
 [Jitsi Meet API](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe)
-instance, which has many _commands_, _functions_ and _events_. Nobody has yet,
-_that we know of_: if you are successful, please consider posting an
-issue/screenshot on the GitHub repository!
+instance, which has many _commands_, _functions_ and _events_. Nobody has yet, _that we
+know of_: if you are successful, please consider posting an issue/screenshot on the
+GitHub repository!
 
 - Add `jupyterlab-videochat` as a `package.json` dependency
 
@@ -85,11 +84,10 @@ issue/screenshot on the GitHub repository!
   export default plugin;
   ```
 
-  > _The typings provided for the Jitsit API are **best-effort**, PRs welcome to
-  > improve them._
+  > _The typings provided for the Jitsit API are **best-effort**, PRs welcome to improve
+  > them._
 
-- (Probably) add `jupyter-videochat` to your extension's python dependencies,
-  e.g.
+- (Probably) add `jupyter-videochat` to your extension's python dependencies, e.g.
 
   ```py
   # setup.py
@@ -100,10 +98,9 @@ issue/screenshot on the GitHub repository!
 
 ### Room Provider
 
-Other [JupyterLab extensions] may add additional sources of _Rooms_ by
-registering a _provider_. See the core implementations of server and public
-rooms for examples of how to use the `IVideoChatManager.registerRoomProvider`
-API.
+Other [JupyterLab extensions] may add additional sources of _Rooms_ by registering a
+_provider_. See the core implementations of server and public rooms for examples of how
+to use the `IVideoChatManager.registerRoomProvider` API.
 
 _Providers_ are able to:
 
@@ -111,15 +108,15 @@ _Providers_ are able to:
 - create new _Rooms_ that other users can join.
 - find additional _Rooms_
 
-If providing new rooms, it is important to have a scheme for generating room
-names that are:
+If providing new rooms, it is important to have a scheme for generating room names that
+are:
 
 - unique
 - hard-to-guess
 
 While _passwords_, _lobbies_, and _end-to-end encryption_ are also available to
-moderators, the room name is the first line of defense in avoiding unexpected
-visitors during a Jitsi meeting.
+moderators, the room name is the first line of defense in avoiding unexpected visitors
+during a Jitsi meeting.
 
 ## Releasing
 
@@ -157,7 +154,6 @@ visitors during a Jitsi meeting.
 - Close the release issue!
 
 [semver]: https://semver.org/
-[conda-forge feedstock]:
-  https://github.com/conda-forge/jupyter-videochat-feedstock
+[conda-forge feedstock]: https://github.com/conda-forge/jupyter-videochat-feedstock
 [jupyterlab extensions]:
   https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html

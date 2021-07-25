@@ -70,8 +70,7 @@ async function activateCore(
     // Create widget
     chat = new VideoChat(manager, {
       onToggleSidebar: () => {
-        labShell &&
-          commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
+        labShell && commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
       },
     });
     widget = new Panel();
@@ -91,8 +90,7 @@ async function activateCore(
     } else {
       widget.title.caption = DEFAULT_LABEL;
     }
-    widget.title.label =
-      manager.currentArea === 'main' ? widget.title.caption : '';
+    widget.title.label = manager.currentArea === 'main' ? widget.title.caption : '';
   }
 
   // add to shell, update tracker, title, etc.
@@ -109,9 +107,7 @@ async function activateCore(
         shell.activateById(widget.id);
       }
     } else if (window.location.search.indexOf(FORCE_URL_PARAM) !== -1) {
-      document.title = [document.title.split(' - ')[0], 'Video Chat'].join(
-        ' - '
-      );
+      document.title = [document.title.split(' - ')[0], 'Video Chat'].join(' - ');
       app.shell.currentWidget.dispose();
       app.shell.add(widget, 'main', { rank: 0 });
       widget.parent.addClass(`${CSS}-main-parent`);
