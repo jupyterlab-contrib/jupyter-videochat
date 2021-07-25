@@ -4,19 +4,33 @@
 
 ### UI
 
-- Rooms now show their provider, presently _Server_ or _Public_
-- Adopt _Card_ styling, like the _Launcher_
+- Rooms now show their provider, presently _Server_ or _Public_ ([#38])
+- Adopt _Card_ styling, like the _Launcher_ ([#38])
+- _New Video Chat_ is added to the _File_ menu ([#38])
 
 ### API
 
 - _Public_ rooms are still configured as part of core, and can be opted-in via _Command
-  Palette_ or _Advanced Settings_ (and therefore `overrides.json`)
-- the _Public_ implementation, compatible with [JupyterLite], is in a separate, optional
-  plugin
-- _Server_ rooms similarly moved to a separate, optional plugin
+  Palette_ or _Advanced Settings_ (and therefore `overrides.json`) ([#38])
+- the _Public_ implementation is in a separate, optional plugin ([#38])
+- _Server_ rooms similarly moved to a separate, optional plugin ([#38])
+
+### Integrations
+
+- Works more harmoniously with [retrolab] ([#38])
+- The _Public_ plugin is compatible with [JupyterLite] ([#38])
+
+### Docs
+
+- A documentation site is now maintained on [ReadTheDocs] ([#43])
+  - It includes a one-click, no-install [jupyterlite] demo
 
 [0.6.0]: https://pypi.org/project/jupyter-videochat/0.6.0
+[#38]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/38
+[#43]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/43
 [jupyterlite]: https://github.com/jupyterlite/jupyterlite
+[readthedocs]: https://jupyter-videochat.rtfd.io
+[retrolab]: https://github.com/jupyterlab/retrolab
 
 ## jupyter-videochat [0.5.1]
 
@@ -35,7 +49,7 @@
     - `npm` tarballs will continue to be released for downstream extensions
       - user install via `jupyter labextension install` is no longer tested
   - exposes `IVideoChatManager` for other extensions to interact with the current Jitsi
-    Meet intance
+    Meet instance
   - fully configurable via _Advanced Settings_
     - Jitsi configuration
     - persistent display name/avatar

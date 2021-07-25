@@ -118,3 +118,6 @@ jupyter_videochat/labextension
 docs/_build/
 .jupyterlite*
 docs/_static/lite
+
+# eslint
+.eslintcache
