@@ -54,6 +54,7 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         onEmailChanged={this.onEmailChanged}
         onDisplayNameChanged={this.onDisplayNameChanged}
         onMeet={this.onMeet}
+        providerForRoom={this.model.providerForRoom}
         currentRoom={this.model.currentRoom}
         config={this.model.config}
         rooms={this.model.rooms}

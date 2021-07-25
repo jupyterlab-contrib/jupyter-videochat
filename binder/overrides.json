@@ -1,0 +1,7 @@
+{
+  "jupyter-videochat:plugin": {
+    "interfaceConfigOverwrite": null,
+    "configOverwrite": null,
+    "disablePublicRooms": false
+  }
+}

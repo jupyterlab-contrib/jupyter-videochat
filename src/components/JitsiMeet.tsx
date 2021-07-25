@@ -4,13 +4,14 @@ import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { CSS } from '../tokens';
+import { CSS, IVideoChatManager } from '../tokens';
 import { Room, IMeet, IJitsiFactory, IMeetOptions } from '../types';
 
 export type JitsiMeetProps = {
   jitsiAPI: IJitsiFactory;
   onRoomSelect: (room: Room) => void;
   onMeet: (meet: IMeet) => void;
+  providerForRoom: (room: Room) => IVideoChatManager.IProviderOptions;
   room: Room;
   domain: string;
   email: string;

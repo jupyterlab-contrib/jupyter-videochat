@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-videochat",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Video Chat with peers inside JupyterLab",
   "keywords": [
     "jupyter",
@@ -44,7 +44,9 @@
     "watch:ext": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyterlab/application": "3"
+    "@jupyterlab/application": "3",
+    "@jupyterlab/filebrowser": "3",
+    "@jupyterlab/mainmenu": "3"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^3.0.2",

@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+import sys
 
 from setuptools import setup
 
@@ -38,18 +39,20 @@ DATA_FILES = [
 ALL_FILES = sum([df[1] for df in DATA_FILES], [])
 REMOTE_ENTRY = [p for p in ALL_FILES if "remoteEntry" in p]
 
-assert len(REMOTE_ENTRY) == 1, f"""
-    Expected _exactly one_ `labextension/remoteEntry*.js`, found:
 
-        {[p for p in REMOTE_ENTRY]}
+if "sdist" in sys.argv or "bdist_wheel" in sys.argv:
+    assert len(REMOTE_ENTRY) == 1, f"""
+        Expected _exactly one_ `labextension/remoteEntry*.js`, found:
 
-    {JLPM_MSG}
-"""
+            {[p for p in REMOTE_ENTRY]}
 
-assert not [p for p in ALL_FILES if "build_log.json" in p], f"""
-    Found `build_log.json`, which contains paths on your computer, etc.
-    {JLPM_MSG}
-"""
+        {JLPM_MSG}
+    """
+
+    assert not [p for p in ALL_FILES if "build_log.json" in p], f"""
+        Found `build_log.json`, which contains paths on your computer, etc.
+        {JLPM_MSG}
+    """
 
 DATA_FILES += [
     # percolates up to the UI about the installed labextension

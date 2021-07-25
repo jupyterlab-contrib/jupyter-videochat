@@ -1,8 +1,9 @@
 .jp-VideoChat-rooms {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
-  background-color: var(--jp-layout-color2);
+  background-color: var(--jp-layout-color1);
 }
 
 .jp-VideoChat-rooms ul {
@@ -23,21 +24,21 @@
 }
 
 .jp-VideoChat-rooms li {
-  min-width: 300px;
-  max-width: 500px;
-  margin: 1em 0 0 1em;
+  align-items: center;
+  background-color: var(--jp-layout-color1);
   border: solid var(--jp-border-width) var(--jp-border-color2);
-  padding: 1em;
-  flex: 1;
-}
-
-.jp-VideoChat-rooms li {
+  color: var(--jp-ui-font-color2);
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  color: var(--jp-ui-font-color2);
-  align-items: center;
-  background-color: var(--jp-layout-color1);
+  flex: 1;
+  margin: 1em 0 0 1em;
+  max-width: 500px;
+  min-width: 200px;
+  padding: 1em;
+  padding-top: 0;
+  box-shadow: var(--jp-elevation-z2);
+  border-radius: var(--jp-border-radius);
 }
 
 .jp-VideoChat-rooms li label {
@@ -47,6 +48,8 @@
   color: var(--jp-ui-font-color0);
   flex: 1;
   font-weight: bold;
+  padding: calc(var(--jp-ui-font-size0) * 0.5);
+  padding-left: 0;
 }
 
 .jp-VideoChat-rooms li button {
@@ -60,14 +63,28 @@
   width: 100%;
 }
 
+.jp-VideoChat-rooms li.jp-VideoChat-has-input {
+  flex-direction: column;
+  padding: 0 1em 1em 1em;
+  border: dashed 1px var(--jp-border-color2);
+}
+
+.jp-VideoChat-rooms li.jp-VideoChat-has-input input {
+  width: unset;
+  min-width: unset;
+  max-width: unset;
+  padding: 0;
+}
+
 .jp-VideoChat-room-displayname-input input {
   margin-right: 1em;
   flex: 1;
 }
 
-.jp-VideoChat-room-displayname-input button {
+.jp-VideoChat-rooms button {
   flex: 0;
   min-width: 5em;
+  margin: 1em 0;
 }
 
 .jp-VideoChat-room-description {
@@ -88,7 +105,10 @@
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  background-color: var(--jp-layout-color2);
+  background-color: var(--jp-layout-color1);
+  border: solid 1px var(--jp-border-color2);
+  border-left: 0;
+  border-right: 0;
 }
 
 .jp-VideoChat-rooms label svg {
@@ -125,4 +145,16 @@
 
 .jp-VideoChat-input-group input {
   flex: 1;
+}
+
+ul[aria-labelledby='id-jp-VideoChat-user-info'] li,
+#id-jp-VideoChat-user-info .jp-VideoChat-input-group {
+  margin-top: 0;
+  border-top: 0;
+}
+
+.jp-Toolbar > .jp-Toolbar-item.jp-VideoChat-room-activate-room-name {
+  max-height: 1.5em;
+  text-overflow: ellipsis;
+  font-weight: bold;
 }

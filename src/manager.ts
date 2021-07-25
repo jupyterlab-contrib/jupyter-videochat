@@ -1,25 +1,18 @@
 import { Signal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
-import { URLExt } from '@jupyterlab/coreutils';
 import { VDomModel } from '@jupyterlab/apputils';
-import { ServerConnection } from '@jupyterlab/services';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import {
-  IVideoChatManager,
-  DEFAULT_DOMAIN,
-  CSS,
-  API_NAMESPACE,
-} from './tokens';
+import { IVideoChatManager, DEFAULT_DOMAIN, CSS } from './tokens';
 import {
   Room,
   VideoChatConfig,
   IMeet,
   IMeetConstructor,
-  IServerResponses,
   IJitsiFactory,
 } from './types';
+import { ILabShell } from '@jupyterlab/application';
 
 /** A manager that can add, join, or create Video Chat rooms
  */
@@ -32,10 +25,18 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _meet: IMeet;
   private _meetChanged: Signal<VideoChatManager, void>;
   private _settings: ISettingRegistry.ISettings;
+  private _roomProviders = new Map<
+    string,
+    IVideoChatManager.IProviderOptions
+  >();
+  private _roomProvidedBy = new WeakMap<Room, string>();
+  private _roomProvidersChanged: Signal<VideoChatManager, void>;
 
   constructor(options?: VideoChatManager.IOptions) {
     super();
     this._meetChanged = new Signal(this);
+    this._roomProvidersChanged = new Signal(this);
+    this._roomProvidersChanged.connect(this.onRoomProvidersChanged, this);
   }
 
   /** all known rooms */
@@ -92,6 +93,11 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     return this._meetChanged;
   }
 
+  /** A signal that emits when the available rooms change */
+  get roomProvidersChanged(): Signal<IVideoChatManager, void> {
+    return this._roomProvidersChanged;
+  }
+
   /** The JupyterLab settings bundle */
   get settings(): ISettingRegistry.ISettings {
     return this._settings;
@@ -104,15 +110,19 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this._settings = settings;
     if (this._settings) {
       this._settings.changed.connect(this.onSettingsChanged, this);
+      if (!this.isInitialized) {
+        this._isInitialized = true;
+        this._initialized.resolve(void 0);
+      }
     }
     this.stateChanged.emit(void 0);
   }
 
-  get currentArea(): string {
-    return (this.settings?.composite['area'] || 'right') as string;
+  get currentArea(): ILabShell.Area {
+    return (this.settings?.composite['area'] || 'right') as ILabShell.Area;
   }
 
-  set currentArea(currentArea: string) {
+  set currentArea(currentArea: ILabShell.Area) {
     this.settings.set('area', currentArea).catch(void 0);
   }
 
@@ -121,36 +131,103 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this.stateChanged.emit(void 0);
   };
 
-  /** Handle updating configuration and Rooms from the server */
-  initialize(): void {
-    Promise.all([this.updateConfig(), this.updateRooms()])
-      .then(() => {
-        this._isInitialized = true;
-        this._initialized.resolve(void 0);
-        this.stateChanged.emit(void 0);
-      })
-      .catch(console.warn);
+  /**
+   * Add a new room provider.
+   */
+  registerRoomProvider(options: IVideoChatManager.IProviderOptions): void {
+    this._roomProviders.set(options.id, options);
+
+    const { stateChanged } = options.provider;
+
+    if (stateChanged) {
+      stateChanged.connect(
+        async () => await Promise.all([this.updateConfig(), this.updateRooms()])
+      );
+    }
+
+    this._roomProvidersChanged.emit(void 0);
   }
 
-  /** Request the configuration from the server */
-  async updateConfig(): Promise<void> {
-    this._config = await requestAPI('config');
+  providerForRoom = (room: Room): IVideoChatManager.IProviderOptions => {
+    const key = this._roomProvidedBy.get(room) || null;
+    if (key) {
+      return this._roomProviders.get(key);
+    }
+    return null;
+  };
+
+  /**
+   * Handle room providers changing
+   */
+  protected async onRoomProvidersChanged(): Promise<void> {
+    try {
+      await Promise.all([this.updateConfig(), this.updateRooms()]);
+    } catch (err) {
+      console.warn(err);
+    }
     this.stateChanged.emit(void 0);
   }
 
-  /** Request the room list from the server */
-  async updateRooms(): Promise<void> {
-    this._rooms = await requestAPI('rooms');
-    this.stateChanged.emit(void 0);
+  get rankedProviders(): IVideoChatManager.IProviderOptions[] {
+    const providers = [...this._roomProviders.values()];
+    providers.sort((a, b) => a.rank - b.rank);
+    return providers;
   }
 
-  /** Create a new named room */
-  async createRoom(room: Partial<Room>): Promise<Room> {
-    const newRoom = await requestAPI('generate-room', {
-      method: 'POST',
-      body: JSON.stringify(room),
-    });
+  /**
+   * Fetch all config from all providers
+   */
+  async updateConfig(): Promise<VideoChatConfig> {
+    let config: VideoChatConfig = { jitsiServer: DEFAULT_DOMAIN };
+    for (const { provider, id } of this.rankedProviders) {
+      try {
+        config = { ...config, ...(await provider.updateConfig()) };
+      } catch (err) {
+        console.warn(`Failed to load config from ${id}`);
+        console.trace(err);
+      }
+    }
+    this._config = config;
+    this.stateChanged.emit(void 0);
+    return config;
+  }
+
+  /**
+   * Fetch all rooms from all providers
+   */
+  async updateRooms(): Promise<Room[]> {
+    let rooms: Room[] = [];
+    let providerRooms: Room[];
+    for (const { provider, id } of this.rankedProviders) {
+      try {
+        providerRooms = await provider.updateRooms();
+        for (const room of providerRooms) {
+          this._roomProvidedBy.set(room, id);
+        }
+        rooms = [...rooms, ...providerRooms];
+      } catch (err) {
+        console.warn(`Failed to load rooms from ${id}`);
+        console.trace(err);
+      }
+    }
+    this._rooms = rooms;
+    this.stateChanged.emit(void 0);
+    return rooms;
+  }
+
+  async createRoom(room: Partial<Room>): Promise<Room | null> {
+    let newRoom: Room | null = null;
+    for (const { provider, id } of this.rankedProviders) {
+      try {
+        newRoom = await provider.createRoom(room);
+        break;
+      } catch (err) {
+        console.warn(`Failed to create room from ${id}`);
+      }
+    }
+
     this.currentRoom = newRoom;
+
     return newRoom;
   }
 
@@ -177,36 +254,6 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
 export namespace VideoChatManager {
   /** placeholder options for video chat manager */
   export interface IOptions extends IVideoChatManager.IOptions {}
-}
-/**
- * Call the API extension
- *
- * @param endPoint API REST end point for the extension
- * @param init Initial values for the request
- * @returns The response body interpreted as JSON
- */
-export async function requestAPI<
-  U extends keyof IServerResponses,
-  T extends IServerResponses[U]
->(endPoint: U, init: RequestInit = {}): Promise<T> {
-  // Make request to Jupyter API
-  const settings = ServerConnection.makeSettings();
-  const requestUrl = URLExt.join(settings.baseUrl, API_NAMESPACE, endPoint);
-
-  let response: Response;
-  try {
-    response = await ServerConnection.makeRequest(requestUrl, init, settings);
-  } catch (error) {
-    throw new ServerConnection.NetworkError(error);
-  }
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new ServerConnection.ResponseError(response, data.message);
-  }
-
-  return data as T;
 }
 
 /** a private namespace for the singleton jitsi script tag */
