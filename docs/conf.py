@@ -92,10 +92,9 @@ suppress_warnings = ["autosectionlabel.*"]
 # files
 templates_path = ["_templates"]
 
-# html_favicon = "../app/lab/favicon.ico"
-# rely on the order of these to patch json, labextensions correctly
+html_favicon = "_static/logo.svg"
+
 html_static_path = [
-    # docs stuff
     "_static",
 ]
 exclude_patterns = [
