@@ -128,8 +128,7 @@ visitors during a Jitsi meeting.
 - Ensure the version has been updated, roughly following [semver]
   - Basically, any _removal_ or _data_ constraint would trigger a `0.x+1.0`
   - Otherwise it's probably `0.x.y+1`
-- Ensure the [CHANGELOG](./CHANGELOG.md) and [README](./README.md) are
-  up-to-date
+- Ensure the `CHANGELOG.md` and `README.md` are up-to-date
 - Wait until CI passes on `master`
 - Validate on Binder
 - Download the release assets from the latest CI run
@@ -140,10 +139,11 @@ visitors during a Jitsi meeting.
   ```bash
   twine upload jupyter-videochat*
   ```
-- Upload to npm.com
+- Upload to `npmjs.com`
   ```bash
   npm login
   npm publish jupyterlab-videochat*
+  npm logout
   ```
 - Make a new PR bumping to the next point release
   - just in case a quick fix is needed

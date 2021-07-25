@@ -36,7 +36,7 @@
     "lint": "jlpm prettier && jlpm eslint",
     "lint:check": "jlpm prettier:check && jlpm eslint:check",
     "prettier": "prettier --list-different --write \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema,docs}/*.{yml,json,ts,tsx,css}\"",
-    "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema,docs}/*.{yml,json,ts,tsx,css}\"",
+    "prettier:check": "prettier --check \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema,docs}/*.{yml,json,ts,tsx,css,md}\"",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
     "watch": "run-p watch:lib watch:ext",

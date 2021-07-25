@@ -2,8 +2,6 @@
   "LiteBuildConfig": {
     "lite_dir": ".",
     "output_dir": "./_static/lite",
-    "contents": [
-      "../README.md"
-    ]
+    "contents": ["../README.md"]
   }
 }
