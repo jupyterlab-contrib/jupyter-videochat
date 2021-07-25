@@ -354,6 +354,7 @@ async function activatePublicRooms(
     });
   }
 
+  // If available, add to command palette
   if (palette) {
     palette.addItem({ command: CommandIds.togglePublicRooms, category });
   }
@@ -365,15 +366,15 @@ async function activatePublicRooms(
 const retroPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:retro`,
   autoStart: true,
-  requires: [IVideoChatManager, IFileBrowserFactory],
-  optional: [IMainMenu],
+  requires: [IVideoChatManager],
+  optional: [IFileBrowserFactory, IMainMenu],
   activate: activateRetro,
 };
 
 function activateRetro(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
-  filebrowser: IFileBrowserFactory,
+  filebrowser?: IFileBrowserFactory,
   mainmenu?: IMainMenu
 ): void {
   if (isFullLab(app)) {
@@ -381,7 +382,6 @@ function activateRetro(
   }
 
   const { commands } = app;
-  const browser = filebrowser.defaultBrowser;
 
   commands.addCommand(CommandIds.openTab, {
     label: 'New Video Chat',
@@ -396,15 +396,19 @@ function activateRetro(
     },
   });
 
-  browser.toolbar.insertItem(
-    3,
-    'new-videochat',
-    new CommandToolbarButton({
-      commands,
-      id: CommandIds.openTab,
-    })
-  );
+  // If available, add button to file browser
+  if (filebrowser) {
+    filebrowser.defaultBrowser.toolbar.insertItem(
+      3,
+      'new-videochat',
+      new CommandToolbarButton({
+        commands,
+        id: CommandIds.openTab,
+      })
+    );
+  }
 
+  // If available, add menu item
   if (mainmenu) {
     mainmenu.fileMenu.newMenu.addGroup([{ command: CommandIds.openTab }]);
   }
