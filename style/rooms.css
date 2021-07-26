@@ -6,21 +6,18 @@
   background-color: var(--jp-layout-color1);
 }
 
-.jp-VideoChat-rooms ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 .jp-VideoChat-rooms a {
   color: var(--jp-brand-color1);
 }
 
 .jp-VideoChat-rooms ul {
+  list-style: none;
+  margin: 0;
   padding: 0 1em 1em 0;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .jp-VideoChat-rooms li {
@@ -153,8 +150,13 @@ ul[aria-labelledby='id-jp-VideoChat-user-info'] li,
   border-top: 0;
 }
 
-.jp-Toolbar > .jp-Toolbar-item.jp-VideoChat-room-activate-room-name {
+.jp-Toolbar > .jp-Toolbar-item.jp-VideoChat-active-room-name {
   max-height: 1.5em;
   text-overflow: ellipsis;
   font-weight: bold;
+  line-height: 1.8;
+}
+
+.jp-Toolbar > .jp-Toolbar-item.jp-VideoChat-active-room-name i {
+  margin-right: 0.5em;
 }
