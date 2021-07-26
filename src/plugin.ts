@@ -407,7 +407,7 @@ function activateRetro(
   }
 
   // If available, add button to file browser
-  if (filebrowser && filebrowser.defaultBrowser.isAttached) {
+  if (filebrowser) {
     const spacer = Toolbar.createSpacerItem();
     spacer.node.style.flex = '1';
     filebrowser.defaultBrowser.toolbar.insertItem(999, 'videochat-spacer', spacer);

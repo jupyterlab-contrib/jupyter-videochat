@@ -32,10 +32,11 @@ export type VideoChatProps = {
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   const domain = props.config?.jitsiServer;
   const isConnected = !!props.currentRoom;
+  const provider = props.providerForRoom(props.currentRoom);
   return (
     <>
       <div className={`${CSS}-toolbar jp-Toolbar`}>
-        <div className="jp-ToolbarButton jp-Toolbar-item">
+        <div className={`${CSS}-sidebar-toggle jp-ToolbarButton jp-Toolbar-item`}>
           <ToolbarButtonComponent
             tooltip="Toggle Video Chat Sidebar"
             icon={launcherIcon}
@@ -48,6 +49,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           className={`${CSS}-room-activate-room-name jp-Toolbar-item`}
           title={`${props.currentRoom?.id}`}
         >
+          <i>{provider?.label || ''}</i>
           {`${props.currentRoom?.displayName || props.currentRoom?.id || ''}`}
         </div>
         <div className="jp-Toolbar-item jp-Toolbar-spacer" />
