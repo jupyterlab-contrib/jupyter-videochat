@@ -27,6 +27,7 @@ export type VideoChatProps = {
   configOverwrite: ReadonlyPartialJSONValue | null;
   interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
   disablePublicRooms: boolean;
+  canCreateRooms: boolean;
 };
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
@@ -92,6 +93,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           displayName={props.displayName}
           domain={domain}
           disablePublicRooms={props.disablePublicRooms}
+          canCreateRooms={props.canCreateRooms}
           providerForRoom={props.providerForRoom}
         />
       )}

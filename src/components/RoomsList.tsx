@@ -67,7 +67,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           </blockquote>
         </li>
       </ul>
-      {ServerRoomsComponent(props)}
+      {props.canCreateRooms ? ServerRoomsComponent(props) : <></>}
       {props.disablePublicRooms ? <></> : PublicRoomsComponent(props)}
     </div>
   );

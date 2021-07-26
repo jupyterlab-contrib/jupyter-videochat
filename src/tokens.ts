@@ -53,9 +53,13 @@ export interface IRoomProvider {
    */
   updateRooms: () => Promise<Room[]>;
   /**
+   * Whether the provider can create rooms.
+   */
+  canCreateRooms: boolean;
+  /**
    * Create a new room, filling in missing details.
    */
-  createRoom: (room: Partial<Room>) => Promise<Room | null>;
+  createRoom?: (room: Partial<Room>) => Promise<Room | null>;
   /**
    * Fetch the config
    */
@@ -188,4 +192,5 @@ export type RoomsListProps = {
   displayName: string;
   domain: string;
   disablePublicRooms: boolean;
+  canCreateRooms: boolean;
 };

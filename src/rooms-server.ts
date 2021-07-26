@@ -21,6 +21,10 @@ export class ServerRoomProvider implements IRoomProvider {
     return await this.requestAPI('rooms');
   }
 
+  get canCreateRooms(): boolean {
+    return true;
+  }
+
   /** Create a new named room */
   async createRoom(room: Partial<Room>): Promise<Room> {
     const newRoom = await this.requestAPI('generate-room', {

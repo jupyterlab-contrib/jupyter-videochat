@@ -303,7 +303,7 @@ async function activatePublicRooms(
     rank: 999,
     provider: {
       updateRooms: async () => [],
-      createRoom: () => null,
+      canCreateRooms: false,
       updateConfig: async () => {
         return {} as any;
       },

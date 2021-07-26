@@ -209,6 +209,9 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   async createRoom(room: Partial<Room>): Promise<Room | null> {
     let newRoom: Room | null = null;
     for (const { provider, id } of this.rankedProviders) {
+      if (!provider.canCreateRooms) {
+        continue;
+      }
       try {
         newRoom = await provider.createRoom(room);
         break;
@@ -220,6 +223,15 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this.currentRoom = newRoom;
 
     return newRoom;
+  }
+
+  get canCreateRooms(): boolean {
+    for (const { provider } of this.rankedProviders) {
+      if (provider.canCreateRooms) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /** Lazily get the JitiExternalAPI script, as loaded from the jitsi server */
