@@ -115,7 +115,10 @@ async function activateCore(
       document.title = [document.title.split(' - ')[0], 'Video Chat'].join(' - ');
       app.shell.currentWidget.parent = null;
       app.shell.add(widget, 'main', { rank: 0 });
-      widget.parent.addClass(`${CSS}-main-parent`);
+      const { parent } = widget;
+      parent.addClass(`${CSS}-main-parent`);
+      parent.update();
+      parent.fit();
     }
   }
 

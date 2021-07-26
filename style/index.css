@@ -45,7 +45,6 @@ body.lm-mod-override-cursor .jp-VideoChat-jitsi-container:before {
 .jp-VideoChat-main-parent {
   display: flex !important;
   flex-direction: column !important;
-  height: 100% !important;
   margin: 0 !important;
   max-width: unset !important;
   padding: 0 !important;
