@@ -41,18 +41,19 @@ body.lm-mod-override-cursor .jp-VideoChat-jitsi-container:before {
   background: transparent;
 }
 
-/* some overrides for retro-like applications */
-#main-panel.jp-VideoChat-main-parent {
-  max-width: unset;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+/* some overrides for retrolab applications */
+.jp-VideoChat-main-parent {
+  max-width: unset !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
 }
 
-#main-panel.jp-VideoChat-main-parent .jp-VideoChat-wrapper {
-  height: 100%;
+.jp-VideoChat-main-parent .jp-VideoChat-wrapper {
+  height: 100% !important;
 }
 
-#main-panel.jp-VideoChat-main-parent .jp-VideoChat-sidebar-toggle {
-  display: none;
+.jp-VideoChat-main-parent .jp-VideoChat-sidebar-toggle {
+  display: none !important;
 }
