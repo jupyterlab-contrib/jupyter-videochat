@@ -11,9 +11,12 @@ import {
   LabShell,
 } from '@jupyterlab/application';
 
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import {
   CommandToolbarButton,
   ICommandPalette,
+  Toolbar,
   WidgetTracker,
 } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
@@ -27,6 +30,8 @@ import {
   IVideoChatManager,
   NS,
   PUBLIC_URL_PARAM,
+  RETRO_CANARY_OPT,
+  RETRO_TREE_URL,
   SERVER_URL_PARAM,
 } from './tokens';
 import { IChatArgs } from './types';
@@ -108,7 +113,7 @@ async function activateCore(
       }
     } else if (window.location.search.indexOf(FORCE_URL_PARAM) !== -1) {
       document.title = [document.title.split(' - ')[0], 'Video Chat'].join(' - ');
-      app.shell.currentWidget.dispose();
+      app.shell.currentWidget.parent = null;
       app.shell.add(widget, 'main', { rank: 0 });
       widget.parent.addClass(`${CSS}-main-parent`);
     }
@@ -377,16 +382,14 @@ function activateRetro(
   filebrowser?: IFileBrowserFactory,
   mainmenu?: IMainMenu
 ): void {
-  if (isFullLab(app)) {
+  if (!PageConfig.getOption(RETRO_CANARY_OPT)) {
     return;
   }
 
-  const retroLogo: HTMLAnchorElement = document.querySelector('#jp-RetroLogo');
-  const treeUrl = retroLogo?.href;
+  const baseUrl = PageConfig.getBaseUrl();
 
-  if (!treeUrl) {
-    return;
-  }
+  // this is basically hard-coded upstream
+  const treeUrl = URLExt.join(baseUrl, RETRO_TREE_URL);
 
   const { commands } = app;
 
@@ -394,28 +397,28 @@ function activateRetro(
     label: 'New Video Chat',
     icon: prettyChatIcon,
     execute: (args: any) => {
-      window.open(
-        `${treeUrl}${treeUrl.includes('?') ? '&' : '?'}${FORCE_URL_PARAM}`,
-        '_blank'
-      );
+      window.open(`${treeUrl}?${FORCE_URL_PARAM}`, '_blank');
     },
   });
 
+  // If available, add menu item
+  if (mainmenu) {
+    mainmenu.fileMenu.newMenu.addGroup([{ command: CommandIds.openTab }]);
+  }
+
   // If available, add button to file browser
-  if (filebrowser) {
+  if (filebrowser && filebrowser.defaultBrowser.isAttached) {
+    const spacer = Toolbar.createSpacerItem();
+    spacer.node.style.flex = '1';
+    filebrowser.defaultBrowser.toolbar.insertItem(999, 'videochat-spacer', spacer);
     filebrowser.defaultBrowser.toolbar.insertItem(
-      3,
+      1000,
       'new-videochat',
       new CommandToolbarButton({
         commands,
         id: CommandIds.openTab,
       })
     );
-  }
-
-  // If available, add menu item
-  if (mainmenu) {
-    mainmenu.fileMenu.newMenu.addGroup([{ command: CommandIds.openTab }]);
   }
 }
 
