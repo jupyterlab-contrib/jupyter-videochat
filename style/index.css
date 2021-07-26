@@ -16,6 +16,7 @@
   flex-direction: column;
 }
 @import './rooms.css';
+@import './retro.css';
 
 /*
     from
@@ -39,22 +40,4 @@ body.lm-mod-override-cursor .jp-VideoChat-jitsi-container:before {
   right: 0;
   bottom: 0;
   background: transparent;
-}
-
-/* some overrides for retrolab applications */
-.jp-VideoChat-main-parent {
-  display: flex !important;
-  flex-direction: column !important;
-  margin: 0 !important;
-  max-width: unset !important;
-  padding: 0 !important;
-  width: 100% !important;
-}
-
-.jp-VideoChat-main-parent .jp-VideoChat-wrapper {
-  height: 100% !important;
-}
-
-.jp-VideoChat-main-parent .jp-VideoChat-sidebar-toggle {
-  display: none !important;
 }

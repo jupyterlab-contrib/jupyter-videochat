@@ -12,7 +12,7 @@ export const PublicRoomsComponent = (props: RoomsListProps): JSX.Element => {
   const [publicRoomId, setPublicRoomId] = useState<string>('');
 
   return (
-    <div className={`${CSS}-rooms`}>
+    <div className={`${CSS}-rooms-public`}>
       <label id={`id-${CSS}-public-room-list`}>
         <icons.publicIcon.react {...littleIcon} />
         Join Public room by name

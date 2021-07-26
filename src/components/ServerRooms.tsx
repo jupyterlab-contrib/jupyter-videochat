@@ -17,7 +17,7 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
   const [roomName, setRoomName] = useState<string>('');
 
   return (
-    <div className={`${CSS}-rooms`}>
+    <div className={`${CSS}-rooms-server`}>
       <label id={`id-${CSS}-server-room-list`}>
         <icons.groupIcon.react {...littleIcon} />
         Select Room to join

@@ -17,7 +17,6 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .jp-VideoChat-rooms li {
@@ -91,7 +90,9 @@
   color: var(--jp-ui-font-color2);
 }
 
-.jp-VideoChat-rooms > label {
+.jp-VideoChat-rooms > label,
+.jp-VideoChat-rooms-public > label,
+.jp-VideoChat-rooms-server > label {
   font-size: var(--jp-ui-font-size1);
   font-family: var(--jp-ui-font-family);
   color: var(--jp-ui-font-color1);

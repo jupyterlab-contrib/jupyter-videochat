@@ -117,8 +117,12 @@ async function activateCore(
       app.shell.add(widget, 'main', { rank: 0 });
       const { parent } = widget;
       parent.addClass(`${CSS}-main-parent`);
-      parent.update();
-      parent.fit();
+      setTimeout(() => {
+        parent.update();
+        parent.fit();
+        app.shell.fit();
+        app.shell.update();
+      }, 100);
     }
   }
 

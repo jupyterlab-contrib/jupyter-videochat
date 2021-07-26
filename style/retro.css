@@ -1,0 +1,23 @@
+/* some overrides for retrolab applications */
+.jp-VideoChat-main-parent {
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  max-width: unset !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+.jp-VideoChat-main-parent .jp-VideoChat-wrapper {
+  height: 100% !important;
+}
+
+.jp-VideoChat-main-parent .jp-VideoChat-sidebar-toggle {
+  display: none !important;
+}
+
+.jp-VideoChat-main-parent .jp-VideoChat-rooms > * {
+  max-width: 1140px;
+  margin-left: auto;
+  margin-right: auto;
+}
