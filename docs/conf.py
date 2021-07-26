@@ -18,38 +18,32 @@ JPY = [PY, "-m", "jupyter"]
 RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
 # extra tasks peformed on ReadTheDocs
 RTD_TASKS = [
+    # be very sure we've got a clean state
+    [HERE, ["git", "clean", "-dxf", HERE / "_build", HERE / "_static/lite", HERE / ".jupyterlite.doit.db"]],
+    # ensure node_modules
     [ROOT, ["jlpm", "--ignore-optional"]],
+    # ensure lib an labextension
+    [ROOT, ["jlpm", "clean"]],
+    # ensure lib an labextension
     [ROOT, ["jlpm", "build"]],
-    [ROOT, [PY, "setup.py", "bdist_wheel"]],
-    [
-        ROOT,
-        [
-            *PIP,
-            "install",
-            "-vv",
-            "--no-deps",
-            "--ignore-installed",
-            "--no-index",
-            "--find-links",
-            ROOT / "dist",
-            "jupyter_videochat",
-        ],
-    ],
-    # TODO: fix this
-    [
-        ROOT,
-        [
-            "git",
-            "clean",
-            "-dxf",
-            HERE / "_build",
-            HERE / "_static/lite",
-            HERE / ".jupyterlite.doit.db",
-        ],
-    ],
+    # install hot module
+    [ROOT, [*PIP, "install", "-e", ".", "--no-deps", "--ignore-installed", "-vv"]],
+    # force serverextension
+    [ROOT, [*JPY, "server", "extension", "enable", "--py", "jupyter_videochat"]],
+    # list serverextension
+    [ROOT, [*JPY, "server", "extension", "list"]],
+    # force labextension
+    [ROOT, [*JPY, "labextension", "develop", "--overwrite", "."]],
+    # list labextension
+    [ROOT, [*JPY, "labextension", "list"]],
+    # initialize the lite site
     [HERE, [*JPY, "lite", "init"]],
+    # build the lite site
     [HERE, [*JPY, "lite", "build"]],
+    # build the lite archive
     [HERE, [*JPY, "lite", "archive"]],
+    # check the lite site
+    [HERE, [*JPY, "lite", "check"]],
 ]
 
 
