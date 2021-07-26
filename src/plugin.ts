@@ -381,16 +381,21 @@ function activateRetro(
     return;
   }
 
+  const retroLogo: HTMLAnchorElement = document.querySelector('#jp-RetroLogo');
+  const treeUrl = retroLogo?.href;
+
+  if (!treeUrl) {
+    return;
+  }
+
   const { commands } = app;
 
   commands.addCommand(CommandIds.openTab, {
     label: 'New Video Chat',
     icon: prettyChatIcon,
     execute: (args: any) => {
-      let { origin, pathname, search } = window.location;
-
       window.open(
-        `${origin}${pathname}?${search}${search ? '&' : ''}${FORCE_URL_PARAM}`,
+        `${treeUrl}${treeUrl.includes('?') ? '&' : '?'}${FORCE_URL_PARAM}`,
         '_blank'
       );
     },
