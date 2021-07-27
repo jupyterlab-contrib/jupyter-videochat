@@ -27,15 +27,18 @@ export type VideoChatProps = {
   configOverwrite: ReadonlyPartialJSONValue | null;
   interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
   disablePublicRooms: boolean;
+  canCreateRooms: boolean;
 };
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   const domain = props.config?.jitsiServer;
   const isConnected = !!props.currentRoom;
+  const provider = props.providerForRoom(props.currentRoom);
+  const providerLabel = !props.currentRoom ? '' : provider?.label || 'Public';
   return (
     <>
       <div className={`${CSS}-toolbar jp-Toolbar`}>
-        <div className="jp-ToolbarButton jp-Toolbar-item">
+        <div className={`${CSS}-sidebar-toggle jp-ToolbarButton jp-Toolbar-item`}>
           <ToolbarButtonComponent
             tooltip="Toggle Video Chat Sidebar"
             icon={launcherIcon}
@@ -44,21 +47,22 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           />
         </div>
         <div className="jp-Toolbar-item jp-Toolbar-spacer" />
-        <div
-          className={`${CSS}-room-activate-room-name jp-Toolbar-item`}
-          title={`${props.currentRoom?.id}`}
-        >
-          {`${props.currentRoom?.displayName || props.currentRoom?.id || ''}`}
-        </div>
+        {props.currentRoom ? (
+          <div
+            className={`${CSS}-active-room-name jp-Toolbar-item`}
+            title={`${props.currentRoom?.id}`}
+          >
+            <i>{providerLabel}</i>
+            {`${props.currentRoom?.displayName || props.currentRoom?.id || ''}`}
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="jp-Toolbar-item jp-Toolbar-spacer" />
         <div className="jp-ToolbarButton jp-Toolbar-item">
           <ToolbarButtonComponent
             icon={stopIcon}
-            label={
-              isConnected
-                ? `Disconnect ${domain}`
-                : `Not connected to ${domain}`
-            }
+            label={isConnected ? `Disconnect ${domain}` : `Not connected to ${domain}`}
             enabled={isConnected}
             onClick={() => props.onRoomSelect(null)}
           />
@@ -90,6 +94,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           displayName={props.displayName}
           domain={domain}
           disablePublicRooms={props.disablePublicRooms}
+          canCreateRooms={props.canCreateRooms}
           providerForRoom={props.providerForRoom}
         />
       )}

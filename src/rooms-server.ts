@@ -8,8 +8,7 @@ export class ServerRoomProvider implements IRoomProvider {
   private _serverSettings: ServerConnection.ISettings;
 
   constructor(options: ServerRoomProvider.IOptions) {
-    this._serverSettings =
-      options.serverSettings || ServerConnection.makeSettings();
+    this._serverSettings = options.serverSettings || ServerConnection.makeSettings();
   }
 
   /** Request the configuration from the server */
@@ -20,6 +19,10 @@ export class ServerRoomProvider implements IRoomProvider {
   /** Request the room list from the server */
   async updateRooms(): Promise<Room[]> {
     return await this.requestAPI('rooms');
+  }
+
+  get canCreateRooms(): boolean {
+    return true;
   }
 
   /** Create a new named room */
@@ -37,10 +40,10 @@ export class ServerRoomProvider implements IRoomProvider {
    * @param init Initial values for the request
    * @returns The response body interpreted as JSON
    */
-  async requestAPI<
-    U extends keyof IServerResponses,
-    T extends IServerResponses[U]
-  >(endPoint: U, init: RequestInit = {}): Promise<T> {
+  async requestAPI<U extends keyof IServerResponses, T extends IServerResponses[U]>(
+    endPoint: U,
+    init: RequestInit = {}
+  ): Promise<T> {
     // Make request to Jupyter API
     const settings = this._serverSettings;
     const requestUrl = URLExt.join(settings.baseUrl, API_NAMESPACE, endPoint);

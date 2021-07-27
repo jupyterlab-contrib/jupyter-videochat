@@ -11,9 +11,12 @@ import {
   LabShell,
 } from '@jupyterlab/application';
 
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import {
   CommandToolbarButton,
   ICommandPalette,
+  Toolbar,
   WidgetTracker,
 } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
@@ -27,6 +30,8 @@ import {
   IVideoChatManager,
   NS,
   PUBLIC_URL_PARAM,
+  RETRO_CANARY_OPT,
+  RETRO_TREE_URL,
   SERVER_URL_PARAM,
 } from './tokens';
 import { IChatArgs } from './types';
@@ -70,8 +75,7 @@ async function activateCore(
     // Create widget
     chat = new VideoChat(manager, {
       onToggleSidebar: () => {
-        labShell &&
-          commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
+        labShell && commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
       },
     });
     widget = new Panel();
@@ -91,8 +95,7 @@ async function activateCore(
     } else {
       widget.title.caption = DEFAULT_LABEL;
     }
-    widget.title.label =
-      manager.currentArea === 'main' ? widget.title.caption : '';
+    widget.title.label = manager.currentArea === 'main' ? widget.title.caption : '';
   }
 
   // add to shell, update tracker, title, etc.
@@ -109,12 +112,17 @@ async function activateCore(
         shell.activateById(widget.id);
       }
     } else if (window.location.search.indexOf(FORCE_URL_PARAM) !== -1) {
-      document.title = [document.title.split(' - ')[0], 'Video Chat'].join(
-        ' - '
-      );
-      app.shell.currentWidget.dispose();
+      document.title = [document.title.split(' - ')[0], 'Video Chat'].join(' - ');
+      app.shell.currentWidget.parent = null;
       app.shell.add(widget, 'main', { rank: 0 });
-      widget.parent.addClass(`${CSS}-main-parent`);
+      const { parent } = widget;
+      parent.addClass(`${CSS}-main-parent`);
+      setTimeout(() => {
+        parent.update();
+        parent.fit();
+        app.shell.fit();
+        app.shell.update();
+      }, 100);
     }
   }
 
@@ -302,7 +310,7 @@ async function activatePublicRooms(
     rank: 999,
     provider: {
       updateRooms: async () => [],
-      createRoom: () => null,
+      canCreateRooms: false,
       updateConfig: async () => {
         return {} as any;
       },
@@ -358,6 +366,7 @@ async function activatePublicRooms(
     });
   }
 
+  // If available, add to command palette
   if (palette) {
     palette.addItem({ command: CommandIds.togglePublicRooms, category });
   }
@@ -369,48 +378,54 @@ async function activatePublicRooms(
 const retroPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:retro`,
   autoStart: true,
-  requires: [IVideoChatManager, IFileBrowserFactory],
-  optional: [IMainMenu],
+  requires: [IVideoChatManager],
+  optional: [IFileBrowserFactory, IMainMenu],
   activate: activateRetro,
 };
 
 function activateRetro(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
-  filebrowser: IFileBrowserFactory,
+  filebrowser?: IFileBrowserFactory,
   mainmenu?: IMainMenu
 ): void {
-  if (isFullLab(app)) {
+  if (!PageConfig.getOption(RETRO_CANARY_OPT)) {
     return;
   }
 
+  const baseUrl = PageConfig.getBaseUrl();
+
+  // this is basically hard-coded upstream
+  const treeUrl = URLExt.join(baseUrl, RETRO_TREE_URL);
+
   const { commands } = app;
-  const browser = filebrowser.defaultBrowser;
 
   commands.addCommand(CommandIds.openTab, {
     label: 'New Video Chat',
     icon: prettyChatIcon,
     execute: (args: any) => {
-      let { origin, pathname, search } = window.location;
-
-      window.open(
-        `${origin}${pathname}?${search}${search ? '&' : ''}${FORCE_URL_PARAM}`,
-        '_blank'
-      );
+      window.open(`${treeUrl}?${FORCE_URL_PARAM}`, '_blank');
     },
   });
 
-  browser.toolbar.insertItem(
-    3,
-    'new-videochat',
-    new CommandToolbarButton({
-      commands,
-      id: CommandIds.openTab,
-    })
-  );
-
+  // If available, add menu item
   if (mainmenu) {
     mainmenu.fileMenu.newMenu.addGroup([{ command: CommandIds.openTab }]);
+  }
+
+  // If available, add button to file browser
+  if (filebrowser) {
+    const spacer = Toolbar.createSpacerItem();
+    spacer.node.style.flex = '1';
+    filebrowser.defaultBrowser.toolbar.insertItem(999, 'videochat-spacer', spacer);
+    filebrowser.defaultBrowser.toolbar.insertItem(
+      1000,
+      'new-videochat',
+      new CommandToolbarButton({
+        commands,
+        id: CommandIds.openTab,
+      })
+    );
   }
 }
 

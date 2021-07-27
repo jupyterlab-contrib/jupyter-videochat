@@ -1,0 +1,23 @@
+<div style="text-align: center">
+  <a
+    href="{{ pathto('_static/lite/lab/index.html', 1) }}"
+    class="btn btn-success"
+    target="_blank"
+    data-toggle="tooltip"
+    data-placement="bottom"
+    title="Launch a new JupyterLite"
+  >
+    <img
+      src="{{ pathto('_static/logo-light.svg', 1) }}"
+      width="24"
+      height="24"
+    />
+    Try jupyter-videochat <strong>Now</strong>
+  </a>
+
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+</div>

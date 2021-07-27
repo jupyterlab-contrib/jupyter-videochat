@@ -30,6 +30,16 @@ export const PUBLIC_URL_PARAM = 'JVC-PUBLIC';
 export const DEFAULT_DOMAIN = 'meet.jit.si';
 
 /**
+ * The URL frgament (when joined with `baseUrl`) for the retro tree
+ */
+export const RETRO_TREE_URL = 'retro/tree';
+
+/**
+ * The canary in jupyter-config-data for detecting retrolab
+ */
+export const RETRO_CANARY_OPT = 'retroPage';
+
+/**
  * A URL param that will enable chat, even in non-full Lab
  */
 export const FORCE_URL_PARAM = 'show-videochat';
@@ -43,9 +53,13 @@ export interface IRoomProvider {
    */
   updateRooms: () => Promise<Room[]>;
   /**
+   * Whether the provider can create rooms.
+   */
+  canCreateRooms: boolean;
+  /**
    * Create a new room, filling in missing details.
    */
-  createRoom: (room: Partial<Room>) => Promise<Room | null>;
+  createRoom?: (room: Partial<Room>) => Promise<Room | null>;
   /**
    * Fetch the config
    */
@@ -178,4 +192,5 @@ export type RoomsListProps = {
   displayName: string;
   domain: string;
   disablePublicRooms: boolean;
+  canCreateRooms: boolean;
 };

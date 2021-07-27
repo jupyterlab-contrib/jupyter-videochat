@@ -17,7 +17,7 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
   const [roomName, setRoomName] = useState<string>('');
 
   return (
-    <div className={`${CSS}-rooms`}>
+    <div className={`${CSS}-rooms-server`}>
       <label id={`id-${CSS}-server-room-list`}>
         <icons.groupIcon.react {...littleIcon} />
         Select Room to join
@@ -44,7 +44,7 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
 
       <label id={`id-${CSS}-new-server-room-list`}>
         <icons.newGroupIcon.react {...littleIcon} />
-        Join Server room by name
+        Join Room by name
       </label>
       <ul aria-labelledby={`id-${CSS}-new-server-room-list`}>
         <li className={`${CSS}-has-input`}>
@@ -65,7 +65,7 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
             </button>
           </div>
           <blockquote>
-            Join (or create) a named room. Share this name with other users of
+            Join (or create) a named Room. Share this name with other users of
             your Hub, Binder, or others that can share a server key.
           </blockquote>
         </li>
