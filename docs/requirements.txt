@@ -1,0 +1,9 @@
+ipywidgets
+jupyterlab >=3.1.0rc2,<4
+jupyterlite ==0.1.0a6
+myst-nb
+pydata-sphinx-theme
+pytest-check-links
+retrolab >=0.3.0rc1
+sphinx
+sphinx-jsonschema

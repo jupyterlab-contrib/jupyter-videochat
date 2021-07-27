@@ -15,11 +15,34 @@ PY = sys.executable
 PIP = [PY, "-m", "pip"]
 JPY = [PY, "-m", "jupyter"]
 
+DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "False").lower())
 RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
+
 # extra tasks peformed on ReadTheDocs
+DOCS_IN_CI_TASKS = [
+    # initialize the lite site
+    [HERE, [*JPY, "lite", "init"]],
+    # build the lite site
+    [HERE, [*JPY, "lite", "build"]],
+    # build the lite archive
+    [HERE, [*JPY, "lite", "archive"]],
+    # check the lite site
+    [HERE, [*JPY, "lite", "check"]],
+]
+
 RTD_TASKS = [
     # be very sure we've got a clean state
-    [HERE, ["git", "clean", "-dxf", HERE / "_build", HERE / "_static/lite", HERE / ".jupyterlite.doit.db"]],
+    [
+        HERE,
+        [
+            "git",
+            "clean",
+            "-dxf",
+            HERE / "_build",
+            HERE / "_static/lite",
+            HERE / ".jupyterlite.doit.db",
+        ],
+    ],
     # ensure node_modules
     [ROOT, ["jlpm", "--ignore-optional"]],
     # ensure lib an labextension
@@ -36,15 +59,7 @@ RTD_TASKS = [
     [ROOT, [*JPY, "labextension", "develop", "--overwrite", "."]],
     # list labextension
     [ROOT, [*JPY, "labextension", "list"]],
-    # initialize the lite site
-    [HERE, [*JPY, "lite", "init"]],
-    # build the lite site
-    [HERE, [*JPY, "lite", "build"]],
-    # build the lite archive
-    [HERE, [*JPY, "lite", "archive"]],
-    # check the lite site
-    [HERE, [*JPY, "lite", "check"]],
-]
+] + DOCS_IN_CI_TASKS
 
 
 APP_PKG = ROOT / "package.json"
@@ -140,9 +155,9 @@ html_context = {
 }
 
 
-def before_rtd_build(app, error):
-    """performs the full frontend build"""
-    for cwd, task in RTD_TASKS:
+def before_ci_build(app, error):
+    """performs tasks not done yet in CI/RTD"""
+    for cwd, task in RTD_TASKS if RTD else DOCS_IN_CI_TASKS:
         str_args = [*map(str, task)]
         print(
             f"[jupyter-videochat-docs] {cwd.relative_to(ROOT)}: {' '.join(str_args)}",
@@ -152,5 +167,5 @@ def before_rtd_build(app, error):
 
 
 def setup(app):
-    if RTD:
-        app.connect("config-inited", before_rtd_build)
+    if RTD or DOCS_IN_CI:
+        app.connect("config-inited", before_ci_build)

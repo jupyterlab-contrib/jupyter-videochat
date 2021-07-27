@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: 
+    branches:
       - master
       - develop
   pull_request:
@@ -192,3 +192,18 @@ jobs:
         jupyter labextension list --debug 1>labextensions 2>&1
         cat labextensions
         cat labextensions | grep -i "jupyterlab-videochat.*OK"
+
+    - name: Install (docs)
+      if: matrix.python-version == '3.9' && matrix.os == 'ubuntu'
+      run: pip install -r docs/requirements.txt
+
+    - name: Build (docs)
+      if: matrix.python-version == '3.9' && matrix.os == 'ubuntu'
+      env:
+        DOCS_IN_CI: 1
+      run: sphinx-build -W -b html docs docs/_build
+
+    - name: Check (links)
+      if: matrix.python-version == '3.9' && matrix.os == 'ubuntu'
+      run: |
+        pytest-check-links docs/_build -p no:warnings --links-ext=html --check-anchors --check-links-ignore "^https?://"
