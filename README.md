@@ -85,7 +85,8 @@ pip uninstall jupyter-videochat
 ## Launch
 
 Click on the + button (New Launcher) and you should see a "Video Chat"
-button under the Other section.
+button under the Other section. You will also see a "Video Chat"
+button on the right hand of jupyter lab.
 
 ## Configuration
 
