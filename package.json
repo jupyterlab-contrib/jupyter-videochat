@@ -20,7 +20,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
-  "repositors": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/jupyterlab-contrib/jupyter-videochat.git"
   },
