@@ -3,7 +3,7 @@ escapism
 jupyterlab >=3
 
 # DEMO stuff
-jupyterlab ==3.1.0rc2
-retrolab >=0.3.0rc1
+jupyterlab >=3.3.0,<4
+retrolab >=0.3.20
 nbgitpuller
 jupyterlab-link-share
