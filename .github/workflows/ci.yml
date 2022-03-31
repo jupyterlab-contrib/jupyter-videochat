@@ -98,6 +98,7 @@ jobs:
           path: ./jupyter_videochat/labextension
 
   lint:
+    nees: [build]
     name: lint
     runs-on: ${{ matrix.os }}-latest
     strategy:
