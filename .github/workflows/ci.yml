@@ -127,6 +127,9 @@ jobs:
       - name: Install Python packaging dependencies
         run: pip3 install -U --user pip wheel setuptools
 
+      - name: Install Python dev dependencies
+        run: pip3 install "jupyterlab==${{ matrix.lab-version }}.*"
+
       - name: Cache (JS)
         uses: actions/cache@v3
         with:
