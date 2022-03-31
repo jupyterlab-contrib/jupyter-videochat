@@ -103,13 +103,14 @@ jobs:
       matrix:
         python-version: ["3.7", "3.10"]
         os: ["ubuntu", "windows", "macos"]
-        lab-version: ["3"]
         include:
           # use python as marker for node/distribution test coverage
           - python-version: "3.7"
             artifact-glob: "*.tar.gz"
+            lab-version: "3.0"
           - python-version: "3.10"
             artifact-glob: "*.whl"
+            lab-version: "3.3"
           # os-specific settings
           - os: windows
             python-cmd: python
