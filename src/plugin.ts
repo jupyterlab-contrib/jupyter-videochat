@@ -64,11 +64,11 @@ async function activateCore(
 
   const labShell = isFullLab(app) ? (shell as LabShell) : null;
 
-  const trans = (translator || nullTranslator).load(NS);
+  const manager = new VideoChatManager({
+    trans: (translator || nullTranslator).load(NS),
+  });
 
-  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
-
-  const manager = new VideoChatManager({ trans });
+  const { __ } = manager;
 
   let widget: MainAreaWidget;
   let chat: VideoChat;
@@ -227,12 +227,9 @@ const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
 function activateServerRooms(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
-  translator?: ITranslator,
   router?: IRouter
 ): void {
-  const trans = (translator || nullTranslator).load(NS);
-
-  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
+  const { __ } = chat;
 
   const { commands } = app;
   const provider = new ServerRoomProvider({
@@ -283,7 +280,7 @@ const serverRoomsPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:rooms-server`,
   autoStart: true,
   requires: [IVideoChatManager],
-  optional: [ITranslator, IRouter],
+  optional: [IRouter],
   activate: activateServerRooms,
 };
 
@@ -295,7 +292,7 @@ const publicRoomsPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:rooms-public`,
   autoStart: true,
   requires: [IVideoChatManager],
-  optional: [ITranslator, IRouter, ICommandPalette],
+  optional: [IRouter, ICommandPalette],
   activate: activatePublicRooms,
 };
 
@@ -308,15 +305,12 @@ const publicRoomsPlugin: JupyterFrontEndPlugin<void> = {
 async function activatePublicRooms(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
-  translator?: ITranslator,
   router?: IRouter,
   palette?: ICommandPalette
 ): Promise<void> {
   const { commands } = app;
 
-  const trans = (translator || nullTranslator).load(NS);
-
-  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
+  const { __ } = chat;
 
   chat.registerRoomProvider({
     id: 'public',
@@ -393,14 +387,13 @@ const retroPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:retro`,
   autoStart: true,
   requires: [IVideoChatManager],
-  optional: [ITranslator, IFileBrowserFactory, IMainMenu],
+  optional: [IFileBrowserFactory, IMainMenu],
   activate: activateRetro,
 };
 
 function activateRetro(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
-  translator?: ITranslator,
   filebrowser?: IFileBrowserFactory,
   mainmenu?: IMainMenu
 ): void {
@@ -408,9 +401,7 @@ function activateRetro(
     return;
   }
 
-  const trans = (translator || nullTranslator).load(NS);
-
-  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
+  const { __ } = chat;
 
   const baseUrl = PageConfig.getBaseUrl();
 

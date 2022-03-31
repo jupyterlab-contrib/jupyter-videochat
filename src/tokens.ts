@@ -125,6 +125,11 @@ export interface IVideoChatManager extends IRoomProvider {
    * A signal for when room providers change
    */
   roomProvidersChanged: ISignal<IVideoChatManager, void>;
+
+  /**
+   * A translator for strings from this package
+   */
+  __(msgid: string, ...args: string[]): string;
 }
 
 export interface IRoomListProps {}

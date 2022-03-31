@@ -34,6 +34,10 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this._roomProvidersChanged.connect(this.onRoomProvidersChanged, this);
   }
 
+  __ = (msgid: string, ...args: string[]) => {
+    return this._trans.__(msgid, ...args);
+  };
+
   /** all known rooms */
   get rooms(): Room[] {
     return this._rooms;
@@ -178,7 +182,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
       try {
         config = { ...config, ...(await provider.updateConfig()) };
       } catch (err) {
-        console.warn(this._trans.__(`Failed to load config from %1`, id));
+        console.warn(this.__(`Failed to load config from %1`, id));
         console.trace(err);
       }
     }
@@ -201,7 +205,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
         }
         rooms = [...rooms, ...providerRooms];
       } catch (err) {
-        console.warn(this._trans.__(`Failed to load rooms from %1`, id));
+        console.warn(this.__(`Failed to load rooms from %1`, id));
         console.trace(err);
       }
     }
@@ -220,7 +224,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
         newRoom = await provider.createRoom(room);
         break;
       } catch (err) {
-        console.warn(this._trans.__(`Failed to create room from %1`, id));
+        console.warn(this.__(`Failed to create room from %1`, id));
       }
     }
 
