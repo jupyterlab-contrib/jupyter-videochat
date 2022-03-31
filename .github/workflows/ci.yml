@@ -18,9 +18,9 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu"]
-        python-version: ["3.9"]
+        python-version: ["3.10"]
         node-version: ["16.x"]
-        lab-version: ["3"]
+        lab-version: ["3.3"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -92,12 +92,14 @@ jobs:
           path: ./dist
 
   lint:
+    name: lint
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
         os: ["ubuntu"]
-        python-version: ["3.9"]
+        python-version: ["3.10"]
         node-version: ["16.x"]
-        lab-version: ["3"]
+        lab-version: ["3.3"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -247,16 +249,16 @@ jobs:
         cat labextensions | grep -i "jupyterlab-videochat.*OK"
 
     - name: Install (docs)
-      if: matrix.python-version == '3.9' && matrix.os == 'ubuntu'
+      if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
       run: pip install -r docs/requirements.txt
 
     - name: Build (docs)
-      if: matrix.python-version == '3.9' && matrix.os == 'ubuntu'
+      if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
       env:
         DOCS_IN_CI: 1
       run: sphinx-build -W -b html docs docs/_build
 
     - name: Check (links)
-      if: matrix.python-version == '3.9' && matrix.os == 'ubuntu'
+      if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
       run: |
         pytest-check-links docs/_build -p no:warnings --links-ext=html --check-anchors --check-links-ignore "^https?://"
