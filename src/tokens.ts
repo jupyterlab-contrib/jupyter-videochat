@@ -81,6 +81,8 @@ export interface IVideoChatManager extends IRoomProvider {
   /** The current room */
   currentRoom: Room;
 
+  currentRoomChanged: ISignal<IRoomProvider, void>;
+
   /** Whether the manager is fully initialized */
   isInitialized: boolean;
 
@@ -203,3 +205,5 @@ export type RoomsListProps = {
   disablePublicRooms: boolean;
   canCreateRooms: boolean;
 };
+
+export const DEBUG = window.location.href.indexOf('JVC_DEBUG') > -1;

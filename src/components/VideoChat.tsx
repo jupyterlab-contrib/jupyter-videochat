@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
-import { CSS, IVideoChatManager } from '../tokens';
+import { IVideoChatManager } from '../tokens';
 import { Room, VideoChatConfig, IJitsiFactory } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
@@ -29,26 +29,8 @@ export type VideoChatProps = {
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   const domain = props.config?.jitsiServer;
-  const provider = props.providerForRoom(props.currentRoom);
-  const providerLabel = !props.currentRoom ? '' : provider?.label || 'Public';
   return (
     <>
-      <div className={`${CSS}-toolbar jp-Toolbar`}>
-        <div className="jp-Toolbar-item jp-Toolbar-spacer" />
-        {props.currentRoom ? (
-          <div
-            className={`${CSS}-active-room-name jp-Toolbar-item`}
-            title={`${props.currentRoom?.id}`}
-          >
-            <i>{providerLabel}</i>
-            {`${props.currentRoom?.displayName || props.currentRoom?.id || ''}`}
-          </div>
-        ) : (
-          <></>
-        )}
-        <div className="jp-Toolbar-item jp-Toolbar-spacer" />
-      </div>
-
       {domain != null && props.currentRoom?.id != null ? (
         <JitsiMeetComponent
           jitsiAPI={props.jitsiAPI}

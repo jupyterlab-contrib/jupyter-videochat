@@ -1,4 +1,4 @@
-import { Signal } from '@lumino/signaling';
+import { Signal, ISignal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
 import { ILabShell } from '@jupyterlab/application';
@@ -7,7 +7,7 @@ import { TranslationBundle } from '@jupyterlab/translation';
 import { VDomModel } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { IVideoChatManager, DEFAULT_DOMAIN, CSS } from './tokens';
+import { IVideoChatManager, DEFAULT_DOMAIN, CSS, DEBUG } from './tokens';
 
 import type { JitsiMeetExternalAPIConstructor, JitsiMeetExternalAPI } from 'jitsi-meet';
 
@@ -27,6 +27,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _roomProviders = new Map<string, IVideoChatManager.IProviderOptions>();
   private _roomProvidedBy = new WeakMap<Room, string>();
   private _roomProvidersChanged: Signal<VideoChatManager, void>;
+  private _currentRoomChanged: Signal<VideoChatManager, void>;
   private _trans: TranslationBundle;
 
   constructor(options?: VideoChatManager.IOptions) {
@@ -34,6 +35,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this._trans = options.trans;
     this._meetChanged = new Signal(this);
     this._roomProvidersChanged = new Signal(this);
+    this._currentRoomChanged = new Signal(this);
     this._roomProvidersChanged.connect(this.onRoomProvidersChanged, this);
   }
 
@@ -67,9 +69,15 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   set currentRoom(room: Room) {
     this._currentRoom = room;
     this.stateChanged.emit(void 0);
+    this._currentRoomChanged.emit(void 0);
     if (room != null && room.id == null) {
       this.createRoom(room).catch(console.warn);
     }
+  }
+
+  /** A signal that emits when the current room changes. */
+  get currentRoomChanged(): ISignal<IVideoChatManager, void> {
+    return this._currentRoomChanged;
   }
 
   /** The configuration from the server/settings */
@@ -284,6 +292,7 @@ namespace Private {
     url: string
   ): Promise<JitsiMeetExternalAPIConstructor> {
     if (_loadPromise == null) {
+      DEBUG && console.warn('loading...');
       _loadPromise = new PromiseDelegate();
       _scriptElement = document.createElement('script');
       _scriptElement.id = `id-${CSS}-external-api`;
@@ -293,6 +302,7 @@ namespace Private {
       document.body.appendChild(_scriptElement);
       _scriptElement.onload = () => {
         api = (window as any).JitsiMeetExternalAPI;
+        DEBUG && console.warn('loaded...');
         _loadPromise.resolve(api);
       };
     }

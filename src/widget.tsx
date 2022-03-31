@@ -1,7 +1,8 @@
 import React from 'react';
-import { VDomRenderer } from '@jupyterlab/apputils';
 
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
+
+import { VDomRenderer } from '@jupyterlab/apputils';
 
 import type { JitsiMeetExternalAPI } from 'jitsi-meet';
 import { VideoChatComponent } from './components/VideoChat';

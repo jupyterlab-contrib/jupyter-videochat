@@ -42,6 +42,7 @@ import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
 import { chatIcon, prettyChatIcon } from './icons';
 import { ServerRoomProvider } from './rooms-server';
+import { RoomTitle } from './widgets/title';
 
 const DEFAULT_LABEL = 'Video Chat';
 
@@ -95,7 +96,11 @@ async function activateCore(
       widget.toolbar.addItem('toggle-sidebar', toggleBtn);
     }
 
-    widget.toolbar.addItem('spacer', Toolbar.createSpacerItem());
+    widget.toolbar.addItem('spacer-left', Toolbar.createSpacerItem());
+
+    widget.toolbar.addItem('title', new RoomTitle(manager));
+
+    widget.toolbar.addItem('spacer-right', Toolbar.createSpacerItem());
 
     const disconnectBtn = new CommandToolbarButton({
       id: CommandIds.disconnect,
@@ -103,7 +108,19 @@ async function activateCore(
       icon: stopIcon,
     });
 
+    const onCurrentRoomChanged = () => {
+      if (manager.currentRoom) {
+        disconnectBtn.show();
+      } else {
+        disconnectBtn.hide();
+      }
+    };
+
+    manager.currentRoomChanged.connect(onCurrentRoomChanged);
+
     widget.toolbar.addItem('disconnect', disconnectBtn);
+
+    onCurrentRoomChanged();
 
     chat.id = `id-${NS}`;
     chat.title.caption = __(DEFAULT_LABEL);
