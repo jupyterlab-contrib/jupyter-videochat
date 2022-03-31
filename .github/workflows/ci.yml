@@ -17,10 +17,10 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: ["ubuntu"]
-        python-version: ["3.10"]
-        node-version: ["16.x"]
-        lab-version: ["3.3"]
+        os: ['ubuntu']
+        python-version: ['3.10']
+        node-version: ['16.x']
+        lab-version: ['3.3']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -102,10 +102,10 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: ["ubuntu"]
-        python-version: ["3.10"]
-        node-version: ["16.x"]
-        lab-version: ["3.3"]
+        os: ['ubuntu']
+        python-version: ['3.10']
+        node-version: ['16.x']
+        lab-version: ['3.3']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -174,16 +174,16 @@ jobs:
     strategy:
       # fail-fast: false
       matrix:
-        python-version: ["3.7", "3.10"]
-        os: ["ubuntu", "windows", "macos"]
+        python-version: ['3.7', '3.10']
+        os: ['ubuntu', 'windows', 'macos']
         include:
           # use python as marker for node/distribution test coverage
-          - python-version: "3.7"
-            artifact-glob: "*.tar.gz"
-            lab-version: "3.0"
-          - python-version: "3.10"
-            artifact-glob: "*.whl"
-            lab-version: "3.3"
+          - python-version: '3.7'
+            artifact-glob: '*.tar.gz'
+            lab-version: '3.0'
+          - python-version: '3.10'
+            artifact-glob: '*.whl'
+            lab-version: '3.3'
           # os-specific settings
           - os: windows
             python-cmd: python
@@ -199,85 +199,82 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Select Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: 'x64'
+      - name: Select Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
 
-    - name: Cache (Python)
-      uses: actions/cache@v3
-      with:
-        path: ${{ matrix.pip-cache }}
-        key: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-${{ hashFiles('setup.py', 'setup.cfg') }}
-        restore-keys: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-
+      - name: Cache (Python)
+        uses: actions/cache@v3
+        with:
+          path: ${{ matrix.pip-cache }}
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-${{ hashFiles('setup.py', 'setup.cfg') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-
 
-    - name: Install Python packaging dependencies
-      run: |
-        set -eux
-        pip3 install -U --user pip wheel setuptools
+      - name: Install Python packaging dependencies
+        run: |
+          set -eux
+          pip3 install -U --user pip wheel setuptools
 
-    - name: Download distributions
-      uses: actions/download-artifact@v3
-      with:
-        name: jupyter-videochat ${{ github.run_number }} dist
-        path: ./dist
+      - name: Download distributions
+        uses: actions/download-artifact@v3
+        with:
+          name: jupyter-videochat ${{ github.run_number }} dist
+          path: ./dist
 
-    - name: Install Python distribution
-      run: |
-        set -eux
-        cd dist
-        pip3 install -v ${{ matrix.artifact-glob }}
+      - name: Install Python distribution
+        run: |
+          set -eux
+          cd dist
+          pip3 install -v ${{ matrix.artifact-glob }}
 
-    - name: Validate Python environment
-      run:
-        set -eux
-        pip3 freeze | tee .pip-frozen
-        pip3 check
+      - name: Validate Python environment
+        run: set -eux pip3 freeze | tee .pip-frozen pip3 check
 
-    - name: Import smoke test
-      run: |
-        set -eux
-        cd dist
-        ${{ matrix.python-cmd }} -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
+      - name: Import smoke test
+        run: |
+          set -eux
+          cd dist
+          ${{ matrix.python-cmd }} -c "import jupyter_videochat; print(jupyter_videochat.__version__)"
 
-    - name: Validate Server Extension (server)
-      run: |
-        set -eux
-        jupyter server extension list --debug 1>serverextensions 2>&1
-        cat serverextensions
-        cat serverextensions | grep -i "jupyter_videochat.*OK"
+      - name: Validate Server Extension (server)
+        run: |
+          set -eux
+          jupyter server extension list --debug 1>serverextensions 2>&1
+          cat serverextensions
+          cat serverextensions | grep -i "jupyter_videochat.*OK"
 
-    - name: Validate Server Extension (notebook)
-      run: |
-        set -eux
-        jupyter serverextension list --debug 1>server_extensions 2>&1
-        cat server_extensions
-        cat server_extensions | grep -i "jupyter_videochat.*OK"
+      - name: Validate Server Extension (notebook)
+        run: |
+          set -eux
+          jupyter serverextension list --debug 1>server_extensions 2>&1
+          cat server_extensions
+          cat server_extensions | grep -i "jupyter_videochat.*OK"
 
-    - name: Validate Lab Extension
-      run: |
-        set -eux
-        jupyter labextension list --debug 1>labextensions 2>&1
-        cat labextensions
-        cat labextensions | grep -i "jupyterlab-videochat.*OK"
+      - name: Validate Lab Extension
+        run: |
+          set -eux
+          jupyter labextension list --debug 1>labextensions 2>&1
+          cat labextensions
+          cat labextensions | grep -i "jupyterlab-videochat.*OK"
 
-    - name: Install (docs)
-      if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
-      run: pip install -r docs/requirements.txt
+      - name: Install (docs)
+        if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
+        run: pip install -r docs/requirements.txt
 
-    - name: Build (docs)
-      if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
-      env:
-        DOCS_IN_CI: 1
-      run: sphinx-build -W -b html docs docs/_build
+      - name: Build (docs)
+        if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
+        env:
+          DOCS_IN_CI: 1
+        run: sphinx-build -W -b html docs docs/_build
 
-    - name: Check (links)
-      if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
-      run: |
-        pytest-check-links docs/_build -p no:warnings --links-ext=html --check-anchors --check-links-ignore "^https?://"
+      - name: Check (links)
+        if: matrix.python-version == '3.10' && matrix.os == 'ubuntu'
+        run: |
+          pytest-check-links docs/_build -p no:warnings --links-ext=html --check-anchors --check-links-ignore "^https?://"

@@ -37,7 +37,7 @@
     "lint": "jlpm prettier && jlpm eslint",
     "lint:check": "jlpm prettier:check && jlpm eslint:check",
     "prettier": "jlpm prettier:base --list-different --write",
-    "prettier:base": "prettier \"*.{json,md}\" \"{.github,jupyter-config,src,style,schema,docs}/*.{yml,json,ts,tsx,css,md}\"",
+    "prettier:base": "prettier \"*.{json,md,js,yml}\" \"{.github,jupyter-config,src,style,schema,docs,binder}/**/*.{yml,json,ts,tsx,css,md,yaml}\"",
     "prettier:check": "jlpm prettier:base --check",
     "eslint": "eslint . --cache --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --cache --ext .ts,.tsx",

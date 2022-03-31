@@ -32,12 +32,7 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
       },
     };
 
-    const {
-      displayName,
-      email,
-      configOverwrite,
-      interfaceConfigOverwrite,
-    } = props;
+    const { displayName, email, configOverwrite, interfaceConfigOverwrite } = props;
 
     if (displayName != null) {
       options.userInfo.displayName = displayName;

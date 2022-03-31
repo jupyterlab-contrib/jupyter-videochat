@@ -42,9 +42,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           <label>Name</label>
           <input
             className="jp-mod-styled"
-            onInput={(evt) =>
-              props.onDisplayNameChanged(evt.currentTarget.value)
-            }
+            onInput={(evt) => props.onDisplayNameChanged(evt.currentTarget.value)}
             defaultValue={props.displayName}
           />
           <blockquote>
@@ -58,8 +56,8 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
             defaultValue={props.email}
           />
           <blockquote>
-            (optional) Email to show to other chat participants. If an avatar
-            icon is registered with this address at{' '}
+            (optional) Email to show to other chat participants. If an avatar icon is
+            registered with this address at{' '}
             <a href="https://gravatar.com" {...openBlank}>
               gravatar.com
             </a>

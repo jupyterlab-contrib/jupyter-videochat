@@ -65,8 +65,8 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
             </button>
           </div>
           <blockquote>
-            Join (or create) a named Room. Share this name with other users of
-            your Hub, Binder, or others that can share a server key.
+            Join (or create) a named Room. Share this name with other users of your Hub,
+            Binder, or others that can share a server key.
           </blockquote>
         </li>
       </ul>
