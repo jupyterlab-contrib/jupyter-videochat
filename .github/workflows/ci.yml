@@ -41,7 +41,7 @@ jobs:
         with:
           path: ~/.cache/pip
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-${{ hashFiles('setup.py') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-${{ hashFiles('setup.py', 'setup.cfg') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-
 
@@ -69,9 +69,6 @@ jobs:
       - name: Install JS dependencies
         run: jlpm --ignore-optional --frozen-lockfile
 
-      - name: Lint Lab Extension, etc.
-        run: jlpm run lint:check
-
       - name: Build npm tarball
         run: |
           set -eux
@@ -93,6 +90,61 @@ jobs:
         with:
           name: jupyter-videochat ${{ github.run_number }} dist
           path: ./dist
+
+  lint:
+    strategy:
+      matrix:
+        os: ["ubuntu"]
+        python-version: ["3.9"]
+        node-version: ["16.x"]
+        lab-version: ["3"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Select Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Select Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+
+      - name: Cache (Python)
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-${{ hashFiles('setup.py', 'setup.cfg') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-
+
+      - name: Install Python packaging dependencies
+        run: pip3 install -U --user pip wheel setuptools
+
+      - name: Cache (JS)
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-node-build-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.node-version }}-${{ matrix.lab-version }}-node-build-
+
+      - name: Install JS dependencies
+        run: jlpm --ignore-optional --frozen-lockfile
+
+      - name: Lint Lab Extension, etc.
+        run: jlpm run lint:check
+
+      - name: Lint Python
+        run: |-
+          isort --check setup.py docs jupyter_videochat
+          black --check setup.py docs jupyter_videochat
+
 
   test:
     needs: [build]
@@ -140,7 +192,7 @@ jobs:
       with:
         path: ${{ matrix.pip-cache }}
         key: |
-          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-${{ hashFiles('setup.py') }}
+          ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-${{ hashFiles('setup.py', 'setup.cfg') }}
         restore-keys: |
           ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-test-
 

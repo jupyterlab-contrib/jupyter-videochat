@@ -1,4 +1,6 @@
+black ==22.3.0
 ipywidgets
+isort
 jupyterlab >=3.3.0,<4
 jupyterlite ==0.1.0b4
 myst-nb

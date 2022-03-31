@@ -4,8 +4,8 @@ import json
 import os
 import subprocess
 import sys
-from pathlib import Path
 from configparser import ConfigParser
+from pathlib import Path
 
 CONF_PY = Path(__file__)
 HERE = CONF_PY.parent

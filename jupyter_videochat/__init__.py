@@ -1,15 +1,15 @@
 import os
 
+from traitlets import Dict, List, Unicode
 from traitlets.config import Configurable
-from traitlets import Unicode, List, Dict
 
-from ._version import __version__, __jspackage__
+from ._version import __jspackage__, __version__
 from .handlers import setup_handlers
 
 
 class VideoChat(Configurable):
     room_prefix = Unicode(
-        default_value=os.environ.get('JUPYTER_VIDEOCHAT_ROOM_PREFIX', ''),
+        default_value=os.environ.get("JUPYTER_VIDEOCHAT_ROOM_PREFIX", ""),
         help="""
         Prefix to use for all meeting room names.
 
@@ -45,7 +45,7 @@ class VideoChat(Configurable):
         This can be dynamically set eventually from an API call or something of that
         sort.
         """,
-        config=True
+        config=True,
     )
 
     jitsi_server = Unicode(
@@ -55,7 +55,7 @@ class VideoChat(Configurable):
 
         Must be a domain name, with HTTPS working, that serves /external_api.js
         """,
-        config=True
+        config=True,
     )
 
 
@@ -76,7 +76,7 @@ def load_jupyter_server_extension(lab_app):
         JupyterLab application instance
     """
     videochat = VideoChat(parent=lab_app)
-    lab_app.web_app.settings['videochat'] = videochat
+    lab_app.web_app.settings["videochat"] = videochat
     setup_handlers(lab_app.web_app)
 
 
