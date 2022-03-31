@@ -23,21 +23,21 @@ jobs:
         lab-version: ["3"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Select Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Select Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
           architecture: 'x64'
 
       - name: Cache (Python)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: |
@@ -58,7 +58,7 @@ jobs:
           pip3 check
 
       - name: Cache (JS)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: |
@@ -89,7 +89,7 @@ jobs:
           sha256sum * | tee SHA256SUMS
 
       - name: Upload distributions
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyter-videochat ${{ github.run_number }} dist
           path: ./dist
@@ -101,7 +101,7 @@ jobs:
     strategy:
       # fail-fast: false
       matrix:
-        python-version: ["3.6", "3.9"]
+        python-version: ["3.7", "3.10"]
         os: ["ubuntu", "windows", "macos"]
         lab-version: ["3"]
         include:
@@ -126,16 +126,16 @@ jobs:
         shell: bash -l {0}
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Select Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
         architecture: 'x64'
 
     - name: Cache (Python)
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ matrix.pip-cache }}
         key: |
@@ -149,7 +149,7 @@ jobs:
         pip3 install -U --user pip wheel setuptools
 
     - name: Download distributions
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: jupyter-videochat ${{ github.run_number }} dist
         path: ./dist
