@@ -91,6 +91,12 @@ jobs:
           name: jupyter-videochat ${{ github.run_number }} dist
           path: ./dist
 
+      - name: Upload labextension
+        uses: actions/upload-artifact@v3
+        with:
+          name: jupyter-videochat ${{ github.run_number }} labextension
+          path: ./jupyter_videochat/labextension
+
   lint:
     name: lint
     runs-on: ${{ matrix.os }}-latest
@@ -120,9 +126,9 @@ jobs:
         with:
           path: ~/.cache/pip
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-${{ hashFiles('setup.py', 'setup.cfg') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-lint-${{ hashFiles('setup.cfg') }}
           restore-keys: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-build-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.lab-version }}-pip-lint-
 
       - name: Install Python packaging dependencies
         run: pip3 install -U --user pip wheel setuptools
@@ -142,6 +148,17 @@ jobs:
       - name: Install JS dependencies
         run: jlpm --ignore-optional --frozen-lockfile
 
+      - name: Download built labextension
+        uses: actions/download-artifact@v3
+        with:
+          name: jupyter-videochat ${{ github.run_number }} labextension
+          path: ./jupyter_videochat/labextension
+
+      - name: Python Dev Install
+        run: |
+          set -eux
+          pip3 install -e .[lint]
+
       - name: Lint Lab Extension, etc.
         run: jlpm run lint:check
 
@@ -149,7 +166,6 @@ jobs:
         run: |-
           isort --check setup.py docs jupyter_videochat
           black --check setup.py docs jupyter_videochat
-
 
   test:
     needs: [build]
