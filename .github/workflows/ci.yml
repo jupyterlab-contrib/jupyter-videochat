@@ -233,7 +233,7 @@ jobs:
         run: |
           set -eux
           cd dist
-          pip3 install -v ${{ matrix.artifact-glob }}
+          pip3 install -v ${{ matrix.artifact-glob }} "jupyterlab==${{ matrix.lab-version }}.*" notebook
 
       - name: Validate Python environment
         run: set -eux pip3 freeze | tee .pip-frozen pip3 check
