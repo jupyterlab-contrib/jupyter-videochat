@@ -3,7 +3,7 @@ import React from 'react';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 import { ToolbarButtonComponent } from '@jupyterlab/apputils';
-import { stopIcon, launcherIcon } from '@jupyterlab/ui-components';
+import { stopIcon } from '@jupyterlab/ui-components';
 
 import { CSS, IVideoChatManager } from '../tokens';
 import { Room, VideoChatConfig, IJitsiFactory } from '../types';
@@ -18,7 +18,6 @@ export type VideoChatProps = {
   onRoomSelect: (room: Room) => void;
   onEmailChanged: (email: string) => void;
   onDisplayNameChanged: (displayName: string) => void;
-  onToggleSidebar: () => void;
   onMeet: (meet: JitsiMeetExternalAPI) => void;
   providerForRoom: (room: Room) => IVideoChatManager.IProviderOptions;
   rooms: Room[];
@@ -39,14 +38,6 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   return (
     <>
       <div className={`${CSS}-toolbar jp-Toolbar`}>
-        <div className={`${CSS}-sidebar-toggle jp-ToolbarButton jp-Toolbar-item`}>
-          <ToolbarButtonComponent
-            tooltip="Toggle Video Chat Sidebar"
-            icon={launcherIcon}
-            label="Toggle Sidebar"
-            onClick={props.onToggleSidebar}
-          />
-        </div>
         <div className="jp-Toolbar-item jp-Toolbar-spacer" />
         {props.currentRoom ? (
           <div

@@ -9,6 +9,8 @@ import {
   LabShell,
 } from '@jupyterlab/application';
 
+import { launcherIcon } from '@jupyterlab/ui-components';
+
 import { ITranslator, nullTranslator } from '@jupyterlab/translation';
 
 import {
@@ -18,6 +20,7 @@ import {
   WidgetTracker,
   MainAreaWidget,
 } from '@jupyterlab/apputils';
+
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { ILauncher } from '@jupyterlab/launcher';
@@ -78,13 +81,19 @@ async function activateCore(
 
   if (!widget || widget.isDisposed) {
     // Create widget
-    chat = new VideoChat(manager, {
-      onToggleSidebar: () => {
-        labShell && commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
-      },
-    });
+    chat = new VideoChat(manager, {});
     widget = new MainAreaWidget({ content: chat });
     widget.addClass(`${CSS}-wrapper`);
+
+    if (labShell) {
+      const toggleBtn = new CommandToolbarButton({
+        id: CommandIds.toggleArea,
+        commands,
+        icon: launcherIcon,
+      });
+
+      widget.toolbar.addItem('toggle-sidebar', toggleBtn);
+    }
 
     chat.id = `id-${NS}`;
     chat.title.caption = DEFAULT_LABEL;

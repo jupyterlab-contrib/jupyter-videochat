@@ -37,7 +37,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
     this._roomProvidersChanged.connect(this.onRoomProvidersChanged, this);
   }
 
-  __ = (msgid: string, ...args: string[]) => {
+  __ = (msgid: string, ...args: string[]): string => {
     return this._trans.__(msgid, ...args);
   };
 

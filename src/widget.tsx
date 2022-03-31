@@ -13,11 +13,8 @@ import { VideoChatManager } from './manager';
  * The main video chat interface which can appear in the sidebar or main area
  */
 export class VideoChat extends VDomRenderer<VideoChatManager> {
-  onToggleSidebar: () => void;
-
   constructor(model: VideoChatManager, options: VideoChat.IOptions) {
     super(model);
-    this.onToggleSidebar = options.onToggleSidebar;
     this.addClass(CSS);
   }
 
@@ -52,7 +49,6 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
     return (
       <VideoChatComponent
         jitsiAPI={this.model.getJitsiAPI()}
-        onToggleSidebar={this.onToggleSidebar}
         onRoomSelect={this.onRoomSelect}
         onCreateRoom={this.onCreateRoom}
         onEmailChanged={this.onEmailChanged}
@@ -80,8 +76,5 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
 /** A namespace for VideoChat options */
 export namespace VideoChat {
   /** Options for constructing a new a VideoChat */
-  export interface IOptions {
-    /** function to run when the sidebar toggle is activated */
-    onToggleSidebar: () => void;
-  }
+  export interface IOptions {}
 }
