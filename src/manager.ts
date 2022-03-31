@@ -1,14 +1,17 @@
 import { Signal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
+import { ILabShell } from '@jupyterlab/application';
 import { TranslationBundle } from '@jupyterlab/translation';
 
 import { VDomModel } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { IVideoChatManager, DEFAULT_DOMAIN, CSS } from './tokens';
-import { Room, VideoChatConfig, IMeet, IMeetConstructor, IJitsiFactory } from './types';
-import { ILabShell } from '@jupyterlab/application';
+
+import type { JitsiMeetExternalAPIConstructor, JitsiMeetExternalAPI } from 'jitsi-meet';
+
+import { Room, VideoChatConfig, IJitsiFactory } from './types';
 
 /** A manager that can add, join, or create Video Chat rooms
  */
@@ -18,7 +21,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _isInitialized = false;
   private _initialized = new PromiseDelegate<void>();
   private _config: VideoChatConfig;
-  private _meet: IMeet;
+  private _meet: JitsiMeetExternalAPI;
   private _meetChanged: Signal<VideoChatManager, void>;
   private _settings: ISettingRegistry.ISettings;
   private _roomProviders = new Map<string, IVideoChatManager.IProviderOptions>();
@@ -75,12 +78,12 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   /** The current JitsiExternalAPI, as served by `<domain>/external_api.js` */
-  get meet(): IMeet {
+  get meet(): JitsiMeetExternalAPI {
     return this._meet;
   }
 
   /** Update the current meet */
-  set meet(meet: IMeet) {
+  set meet(meet: JitsiMeetExternalAPI) {
     if (this._meet !== meet) {
       this._meet = meet;
       this._meetChanged.emit(void 0);
@@ -271,13 +274,15 @@ export namespace VideoChatManager {
 
 /** a private namespace for the singleton jitsi script tag */
 namespace Private {
-  export let api: IMeetConstructor;
+  export let api: JitsiMeetExternalAPIConstructor;
 
   let _scriptElement: HTMLScriptElement;
-  let _loadPromise: PromiseDelegate<IMeetConstructor>;
+  let _loadPromise: PromiseDelegate<JitsiMeetExternalAPIConstructor>;
 
   /** return a promise that resolves when the Jitsi external JS API is available */
-  export async function ensureExternalAPI(url: string): Promise<IMeetConstructor> {
+  export async function ensureExternalAPI(
+    url: string
+  ): Promise<JitsiMeetExternalAPIConstructor> {
     if (_loadPromise == null) {
       _loadPromise = new PromiseDelegate();
       _scriptElement = document.createElement('script');

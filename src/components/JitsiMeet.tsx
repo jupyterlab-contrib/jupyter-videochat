@@ -1,30 +1,32 @@
 import React, { useEffect } from 'react';
 
-import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import { CSS, IVideoChatManager } from '../tokens';
-import { Room, IMeet, IJitsiFactory, IMeetOptions } from '../types';
+import { Room, IJitsiFactory } from '../types';
+
+import type { ExternalAPIOptions, JitsiMeetExternalAPI } from 'jitsi-meet';
 
 export type JitsiMeetProps = {
   jitsiAPI: IJitsiFactory;
   onRoomSelect: (room: Room) => void;
-  onMeet: (meet: IMeet) => void;
+  onMeet: (meet: JitsiMeetExternalAPI) => void;
   providerForRoom: (room: Room) => IVideoChatManager.IProviderOptions;
   room: Room;
   domain: string;
   email: string;
   displayName: string;
-  configOverwrite: ReadonlyPartialJSONValue | null;
-  interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
+  configOverwrite: ReadonlyPartialJSONObject | null;
+  interfaceConfigOverwrite: ReadonlyPartialJSONObject | null;
 };
 
 export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
   const container = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
-    const options: IMeetOptions = {
+    const options: ExternalAPIOptions = {
       roomName: props.room.id,
       parentNode: container.current,
       userInfo: {
@@ -54,7 +56,7 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
       console.warn('All Jitsi features will be enabled');
     }
 
-    let meet: IMeet;
+    let meet: JitsiMeetExternalAPI;
     let Jitsi = props.jitsiAPI();
 
     if (Jitsi == null) {

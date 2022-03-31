@@ -3,8 +3,9 @@ import { ISignal } from '@lumino/signaling';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { Room, VideoChatConfig, IMeet, IJitsiFactory } from './types';
+import { Room, VideoChatConfig, IJitsiFactory } from './types';
 import { ILabShell } from '@jupyterlab/application';
+import { JitsiMeetExternalAPI } from 'jitsi-meet';
 
 /** The namespace for key tokens and IDs */
 export const NS = 'jupyterlab-videochat';
@@ -90,7 +91,7 @@ export interface IVideoChatManager extends IRoomProvider {
   config: VideoChatConfig;
 
   /** The current Jitsi Meet instance */
-  meet: IMeet | null;
+  meet: JitsiMeetExternalAPI | null;
 
   /** A signal emitted when the current Jitsi Meet has changed */
   meetChanged: ISignal<IVideoChatManager, void>;

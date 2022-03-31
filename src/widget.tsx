@@ -1,8 +1,12 @@
 import React from 'react';
 import { VDomRenderer } from '@jupyterlab/apputils';
+
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
+
+import type { JitsiMeetExternalAPI } from 'jitsi-meet';
 import { VideoChatComponent } from './components/VideoChat';
 import { CSS } from './tokens';
-import { Room, IMeet } from './types';
+import { Room } from './types';
 import { VideoChatManager } from './manager';
 
 /**
@@ -28,7 +32,7 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
   };
 
   /** Set the current meeting */
-  onMeet = (meet: IMeet): void => {
+  onMeet = (meet: JitsiMeetExternalAPI): void => {
     this.model.meet = meet;
   };
 
@@ -60,8 +64,12 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         rooms={this.model.rooms}
         email={`${settings?.composite.email || ''}`}
         displayName={`${settings?.composite.displayName || ''}`}
-        configOverwrite={settings?.composite.configOverwrite}
-        interfaceConfigOverwrite={settings?.composite.interfaceConfigOverwrite}
+        configOverwrite={
+          settings?.composite.configOverwrite as ReadonlyPartialJSONObject
+        }
+        interfaceConfigOverwrite={
+          settings?.composite.interfaceConfigOverwrite as ReadonlyPartialJSONObject
+        }
         disablePublicRooms={!!settings?.composite.disablePublicRooms}
         canCreateRooms={this.model.canCreateRooms}
       />
