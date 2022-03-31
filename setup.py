@@ -1,6 +1,6 @@
-from pathlib import Path
 import json
 import sys
+from pathlib import Path
 
 from setuptools import setup
 
@@ -30,9 +30,10 @@ EXT_DEST = f"""share/jupyter/labextensions/{__jspackage__["name"]}"""
 DATA_FILES = [
     (
         f"{EXT_DEST}/{p.parent.relative_to(EXT_SRC).as_posix()}",
-        [str(p.relative_to(HERE).as_posix())]
+        [str(p.relative_to(HERE).as_posix())],
     )
-    for p in EXT_SRC.rglob("*") if not p.is_dir()
+    for p in EXT_SRC.rglob("*")
+    if not p.is_dir()
 ]
 
 
@@ -41,7 +42,9 @@ REMOTE_ENTRY = [p for p in ALL_FILES if "remoteEntry" in p]
 
 
 if "sdist" in sys.argv or "bdist_wheel" in sys.argv:
-    assert len(REMOTE_ENTRY) == 1, f"""
+    assert (
+        len(REMOTE_ENTRY) == 1
+    ), f"""
         Expected _exactly one_ `labextension/remoteEntry*.js`, found:
 
             {[p for p in REMOTE_ENTRY]}
@@ -49,7 +52,9 @@ if "sdist" in sys.argv or "bdist_wheel" in sys.argv:
         {JLPM_MSG}
     """
 
-    assert not [p for p in ALL_FILES if "build_log.json" in p], f"""
+    assert not [
+        p for p in ALL_FILES if "build_log.json" in p
+    ], f"""
         Found `build_log.json`, which contains paths on your computer, etc.
         {JLPM_MSG}
     """
@@ -61,10 +66,10 @@ DATA_FILES += [
     *[
         (
             f"{ETC}/jupyter_{app}_config.d",
-            [f"jupyter-config/jupyter_{app}_config.d/jupyter_videochat.json"]
+            [f"jupyter-config/jupyter_{app}_config.d/jupyter_videochat.json"],
         )
         for app in ["notebook", "server"]
-    ]
+    ],
 ]
 
 if __name__ == "__main__":
@@ -77,6 +82,6 @@ if __name__ == "__main__":
         license=__jspackage__["license"],
         project_urls={
             "Bug Tracker": __jspackage__["bugs"]["url"],
-            "Source Code": __jspackage__["repository"]["url"]
-        }
+            "Source Code": __jspackage__["repository"]["url"],
+        },
     )

@@ -2,6 +2,7 @@
 
 > Video Chat with JupyterHub peers inside JupyterLab, powered by [Jitsi].
 
+[![Extension status](https://img.shields.io/badge/status-ready-success 'ready to be used')](https://jupyterlab-contrib.github.io/)
 [![install from pypi][pypi-badge]][pypi]
 [![install from conda-forge][conda-forge-badge]][conda-forge]
 [![reuse from npm][npm-badge]][npm]
@@ -32,7 +33,7 @@ This extension is composed of:
 
 ## Requirements
 
-- `python >=3.6`
+- `python >=3.7`
 - `jupyterlab ==3.*`
 
 ## Install

@@ -41,8 +41,8 @@ export const PublicRoomsComponent = (props: RoomsListProps): JSX.Element => {
             </button>
           </div>
           <blockquote>
-            Join (or create) a <b>public</b> room. Share this name with anyone
-            who can access{' '}
+            Join (or create) a <b>public</b> room. Share this name with anyone who can
+            access{' '}
             <a href={`https://${props.domain}`} {...openBlank}>
               {props.domain}
             </a>
