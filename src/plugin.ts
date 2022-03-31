@@ -1,6 +1,4 @@
-import { Panel } from '@lumino/widgets';
-
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import {
   ILabShell,
@@ -11,14 +9,14 @@ import {
   LabShell,
 } from '@jupyterlab/application';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
-
 import {
   CommandToolbarButton,
   ICommandPalette,
   Toolbar,
   WidgetTracker,
+  MainAreaWidget,
 } from '@jupyterlab/apputils';
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
@@ -65,11 +63,11 @@ async function activateCore(
 
   const manager = new VideoChatManager();
 
-  let widget: Panel;
+  let widget: MainAreaWidget;
   let chat: VideoChat;
   let subject: string | null = null;
 
-  const tracker = new WidgetTracker<Panel>({ namespace: NS });
+  const tracker = new WidgetTracker<MainAreaWidget>({ namespace: NS });
 
   if (!widget || widget.isDisposed) {
     // Create widget
@@ -78,14 +76,13 @@ async function activateCore(
         labShell && commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
       },
     });
-    widget = new Panel();
+    widget = new MainAreaWidget({ content: chat });
     widget.addClass(`${CSS}-wrapper`);
 
-    widget.id = `id-${NS}`;
-    widget.title.caption = DEFAULT_LABEL;
-    widget.title.closable = false;
-    widget.title.icon = chatIcon;
-    widget.addWidget(chat);
+    chat.id = `id-${NS}`;
+    chat.title.caption = DEFAULT_LABEL;
+    chat.title.closable = false;
+    chat.title.icon = chatIcon;
   }
 
   // hide the label when in sidebar, as it shows the rotated text
