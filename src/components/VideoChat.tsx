@@ -2,9 +2,6 @@ import React from 'react';
 
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
-import { ToolbarButtonComponent } from '@jupyterlab/apputils';
-import { stopIcon } from '@jupyterlab/ui-components';
-
 import { CSS, IVideoChatManager } from '../tokens';
 import { Room, VideoChatConfig, IJitsiFactory } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
@@ -32,7 +29,6 @@ export type VideoChatProps = {
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
   const domain = props.config?.jitsiServer;
-  const isConnected = !!props.currentRoom;
   const provider = props.providerForRoom(props.currentRoom);
   const providerLabel = !props.currentRoom ? '' : provider?.label || 'Public';
   return (
@@ -51,14 +47,6 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           <></>
         )}
         <div className="jp-Toolbar-item jp-Toolbar-spacer" />
-        <div className="jp-ToolbarButton jp-Toolbar-item">
-          <ToolbarButtonComponent
-            icon={stopIcon}
-            label={isConnected ? `Disconnect ${domain}` : `Not connected to ${domain}`}
-            enabled={isConnected}
-            onClick={() => props.onRoomSelect(null)}
-          />
-        </div>
       </div>
 
       {domain != null && props.currentRoom?.id != null ? (

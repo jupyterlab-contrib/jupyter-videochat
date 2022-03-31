@@ -9,7 +9,7 @@ import {
   LabShell,
 } from '@jupyterlab/application';
 
-import { launcherIcon } from '@jupyterlab/ui-components';
+import { launcherIcon, stopIcon } from '@jupyterlab/ui-components';
 
 import { ITranslator, nullTranslator } from '@jupyterlab/translation';
 
@@ -45,7 +45,7 @@ import { ServerRoomProvider } from './rooms-server';
 
 const DEFAULT_LABEL = 'Video Chat';
 
-const category = 'Video Chat';
+const category = DEFAULT_LABEL;
 
 function isFullLab(app: JupyterFrontEnd) {
   return !!(app.shell as ILabShell).layoutModified;
@@ -95,8 +95,18 @@ async function activateCore(
       widget.toolbar.addItem('toggle-sidebar', toggleBtn);
     }
 
+    widget.toolbar.addItem('spacer', Toolbar.createSpacerItem());
+
+    const disconnectBtn = new CommandToolbarButton({
+      id: CommandIds.disconnect,
+      commands,
+      icon: stopIcon,
+    });
+
+    widget.toolbar.addItem('disconnect', disconnectBtn);
+
     chat.id = `id-${NS}`;
-    chat.title.caption = DEFAULT_LABEL;
+    chat.title.caption = __(DEFAULT_LABEL);
     chat.title.closable = false;
     chat.title.icon = chatIcon;
   }
@@ -106,7 +116,7 @@ async function activateCore(
     if (subject != null) {
       widget.title.caption = subject;
     } else {
-      widget.title.caption = DEFAULT_LABEL;
+      widget.title.caption = __(DEFAULT_LABEL);
     }
     widget.title.label = manager.currentArea === 'main' ? widget.title.caption : '';
   }
@@ -176,8 +186,15 @@ async function activateCore(
     },
   });
 
+  commands.addCommand(CommandIds.disconnect, {
+    label: __('Disconnect Video Chat'),
+    execute: () => (manager.currentRoom = null),
+    icon: stopIcon,
+  });
+
   commands.addCommand(CommandIds.toggleArea, {
     label: __('Toggle Video Chat Sidebar'),
+    icon: launcherIcon,
     execute: async () => {
       manager.currentArea = ['right', 'left'].includes(manager.currentArea)
         ? 'main'
@@ -187,8 +204,8 @@ async function activateCore(
 
   // If available, add the commands to the palette
   if (palette) {
-    palette.addItem({ command: CommandIds.open, category });
-    palette.addItem({ command: CommandIds.toggleArea, category });
+    palette.addItem({ command: CommandIds.open, category: __(category) });
+    palette.addItem({ command: CommandIds.toggleArea, category: __(category) });
   }
 
   // If available, add a card to the launcher

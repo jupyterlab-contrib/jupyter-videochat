@@ -168,6 +168,9 @@ export namespace CommandIds {
   /** The command id for switching the area of the UI */
   export const toggleArea = `${NS}:togglearea`;
 
+  /** The command id for disconnecting a video chat */
+  export const disconnect = `${NS}:disconnect`;
+
   /** The command id for enabling public rooms */
   export const togglePublicRooms = `${NS}:togglepublic`;
 
