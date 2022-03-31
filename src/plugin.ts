@@ -9,6 +9,8 @@ import {
   LabShell,
 } from '@jupyterlab/application';
 
+import { ITranslator, nullTranslator } from '@jupyterlab/translation';
+
 import {
   CommandToolbarButton,
   ICommandPalette,
@@ -52,6 +54,7 @@ function isFullLab(app: JupyterFrontEnd) {
 async function activateCore(
   app: JupyterFrontEnd,
   settingRegistry: ISettingRegistry,
+  translator?: ITranslator,
   palette?: ICommandPalette,
   launcher?: ILauncher,
   restorer?: ILayoutRestorer,
@@ -61,7 +64,11 @@ async function activateCore(
 
   const labShell = isFullLab(app) ? (shell as LabShell) : null;
 
-  const manager = new VideoChatManager();
+  const trans = (translator || nullTranslator).load(NS);
+
+  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
+
+  const manager = new VideoChatManager({ trans });
 
   let widget: MainAreaWidget;
   let chat: VideoChat;
@@ -109,7 +116,7 @@ async function activateCore(
         shell.activateById(widget.id);
       }
     } else if (window.location.search.indexOf(FORCE_URL_PARAM) !== -1) {
-      document.title = [document.title.split(' - ')[0], 'Video Chat'].join(' - ');
+      document.title = [document.title.split(' - ')[0], __('Video Chat')].join(' - ');
       app.shell.currentWidget.parent = null;
       app.shell.add(widget, 'main', { rank: 0 });
       const { parent } = widget;
@@ -148,7 +155,7 @@ async function activateCore(
 
   // add commands
   commands.addCommand(CommandIds.open, {
-    label: 'Video Chat',
+    label: __('Video Chat'),
     icon: prettyChatIcon,
     execute: async (args: IChatArgs) => {
       await manager.initialized;
@@ -161,7 +168,7 @@ async function activateCore(
   });
 
   commands.addCommand(CommandIds.toggleArea, {
-    label: 'Toggle Video Chat Sidebar',
+    label: __('Toggle Video Chat Sidebar'),
     execute: async () => {
       manager.currentArea = ['right', 'left'].includes(manager.currentArea)
         ? 'main'
@@ -206,7 +213,7 @@ const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: `${NS}:plugin`,
   autoStart: true,
   requires: [ISettingRegistry],
-  optional: [ICommandPalette, ILauncher, ILayoutRestorer, IMainMenu],
+  optional: [ITranslator, ICommandPalette, ILauncher, ILayoutRestorer, IMainMenu],
   provides: IVideoChatManager,
   activate: activateCore,
 };
@@ -220,8 +227,13 @@ const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
 function activateServerRooms(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
+  translator?: ITranslator,
   router?: IRouter
 ): void {
+  const trans = (translator || nullTranslator).load(NS);
+
+  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
+
   const { commands } = app;
   const provider = new ServerRoomProvider({
     serverSettings: app.serviceManager.serverSettings,
@@ -229,7 +241,7 @@ function activateServerRooms(
 
   chat.registerRoomProvider({
     id: 'server',
-    label: 'Server',
+    label: __('Server'),
     rank: 0,
     provider,
   });
@@ -271,7 +283,7 @@ const serverRoomsPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:rooms-server`,
   autoStart: true,
   requires: [IVideoChatManager],
-  optional: [IRouter],
+  optional: [ITranslator, IRouter],
   activate: activateServerRooms,
 };
 
@@ -283,7 +295,7 @@ const publicRoomsPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:rooms-public`,
   autoStart: true,
   requires: [IVideoChatManager],
-  optional: [IRouter, ICommandPalette],
+  optional: [ITranslator, IRouter, ICommandPalette],
   activate: activatePublicRooms,
 };
 
@@ -296,14 +308,19 @@ const publicRoomsPlugin: JupyterFrontEndPlugin<void> = {
 async function activatePublicRooms(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
+  translator?: ITranslator,
   router?: IRouter,
   palette?: ICommandPalette
 ): Promise<void> {
   const { commands } = app;
 
+  const trans = (translator || nullTranslator).load(NS);
+
+  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
+
   chat.registerRoomProvider({
     id: 'public',
-    label: 'Public',
+    label: __('Public'),
     rank: 999,
     provider: {
       updateRooms: async () => [],
@@ -315,13 +332,13 @@ async function activatePublicRooms(
   });
 
   commands.addCommand(CommandIds.togglePublicRooms, {
-    label: 'Toggle Video Chat Public Rooms',
+    label: __('Toggle Video Chat Public Rooms'),
     isVisible: () => !!chat.settings,
     isToggleable: true,
     isToggled: () => !chat.settings?.composite.disablePublicRooms,
     execute: async () => {
       if (!chat.settings) {
-        console.warn('Video chat settings not loaded');
+        console.warn(__('Video chat settings not loaded'));
         return;
       }
       await chat.settings.set(
@@ -334,7 +351,7 @@ async function activatePublicRooms(
   // If available, Add to the router
   if (router) {
     commands.addCommand(CommandIds.publicRouterStart, {
-      label: 'Open Public Video Chat from URL',
+      label: __('Open Public Video Chat from URL'),
       execute: async (args) => {
         const { request } = args as IRouter.ILocation;
         const url = new URL(`http://example.com${request}`);
@@ -347,7 +364,7 @@ async function activatePublicRooms(
             chat.currentRoom = {
               id: roomId,
               displayName: roomId,
-              description: 'A Public Room',
+              description: __('A Public Room'),
             };
           }
         };
@@ -376,19 +393,24 @@ const retroPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:retro`,
   autoStart: true,
   requires: [IVideoChatManager],
-  optional: [IFileBrowserFactory, IMainMenu],
+  optional: [ITranslator, IFileBrowserFactory, IMainMenu],
   activate: activateRetro,
 };
 
 function activateRetro(
   app: JupyterFrontEnd,
   chat: IVideoChatManager,
+  translator?: ITranslator,
   filebrowser?: IFileBrowserFactory,
   mainmenu?: IMainMenu
 ): void {
   if (!PageConfig.getOption(RETRO_CANARY_OPT)) {
     return;
   }
+
+  const trans = (translator || nullTranslator).load(NS);
+
+  const __ = (text: string, ...placeholders: string[]) => trans.__(text, placeholders);
 
   const baseUrl = PageConfig.getBaseUrl();
 
@@ -398,7 +420,7 @@ function activateRetro(
   const { commands } = app;
 
   commands.addCommand(CommandIds.openTab, {
-    label: 'New Video Chat',
+    label: __('New Video Chat'),
     icon: prettyChatIcon,
     execute: (args: any) => {
       window.open(`${treeUrl}?${FORCE_URL_PARAM}`, '_blank');

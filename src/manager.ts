@@ -1,6 +1,8 @@
 import { Signal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
+import { TranslationBundle } from '@jupyterlab/translation';
+
 import { VDomModel } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
@@ -22,9 +24,11 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _roomProviders = new Map<string, IVideoChatManager.IProviderOptions>();
   private _roomProvidedBy = new WeakMap<Room, string>();
   private _roomProvidersChanged: Signal<VideoChatManager, void>;
+  private _trans: TranslationBundle;
 
   constructor(options?: VideoChatManager.IOptions) {
     super();
+    this._trans = options.trans;
     this._meetChanged = new Signal(this);
     this._roomProvidersChanged = new Signal(this);
     this._roomProvidersChanged.connect(this.onRoomProvidersChanged, this);
@@ -174,7 +178,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
       try {
         config = { ...config, ...(await provider.updateConfig()) };
       } catch (err) {
-        console.warn(`Failed to load config from ${id}`);
+        console.warn(this._trans.__(`Failed to load config from %1`, id));
         console.trace(err);
       }
     }
@@ -197,7 +201,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
         }
         rooms = [...rooms, ...providerRooms];
       } catch (err) {
-        console.warn(`Failed to load rooms from ${id}`);
+        console.warn(this._trans.__(`Failed to load rooms from %1`, id));
         console.trace(err);
       }
     }
@@ -216,7 +220,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
         newRoom = await provider.createRoom(room);
         break;
       } catch (err) {
-        console.warn(`Failed to create room from ${id}`);
+        console.warn(this._trans.__(`Failed to create room from %1`, id));
       }
     }
 
@@ -256,7 +260,9 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
 /** A namespace for video chat manager extras */
 export namespace VideoChatManager {
   /** placeholder options for video chat manager */
-  export interface IOptions extends IVideoChatManager.IOptions {}
+  export interface IOptions extends IVideoChatManager.IOptions {
+    trans: TranslationBundle;
+  }
 }
 
 /** a private namespace for the singleton jitsi script tag */
