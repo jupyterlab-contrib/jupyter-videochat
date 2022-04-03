@@ -41,9 +41,8 @@ conda install -c conda-forge jupyter-videochat
 ## Usage
 
 ```{hint}
-See the [Jitsi User Guide] for more about using the actual chat once launched.
-
-[jitsi-user-guide]: https://jitsi.github.io/handbook/docs/user-guide/
+See the [Jitsi Handbook](https://jitsi.github.io/handbook) for more about using
+the actual chat once launched.
 ```
 
 ### View the Room List
@@ -82,10 +81,8 @@ See the [Jitsi User Guide] for more about using the actual chat once launched.
 ## Troubleshoot
 
 ```{hint}
-If the Jitsi frame actually loads, the [Jitsi User Guide] is the best source for
-more help.
-
-[jitsi-user-guide]: https://jitsi.github.io/handbook/docs/user-guide/
+If the Jitsi frame actually loads, the [Jitsi Handbook](https://jitsi.github.io/handbook)
+is the best source for more help.
 ```
 
 ### I see the Lab UI, but the video chat IFrame doesn't load
