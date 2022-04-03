@@ -40,10 +40,7 @@ conda install -c conda-forge jupyter-videochat
 
 ## Usage
 
-```{hint}
-See the [Jitsi Handbook](https://jitsi.github.io/handbook) for more about using
-the actual chat once launched.
-```
+> See the [Jitsi Handbook] for more about using the actual chat once launched.
 
 ### View the Room List
 
@@ -80,10 +77,8 @@ the actual chat once launched.
 
 ## Troubleshoot
 
-```{hint}
-If the Jitsi frame actually loads, the [Jitsi Handbook](https://jitsi.github.io/handbook)
-is the best source for more help.
-```
+> If the Jitsi frame actually loads, the [Jitsi Handbook] is the best source for more
+> help.
 
 ### I see the Lab UI, but the video chat IFrame doesn't load
 
@@ -103,14 +98,13 @@ jupyter server extension enable --sys-prefix --py jupyter_videochat
 
 ... and restart the server.
 
-```{hint}
-If you launch your Jupyter server with `jupyter notebook`, as Binder does, the
-equivalent commands are:
-
-    jupyter serverextension list
-    jupyter serverextension enable --sys-prefix --py jupyter_videochat
-
-```
+> If you launch your Jupyter server with `jupyter notebook`, as Binder does, the
+> equivalent commands are:
+>
+> ```bash
+> jupyter serverextension list
+> jupyter serverextension enable --sys-prefix --py jupyter_videochat
+> ```
 
 If the server extension is installed and enabled but you are not seeing the frontend,
 check the frontend is installed:
@@ -347,6 +341,6 @@ conda uninstall jupyter-videochat
 [contributing]:
   https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/CONTRIBUTING.md
 [jitsi]: https://jitsi.org
-[python data science handbook]: https://github.com/jakevdp/PythonDataScienceHandbook
 [docs-badge]: https://readthedocs.org/projects/jupyter-videochat/badge/?version=stable
 [docs]: https://jupyter-videochat.readthedocs.io/en/stable/
+[jitsi-handbook]: https://jitsi.github.io/handbook
