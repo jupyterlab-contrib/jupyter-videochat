@@ -40,7 +40,8 @@ conda install -c conda-forge jupyter-videochat
 
 ## Usage
 
-> See the [Jitsi Handbook] for more about using the actual chat once launched.
+> See the [Jitsi Handbook][jitsi-handbook] for more about using the actual chat once
+> launched.
 
 ### View the Room List
 
@@ -77,8 +78,8 @@ conda install -c conda-forge jupyter-videochat
 
 ## Troubleshoot
 
-> If the Jitsi frame actually loads, the [Jitsi Handbook] is the best source for more
-> help.
+> If the Jitsi frame actually loads, the [Jitsi Handbook][jitsi-handbook] is the best
+> source for more help.
 
 ### I see the Lab UI, but the video chat IFrame doesn't load
 
@@ -268,7 +269,7 @@ If you have two repos (or branches) that contain:
 fast-building, (almost) single-click URLs that launch right into JupyterLab showing your
 meeting and content. For example, to use...
 
-- the [Python Data Science Handbook] as `master`
+- the [Python Data Science Handbook][data-science-handbook] as `master`
 - this project's repo, at `demo` (_not recommended, as it's pretty
   [minimal][binder-reqs]_)
 
@@ -344,3 +345,4 @@ conda uninstall jupyter-videochat
 [docs-badge]: https://readthedocs.org/projects/jupyter-videochat/badge/?version=stable
 [docs]: https://jupyter-videochat.readthedocs.io/en/stable/
 [jitsi-handbook]: https://jitsi.github.io/handbook
+[data-science-handbook]: https://github.com/jakevdp/PythonDataScienceHandbook
