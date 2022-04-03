@@ -40,22 +40,28 @@ conda install -c conda-forge jupyter-videochat
 
 ## Usage
 
+```{hint}
+See the [Jitsi User Guide] for more about using the actual chat once launched.
+
+[jitsi-user-guide]: https://jitsi.github.io/handbook/docs/user-guide/
+```
+
 ### View the Room List
 
 #### JupyterLab
 
-- From the Main Menu...
-  - Click _File_ &raquo; New &raquo; Video Chat
-- From the Launcher..
+- From the _Main Menu_...
+  - Click _File ▶ New ▶ Video Chat_
+- From the _Launcher_...
   - Open a new _JupyterLab Launcher_
   - Scroll down to _Other_
   - Click the _Video Chat_ launcher card
 
 #### RetroLab
 
-- From the Main Menu...
-  - Click _File_ &raquo; New &raquo; Video Chat
-- From the RetroLab File Tree
+- From the _Main Menu_...
+  - Click _File ▶ New ▶ Video Chat_
+- From the RetroLab File Tree...
   - Click the _New Video Chat_ button
 
 ### Start a Chat
@@ -65,6 +71,13 @@ conda install -c conda-forge jupyter-videochat
   - your email will be used to provide [Gravatar](https://gravatar.com) icon
 - From one of the room _providers_, choose a room.
   - You may need to provide a room name
+
+### Stop a Chat
+
+- From the the Jitsi IFrame:
+  - Click the red "hang up" button, or
+- From the _Video Chat toolbar_
+  - Click the _Disconnect Video Chat_ button
 
 ## Troubleshoot
 
