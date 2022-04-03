@@ -4,8 +4,6 @@
 
 [0.6.1]: https://pypi.org/project/jupyter-videochat/0.6.1
 
----
-
 ## jupyter-videochat [0.6.0]
 
 ### UI
@@ -45,8 +43,6 @@
 [retrolab]: https://github.com/jupyterlab/retrolab
 [i18n]: https://jupyterlab.readthedocs.io/en/stable/extension/internationalization.html
 
----
-
 ## jupyter-videochat [0.5.1]
 
 - adds missing `provides` to allow downstreams extensions to use (and not just import)
@@ -56,8 +52,6 @@
 [0.5.1]: https://pypi.org/project/jupyter-videochat/0.5.1
 [#21]: https://github.com/jupyterlab-contrib/jupyter-videochat/issues/21
 [#22]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/22
-
----
 
 ## jupyter-videochat [0.5.0]
 
@@ -79,8 +73,6 @@
 [#12]: https://github.com/jupyterlab-contrib/jupyter-videochat/issues/12
 [#7]: https://github.com/jupyterlab-contrib/jupyter-videochat/issues/7
 [#14]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/14
-
----
 
 ## jupyter-videochat [0.4.0]
 
