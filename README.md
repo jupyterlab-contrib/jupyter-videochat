@@ -2,27 +2,14 @@
 
 > Video Chat with JupyterHub peers inside JupyterLab, powered by [Jitsi].
 
+[![documentation on readthedocs][docs-badge]][docs]
 [![Extension status](https://img.shields.io/badge/status-ready-success 'ready to be used')](https://jupyterlab-contrib.github.io/)
 [![install from pypi][pypi-badge]][pypi]
 [![install from conda-forge][conda-forge-badge]][conda-forge]
 [![reuse from npm][npm-badge]][npm]
 [![continuous integration][workflow-badge]][workflow]
-[![interactive demo][binder-badge]][binder] [![][changelog-badge]][changelog]
-[![][contributing-badge]][contributing]
-
-This extension is composed of:
-
-- a Python package named `jupyter_videochat`, which offers:
-  - a `jupyter_server` extension which provides convenient, configurable defaults for
-    rooms on a [JupyterHub]
-  - a JupyterLab _pre-built_ or _federated extension_ named `jupyter-videochat`
-    - also distributed on [npm]
-      - for more about the TypeScript/JS API, see [CONTRIBUTING]
-    - at JupyterLab runtime, some _Plugins_ which can be independently disabled
-      - `jupyterlab-videochat:plugin` which is required by:
-      - `jupyterlab-videochat:rooms-server`
-      - `jupyterlab-videochat:rooms-public`
-      - `jupyterlab-videochat:toggle-area`
+[![interactive demo][binder-badge]][binder] [![changelog][changelog-badge]][changelog]
+[![contributing][contributing-badge]][contributing]
 
 [npm]: https://www.npmjs.com/package/jupyterlab-videochat
 [jupyterhub]: https://github.com/jupyterhub/jupyterhub
@@ -50,6 +37,22 @@ pip install -U jupyter-videochat
 ```bash
 conda install -c conda-forge jupyter-videochat
 ```
+
+## Architecture
+
+This extension is composed of:
+
+- a Python package named `jupyter_videochat`, which offers:
+  - a `jupyter_server` extension which provides convenient, configurable defaults for
+    rooms on a [JupyterHub]
+  - a JupyterLab _pre-built_ or _federated extension_ named `jupyter-videochat`
+    - also distributed on [npm]
+      - for more about the TypeScript/JS API, see [CONTRIBUTING]
+    - at JupyterLab runtime, some _Plugins_ which can be independently disabled
+      - `jupyterlab-videochat:plugin` which is required by:
+      - `jupyterlab-videochat:rooms-server`
+      - `jupyterlab-videochat:rooms-public`
+      - `jupyterlab-videochat:toggle-area`
 
 ## Troubleshoot
 
@@ -283,3 +286,5 @@ https://example.github.io/my-repo/lab?JVC-PUBLIC=a-very-long-and-well-thought-ke
   https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/CONTRIBUTING.md
 [jitsi]: https://jitsi.org
 [python data science handbook]: https://github.com/jakevdp/PythonDataScienceHandbook
+[docs-badge]: https://readthedocs.org/projects/jupyter-videochat/badge/?version=stable
+[docs]: https://jupyter-videochat.readthedocs.io/en/stable/
