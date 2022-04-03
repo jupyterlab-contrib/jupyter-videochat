@@ -69,6 +69,7 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         }
         disablePublicRooms={!!settings?.composite.disablePublicRooms}
         canCreateRooms={this.model.canCreateRooms}
+        __={this.model.__}
       />
     );
   }

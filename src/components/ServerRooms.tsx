@@ -16,11 +16,13 @@ export const openBlank = {
 export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
   const [roomName, setRoomName] = useState<string>('');
 
+  const { __ } = props;
+
   return (
     <div className={`${CSS}-rooms-server`}>
       <label id={`id-${CSS}-server-room-list`}>
         <icons.groupIcon.react {...littleIcon} />
-        Select Room to join
+        {__('Select Room to join')}
       </label>
       <ul aria-labelledby={`id-${CSS}-server-room-list`}>
         {!props.rooms.length
@@ -33,7 +35,7 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
                     className={`jp-mod-styled jp-mod-accept`}
                     onClick={() => props.onRoomSelect(value)}
                   >
-                    JOIN
+                    {__('JOIN')}
                   </button>
                   <blockquote>{value.description}</blockquote>
                   <span>{props.providerForRoom(value)?.label}</span>
@@ -44,14 +46,14 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
 
       <label id={`id-${CSS}-new-server-room-list`}>
         <icons.newGroupIcon.react {...littleIcon} />
-        Join Room by name
+        {__('Join Room by name')}
       </label>
       <ul aria-labelledby={`id-${CSS}-new-server-room-list`}>
         <li className={`${CSS}-has-input`}>
           <div className={`${CSS}-room-displayname-input`}>
             <input
               className="jp-mod-styled"
-              placeholder="  Server Room Name"
+              placeholder={'  ' + __('Server Room Name')}
               onInput={(evt) => setRoomName(evt.currentTarget.value)}
             />
             <button
@@ -65,8 +67,10 @@ export const ServerRoomsComponent = (props: RoomsListProps): JSX.Element => {
             </button>
           </div>
           <blockquote>
-            Join (or create) a named Room. Share this name with other users of your Hub,
-            Binder, or others that can share a server key.
+            {__('Join (or create) a named Room.')}{' '}
+            {__(
+              'Share this name with other users of your Hub, Binder, or others that can share a server key.'
+            )}
           </blockquote>
         </li>
       </ul>

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
-import { IVideoChatManager } from '../tokens';
+import { IVideoChatManager, ITrans } from '../tokens';
 import { Room, VideoChatConfig, IJitsiFactory } from '../types';
 import { JitsiMeetComponent } from './JitsiMeet';
 import { RoomsListComponent } from './RoomsList';
@@ -25,6 +25,7 @@ export type VideoChatProps = {
   interfaceConfigOverwrite: ReadonlyPartialJSONObject | null;
   disablePublicRooms: boolean;
   canCreateRooms: boolean;
+  __: ITrans;
 };
 
 export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
@@ -43,6 +44,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           configOverwrite={props.configOverwrite}
           interfaceConfigOverwrite={props.interfaceConfigOverwrite}
           providerForRoom={props.providerForRoom}
+          __={props.__}
         />
       ) : (
         <RoomsListComponent
@@ -58,6 +60,7 @@ export const VideoChatComponent = (props: VideoChatProps): JSX.Element => {
           disablePublicRooms={props.disablePublicRooms}
           canCreateRooms={props.canCreateRooms}
           providerForRoom={props.providerForRoom}
+          __={props.__}
         />
       )}
     </>

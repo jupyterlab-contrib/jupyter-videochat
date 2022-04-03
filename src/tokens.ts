@@ -240,6 +240,19 @@ export type RoomsListProps = {
   domain: string;
   disablePublicRooms: boolean;
   canCreateRooms: boolean;
+  __: ITrans;
 };
 
+/**
+ * A lightweight debug tool.
+ */
 export const DEBUG = window.location.href.indexOf('JVC_DEBUG') > -1;
+
+/**
+ * An gettext-style internationaliation translation signature.
+ *
+ * args can be referenced by 1-index, e.g. args[0] is %1
+ */
+export interface ITrans {
+  (msgid: string, ...args: string[]): string;
+}

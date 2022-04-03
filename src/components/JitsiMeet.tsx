@@ -4,7 +4,7 @@ import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { CSS, IVideoChatManager } from '../tokens';
+import { CSS, IVideoChatManager, ITrans } from '../tokens';
 import { Room, IJitsiFactory } from '../types';
 
 import type { ExternalAPIOptions, JitsiMeetExternalAPI } from 'jitsi-meet';
@@ -20,10 +20,12 @@ export type JitsiMeetProps = {
   displayName: string;
   configOverwrite: ReadonlyPartialJSONObject | null;
   interfaceConfigOverwrite: ReadonlyPartialJSONObject | null;
+  __: ITrans;
 };
 
 export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
   const container = React.createRef<HTMLDivElement>();
+  const { __ } = props;
 
   useEffect(() => {
     const options: ExternalAPIOptions = {
@@ -47,20 +49,20 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     if (configOverwrite != null) {
       options.configOverwrite = configOverwrite;
     } else {
-      console.warn('No Jitsi third-party requests will be blocked');
+      console.warn(__('No Jitsi third-party requests will be blocked'));
     }
 
     if (interfaceConfigOverwrite != null) {
       options.interfaceConfigOverwrite = interfaceConfigOverwrite;
     } else {
-      console.warn('All Jitsi features will be enabled');
+      console.warn(__('All Jitsi features will be enabled'));
     }
 
     let meet: JitsiMeetExternalAPI;
     let Jitsi = props.jitsiAPI();
 
     if (Jitsi == null) {
-      console.info('Jitsi API not yet loaded, will try again in a moment');
+      console.info(__('Jitsi API not yet loaded, will try again in a moment'));
     } else {
       meet = new Jitsi(props.domain, options);
     }
