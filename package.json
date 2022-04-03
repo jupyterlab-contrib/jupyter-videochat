@@ -51,6 +51,7 @@
     "@jupyterlab/mainmenu": "^3.0.0"
   },
   "devDependencies": {
+    "@types/jitsi-meet": "^2.0.2",
     "@jupyterlab/builder": "^3.3.0",
     "@jupyterlab/launcher": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^4.8.1",

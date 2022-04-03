@@ -1,6 +1,4 @@
-import { Panel } from '@lumino/widgets';
-
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import {
   ILabShell,
@@ -11,14 +9,19 @@ import {
   LabShell,
 } from '@jupyterlab/application';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { launcherIcon, stopIcon } from '@jupyterlab/ui-components';
+
+import { ITranslator, nullTranslator } from '@jupyterlab/translation';
 
 import {
   CommandToolbarButton,
   ICommandPalette,
   Toolbar,
   WidgetTracker,
+  MainAreaWidget,
 } from '@jupyterlab/apputils';
+
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
@@ -26,6 +29,7 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 import {
   CommandIds,
   CSS,
+  DEBUG,
   FORCE_URL_PARAM,
   IVideoChatManager,
   NS,
@@ -33,16 +37,18 @@ import {
   RETRO_CANARY_OPT,
   RETRO_TREE_URL,
   SERVER_URL_PARAM,
+  ToolbarIds,
 } from './tokens';
 import { IChatArgs } from './types';
 import { VideoChatManager } from './manager';
 import { VideoChat } from './widget';
 import { chatIcon, prettyChatIcon } from './icons';
 import { ServerRoomProvider } from './rooms-server';
+import { RoomTitle } from './widgets/title';
 
 const DEFAULT_LABEL = 'Video Chat';
 
-const category = 'Video Chat';
+const category = DEFAULT_LABEL;
 
 function isFullLab(app: JupyterFrontEnd) {
   return !!(app.shell as ILabShell).layoutModified;
@@ -54,6 +60,7 @@ function isFullLab(app: JupyterFrontEnd) {
 async function activateCore(
   app: JupyterFrontEnd,
   settingRegistry: ISettingRegistry,
+  translator?: ITranslator,
   palette?: ICommandPalette,
   launcher?: ILauncher,
   restorer?: ILayoutRestorer,
@@ -63,29 +70,55 @@ async function activateCore(
 
   const labShell = isFullLab(app) ? (shell as LabShell) : null;
 
-  const manager = new VideoChatManager();
+  const manager = new VideoChatManager({
+    trans: (translator || nullTranslator).load(NS),
+  });
 
-  let widget: Panel;
+  const { __ } = manager;
+
+  let widget: MainAreaWidget;
   let chat: VideoChat;
   let subject: string | null = null;
 
-  const tracker = new WidgetTracker<Panel>({ namespace: NS });
+  const tracker = new WidgetTracker<MainAreaWidget>({ namespace: NS });
 
   if (!widget || widget.isDisposed) {
     // Create widget
-    chat = new VideoChat(manager, {
-      onToggleSidebar: () => {
-        labShell && commands.execute(CommandIds.toggleArea, {}).catch(console.warn);
-      },
-    });
-    widget = new Panel();
+    chat = new VideoChat(manager, {});
+    widget = new MainAreaWidget({ content: chat });
     widget.addClass(`${CSS}-wrapper`);
+    manager.setMainWidget(widget);
 
-    widget.id = `id-${NS}`;
-    widget.title.caption = DEFAULT_LABEL;
-    widget.title.closable = false;
-    widget.title.icon = chatIcon;
-    widget.addWidget(chat);
+    widget.toolbar.addItem(ToolbarIds.SPACER_LEFT, Toolbar.createSpacerItem());
+
+    widget.toolbar.addItem(ToolbarIds.TITLE, new RoomTitle(manager));
+
+    widget.toolbar.addItem(ToolbarIds.SPACER_RIGHT, Toolbar.createSpacerItem());
+
+    const disconnectBtn = new CommandToolbarButton({
+      id: CommandIds.disconnect,
+      commands,
+      icon: stopIcon,
+    });
+
+    const onCurrentRoomChanged = () => {
+      if (manager.currentRoom) {
+        disconnectBtn.show();
+      } else {
+        disconnectBtn.hide();
+      }
+    };
+
+    manager.currentRoomChanged.connect(onCurrentRoomChanged);
+
+    widget.toolbar.addItem(ToolbarIds.DISCONNECT, disconnectBtn);
+
+    onCurrentRoomChanged();
+
+    chat.id = `id-${NS}`;
+    chat.title.caption = __(DEFAULT_LABEL);
+    chat.title.closable = false;
+    chat.title.icon = chatIcon;
   }
 
   // hide the label when in sidebar, as it shows the rotated text
@@ -93,13 +126,14 @@ async function activateCore(
     if (subject != null) {
       widget.title.caption = subject;
     } else {
-      widget.title.caption = DEFAULT_LABEL;
+      widget.title.caption = __(DEFAULT_LABEL);
     }
     widget.title.label = manager.currentArea === 'main' ? widget.title.caption : '';
   }
 
   // add to shell, update tracker, title, etc.
   function addToShell(area?: ILabShell.Area, activate = true) {
+    DEBUG && console.warn(`add to shell in are ${area}, ${!activate || 'not '} active`);
     area = area || manager.currentArea;
     if (labShell) {
       labShell.add(widget, area);
@@ -112,7 +146,7 @@ async function activateCore(
         shell.activateById(widget.id);
       }
     } else if (window.location.search.indexOf(FORCE_URL_PARAM) !== -1) {
-      document.title = [document.title.split(' - ')[0], 'Video Chat'].join(' - ');
+      document.title = [document.title.split(' - ')[0], __(DEFAULT_LABEL)].join(' - ');
       app.shell.currentWidget.parent = null;
       app.shell.add(widget, 'main', { rank: 0 });
       const { parent } = widget;
@@ -144,14 +178,20 @@ async function activateCore(
     .load(corePlugin.id)
     .then((settings) => {
       manager.settings = settings;
-      settings.changed.connect(() => addToShell());
+      let lastArea = manager.settings.composite.area;
+      settings.changed.connect(() => {
+        if (lastArea !== manager.settings.composite.area) {
+          addToShell();
+        }
+        lastArea = manager.settings.composite.area;
+      });
       addToShell(null, false);
     })
     .catch(() => addToShell(null, false));
 
   // add commands
   commands.addCommand(CommandIds.open, {
-    label: 'Video Chat',
+    label: __(DEFAULT_LABEL),
     icon: prettyChatIcon,
     execute: async (args: IChatArgs) => {
       await manager.initialized;
@@ -163,8 +203,15 @@ async function activateCore(
     },
   });
 
+  commands.addCommand(CommandIds.disconnect, {
+    label: __('Disconnect Video Chat'),
+    execute: () => (manager.currentRoom = null),
+    icon: stopIcon,
+  });
+
   commands.addCommand(CommandIds.toggleArea, {
-    label: 'Toggle Video Chat Sidebar',
+    label: __('Toggle Video Chat Sidebar'),
+    icon: launcherIcon,
     execute: async () => {
       manager.currentArea = ['right', 'left'].includes(manager.currentArea)
         ? 'main'
@@ -174,8 +221,7 @@ async function activateCore(
 
   // If available, add the commands to the palette
   if (palette) {
-    palette.addItem({ command: CommandIds.open, category });
-    palette.addItem({ command: CommandIds.toggleArea, category });
+    palette.addItem({ command: CommandIds.open, category: __(category) });
   }
 
   // If available, add a card to the launcher
@@ -200,7 +246,7 @@ async function activateCore(
 }
 
 /**
- * Initialization data for the `jupyterlab-videochat:plugin`.
+ * Initialization data for the `jupyterlab-videochat:plugin` Plugin.
  *
  * This only rooms provided are opt-in, global rooms without any room name
  * obfuscation.
@@ -209,7 +255,7 @@ const corePlugin: JupyterFrontEndPlugin<IVideoChatManager> = {
   id: `${NS}:plugin`,
   autoStart: true,
   requires: [ISettingRegistry],
-  optional: [ICommandPalette, ILauncher, ILayoutRestorer, IMainMenu],
+  optional: [ITranslator, ICommandPalette, ILauncher, ILayoutRestorer, IMainMenu],
   provides: IVideoChatManager,
   activate: activateCore,
 };
@@ -225,6 +271,8 @@ function activateServerRooms(
   chat: IVideoChatManager,
   router?: IRouter
 ): void {
+  const { __ } = chat;
+
   const { commands } = app;
   const provider = new ServerRoomProvider({
     serverSettings: app.serviceManager.serverSettings,
@@ -232,7 +280,7 @@ function activateServerRooms(
 
   chat.registerRoomProvider({
     id: 'server',
-    label: 'Server',
+    label: __('Server'),
     rank: 0,
     provider,
   });
@@ -304,9 +352,11 @@ async function activatePublicRooms(
 ): Promise<void> {
   const { commands } = app;
 
+  const { __ } = chat;
+
   chat.registerRoomProvider({
     id: 'public',
-    label: 'Public',
+    label: __('Public'),
     rank: 999,
     provider: {
       updateRooms: async () => [],
@@ -318,13 +368,13 @@ async function activatePublicRooms(
   });
 
   commands.addCommand(CommandIds.togglePublicRooms, {
-    label: 'Toggle Video Chat Public Rooms',
+    label: __('Toggle Video Chat Public Rooms'),
     isVisible: () => !!chat.settings,
     isToggleable: true,
     isToggled: () => !chat.settings?.composite.disablePublicRooms,
     execute: async () => {
       if (!chat.settings) {
-        console.warn('Video chat settings not loaded');
+        console.warn(__('Video chat settings not loaded'));
         return;
       }
       await chat.settings.set(
@@ -337,7 +387,7 @@ async function activatePublicRooms(
   // If available, Add to the router
   if (router) {
     commands.addCommand(CommandIds.publicRouterStart, {
-      label: 'Open Public Video Chat from URL',
+      label: __('Open Public Video Chat from URL'),
       execute: async (args) => {
         const { request } = args as IRouter.ILocation;
         const url = new URL(`http://example.com${request}`);
@@ -350,7 +400,7 @@ async function activatePublicRooms(
             chat.currentRoom = {
               id: roomId,
               displayName: roomId,
-              description: 'A Public Room',
+              description: __('A Public Room'),
             };
           }
         };
@@ -373,7 +423,7 @@ async function activatePublicRooms(
 }
 
 /**
- * Initialization for retrolab (no-op in full)
+ * Initialization for the `jupyterlab-videochat:retro` retrolab (no-op in full)
  */
 const retroPlugin: JupyterFrontEndPlugin<void> = {
   id: `${NS}:retro`,
@@ -393,6 +443,8 @@ function activateRetro(
     return;
   }
 
+  const { __ } = chat;
+
   const baseUrl = PageConfig.getBaseUrl();
 
   // this is basically hard-coded upstream
@@ -401,7 +453,7 @@ function activateRetro(
   const { commands } = app;
 
   commands.addCommand(CommandIds.openTab, {
-    label: 'New Video Chat',
+    label: __('New Video Chat'),
     icon: prettyChatIcon,
     execute: (args: any) => {
       window.open(`${treeUrl}?${FORCE_URL_PARAM}`, '_blank');
@@ -429,5 +481,58 @@ function activateRetro(
   }
 }
 
+/**
+ * Initialization for the `jupyterlab-videochat:toggle-area`, which allows the user
+ * to switch where video chat occurs.
+ */
+const areaTogglePlugin: JupyterFrontEndPlugin<void> = {
+  id: `${NS}:toggle-area`,
+  autoStart: true,
+  requires: [IVideoChatManager],
+  optional: [ICommandPalette],
+  activate: activateToggleArea,
+};
+
+function activateToggleArea(
+  app: JupyterFrontEnd,
+  chat: IVideoChatManager,
+  palette?: ICommandPalette
+): void {
+  const { shell, commands } = app;
+  const { __ } = chat;
+
+  const labShell = isFullLab(app) ? (shell as LabShell) : null;
+
+  if (!labShell) {
+    return;
+  }
+
+  const toggleBtn = new CommandToolbarButton({
+    id: CommandIds.toggleArea,
+    commands,
+    icon: launcherIcon,
+  });
+
+  chat.mainWidget
+    .then((widget) => {
+      widget.toolbar.insertBefore(
+        ToolbarIds.SPACER_LEFT,
+        ToolbarIds.TOGGLE_AREA,
+        toggleBtn
+      );
+    })
+    .catch((err) => console.warn(__(`Couldn't add Video Chat area toggle`), err));
+
+  if (palette) {
+    palette.addItem({ command: CommandIds.toggleArea, category: __(category) });
+  }
+}
+
 // In the future, there may be more extensions
-export default [corePlugin, serverRoomsPlugin, publicRoomsPlugin, retroPlugin];
+export default [
+  corePlugin,
+  serverRoomsPlugin,
+  publicRoomsPlugin,
+  retroPlugin,
+  areaTogglePlugin,
+];

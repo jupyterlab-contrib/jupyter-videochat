@@ -1,19 +1,21 @@
 import React from 'react';
+
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
+
 import { VDomRenderer } from '@jupyterlab/apputils';
+
+import type { JitsiMeetExternalAPI } from 'jitsi-meet';
 import { VideoChatComponent } from './components/VideoChat';
 import { CSS } from './tokens';
-import { Room, IMeet } from './types';
+import { Room } from './types';
 import { VideoChatManager } from './manager';
 
 /**
  * The main video chat interface which can appear in the sidebar or main area
  */
 export class VideoChat extends VDomRenderer<VideoChatManager> {
-  onToggleSidebar: () => void;
-
   constructor(model: VideoChatManager, options: VideoChat.IOptions) {
     super(model);
-    this.onToggleSidebar = options.onToggleSidebar;
     this.addClass(CSS);
   }
 
@@ -28,7 +30,7 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
   };
 
   /** Set the current meeting */
-  onMeet = (meet: IMeet): void => {
+  onMeet = (meet: JitsiMeetExternalAPI): void => {
     this.model.meet = meet;
   };
 
@@ -48,7 +50,6 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
     return (
       <VideoChatComponent
         jitsiAPI={this.model.getJitsiAPI()}
-        onToggleSidebar={this.onToggleSidebar}
         onRoomSelect={this.onRoomSelect}
         onCreateRoom={this.onCreateRoom}
         onEmailChanged={this.onEmailChanged}
@@ -60,10 +61,15 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
         rooms={this.model.rooms}
         email={`${settings?.composite.email || ''}`}
         displayName={`${settings?.composite.displayName || ''}`}
-        configOverwrite={settings?.composite.configOverwrite}
-        interfaceConfigOverwrite={settings?.composite.interfaceConfigOverwrite}
+        configOverwrite={
+          settings?.composite.configOverwrite as ReadonlyPartialJSONObject
+        }
+        interfaceConfigOverwrite={
+          settings?.composite.interfaceConfigOverwrite as ReadonlyPartialJSONObject
+        }
         disablePublicRooms={!!settings?.composite.disablePublicRooms}
         canCreateRooms={this.model.canCreateRooms}
+        __={this.model.__}
       />
     );
   }
@@ -72,8 +78,5 @@ export class VideoChat extends VDomRenderer<VideoChatManager> {
 /** A namespace for VideoChat options */
 export namespace VideoChat {
   /** Options for constructing a new a VideoChat */
-  export interface IOptions {
-    /** function to run when the sidebar toggle is activated */
-    onToggleSidebar: () => void;
-  }
+  export interface IOptions {}
 }

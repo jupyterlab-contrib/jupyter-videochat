@@ -1,10 +1,13 @@
 import { Token } from '@lumino/coreutils';
 import { ISignal } from '@lumino/signaling';
 
+import { JitsiMeetExternalAPI } from 'jitsi-meet';
+
+import { MainAreaWidget } from '@jupyterlab/apputils';
+import { ILabShell } from '@jupyterlab/application';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { Room, VideoChatConfig, IMeet, IJitsiFactory } from './types';
-import { ILabShell } from '@jupyterlab/application';
+import { Room, VideoChatConfig, IJitsiFactory } from './types';
 
 /** The namespace for key tokens and IDs */
 export const NS = 'jupyterlab-videochat';
@@ -45,6 +48,35 @@ export const RETRO_CANARY_OPT = 'retroPage';
 export const FORCE_URL_PARAM = 'show-videochat';
 
 /**
+ * Names for spacer components.
+ */
+export namespace ToolbarIds {
+  /**
+   * The main area left spacer
+   */
+  export const SPACER_LEFT = 'spacer-left';
+
+  /**
+   * The main area right spacer
+   */
+  export const SPACER_RIGHT = 'spacer-right';
+
+  /**
+   * The button for the area toggle.
+   */
+  export const TOGGLE_AREA = 'toggle-sidebar';
+
+  /**
+   * The button for disconnect.
+   */
+  export const DISCONNECT = 'disconnect';
+  /**
+   * The text label for the title.
+   */
+  export const TITLE = 'title';
+}
+
+/**
  * An interface for sources of Jitsi Rooms
  */
 export interface IRoomProvider {
@@ -80,6 +112,8 @@ export interface IVideoChatManager extends IRoomProvider {
   /** The current room */
   currentRoom: Room;
 
+  currentRoomChanged: ISignal<IRoomProvider, void>;
+
   /** Whether the manager is fully initialized */
   isInitialized: boolean;
 
@@ -90,7 +124,7 @@ export interface IVideoChatManager extends IRoomProvider {
   config: VideoChatConfig;
 
   /** The current Jitsi Meet instance */
-  meet: IMeet | null;
+  meet: JitsiMeetExternalAPI | null;
 
   /** A signal emitted when the current Jitsi Meet has changed */
   meetChanged: ISignal<IVideoChatManager, void>;
@@ -125,6 +159,16 @@ export interface IVideoChatManager extends IRoomProvider {
    * A signal for when room providers change
    */
   roomProvidersChanged: ISignal<IVideoChatManager, void>;
+
+  /**
+   * A translator for strings from this package
+   */
+  __(msgid: string, ...args: string[]): string;
+
+  /**
+   * The main outer Video Chat widget.
+   */
+  mainWidget: Promise<MainAreaWidget>;
 }
 
 export interface IRoomListProps {}
@@ -162,6 +206,9 @@ export namespace CommandIds {
   /** The command id for switching the area of the UI */
   export const toggleArea = `${NS}:togglearea`;
 
+  /** The command id for disconnecting a video chat */
+  export const disconnect = `${NS}:disconnect`;
+
   /** The command id for enabling public rooms */
   export const togglePublicRooms = `${NS}:togglepublic`;
 
@@ -193,4 +240,19 @@ export type RoomsListProps = {
   domain: string;
   disablePublicRooms: boolean;
   canCreateRooms: boolean;
+  __: ITrans;
 };
+
+/**
+ * A lightweight debug tool.
+ */
+export const DEBUG = window.location.href.indexOf('JVC_DEBUG') > -1;
+
+/**
+ * An gettext-style internationaliation translation signature.
+ *
+ * args can be referenced by 1-index, e.g. args[0] is %1
+ */
+export interface ITrans {
+  (msgid: string, ...args: string[]): string;
+}

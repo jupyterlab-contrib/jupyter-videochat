@@ -1,12 +1,18 @@
-import { Signal } from '@lumino/signaling';
+import { Signal, ISignal } from '@lumino/signaling';
 import { PromiseDelegate } from '@lumino/coreutils';
 
-import { VDomModel } from '@jupyterlab/apputils';
+import { ILabShell } from '@jupyterlab/application';
+import { TranslationBundle } from '@jupyterlab/translation';
+
+import { MainAreaWidget, VDomModel } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { IVideoChatManager, DEFAULT_DOMAIN, CSS } from './tokens';
-import { Room, VideoChatConfig, IMeet, IMeetConstructor, IJitsiFactory } from './types';
-import { ILabShell } from '@jupyterlab/application';
+import { IVideoChatManager, DEFAULT_DOMAIN, CSS, DEBUG } from './tokens';
+
+import type { JitsiMeetExternalAPIConstructor, JitsiMeetExternalAPI } from 'jitsi-meet';
+
+import { Room, VideoChatConfig, IJitsiFactory } from './types';
+import { Widget } from '@lumino/widgets';
 
 /** A manager that can add, join, or create Video Chat rooms
  */
@@ -16,19 +22,28 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _isInitialized = false;
   private _initialized = new PromiseDelegate<void>();
   private _config: VideoChatConfig;
-  private _meet: IMeet;
+  private _meet: JitsiMeetExternalAPI;
   private _meetChanged: Signal<VideoChatManager, void>;
   private _settings: ISettingRegistry.ISettings;
   private _roomProviders = new Map<string, IVideoChatManager.IProviderOptions>();
   private _roomProvidedBy = new WeakMap<Room, string>();
   private _roomProvidersChanged: Signal<VideoChatManager, void>;
+  private _currentRoomChanged: Signal<VideoChatManager, void>;
+  private _trans: TranslationBundle;
+  protected _mainWidget: MainAreaWidget;
 
   constructor(options?: VideoChatManager.IOptions) {
     super();
+    this._trans = options.trans;
     this._meetChanged = new Signal(this);
     this._roomProvidersChanged = new Signal(this);
+    this._currentRoomChanged = new Signal(this);
     this._roomProvidersChanged.connect(this.onRoomProvidersChanged, this);
   }
+
+  __ = (msgid: string, ...args: string[]): string => {
+    return this._trans.__(msgid, ...args);
+  };
 
   /** all known rooms */
   get rooms(): Room[] {
@@ -56,9 +71,15 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   set currentRoom(room: Room) {
     this._currentRoom = room;
     this.stateChanged.emit(void 0);
+    this._currentRoomChanged.emit(void 0);
     if (room != null && room.id == null) {
       this.createRoom(room).catch(console.warn);
     }
+  }
+
+  /** A signal that emits when the current room changes. */
+  get currentRoomChanged(): ISignal<IVideoChatManager, void> {
+    return this._currentRoomChanged;
   }
 
   /** The configuration from the server/settings */
@@ -67,12 +88,12 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   }
 
   /** The current JitsiExternalAPI, as served by `<domain>/external_api.js` */
-  get meet(): IMeet {
+  get meet(): JitsiMeetExternalAPI {
     return this._meet;
   }
 
   /** Update the current meet */
-  set meet(meet: IMeet) {
+  set meet(meet: JitsiMeetExternalAPI) {
     if (this._meet !== meet) {
       this._meet = meet;
       this._meetChanged.emit(void 0);
@@ -115,6 +136,18 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
 
   set currentArea(currentArea: ILabShell.Area) {
     this.settings.set('area', currentArea).catch(void 0);
+  }
+
+  get mainWidget(): Promise<MainAreaWidget<Widget>> {
+    return this.initialized.then(() => this._mainWidget);
+  }
+
+  setMainWidget(widget: MainAreaWidget): void {
+    if (this._mainWidget) {
+      console.error(this.__('Main Video Chat widget already set'));
+      return;
+    }
+    this._mainWidget = widget;
   }
 
   /** A scoped handler for connecting to the settings Signal  */
@@ -174,7 +207,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
       try {
         config = { ...config, ...(await provider.updateConfig()) };
       } catch (err) {
-        console.warn(`Failed to load config from ${id}`);
+        console.warn(this.__(`Failed to load config from %1`, id));
         console.trace(err);
       }
     }
@@ -197,7 +230,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
         }
         rooms = [...rooms, ...providerRooms];
       } catch (err) {
-        console.warn(`Failed to load rooms from ${id}`);
+        console.warn(this.__(`Failed to load rooms from %1`, id));
         console.trace(err);
       }
     }
@@ -216,7 +249,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
         newRoom = await provider.createRoom(room);
         break;
       } catch (err) {
-        console.warn(`Failed to create room from ${id}`);
+        console.warn(this.__(`Failed to create room from %1`, id));
       }
     }
 
@@ -256,19 +289,24 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
 /** A namespace for video chat manager extras */
 export namespace VideoChatManager {
   /** placeholder options for video chat manager */
-  export interface IOptions extends IVideoChatManager.IOptions {}
+  export interface IOptions extends IVideoChatManager.IOptions {
+    trans: TranslationBundle;
+  }
 }
 
 /** a private namespace for the singleton jitsi script tag */
 namespace Private {
-  export let api: IMeetConstructor;
+  export let api: JitsiMeetExternalAPIConstructor;
 
   let _scriptElement: HTMLScriptElement;
-  let _loadPromise: PromiseDelegate<IMeetConstructor>;
+  let _loadPromise: PromiseDelegate<JitsiMeetExternalAPIConstructor>;
 
   /** return a promise that resolves when the Jitsi external JS API is available */
-  export async function ensureExternalAPI(url: string): Promise<IMeetConstructor> {
+  export async function ensureExternalAPI(
+    url: string
+  ): Promise<JitsiMeetExternalAPIConstructor> {
     if (_loadPromise == null) {
+      DEBUG && console.warn('loading...');
       _loadPromise = new PromiseDelegate();
       _scriptElement = document.createElement('script');
       _scriptElement.id = `id-${CSS}-external-api`;
@@ -278,6 +316,7 @@ namespace Private {
       document.body.appendChild(_scriptElement);
       _scriptElement.onload = () => {
         api = (window as any).JitsiMeetExternalAPI;
+        DEBUG && console.warn('loaded...');
         _loadPromise.resolve(api);
       };
     }

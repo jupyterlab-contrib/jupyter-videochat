@@ -10,19 +10,20 @@ import { littleIcon, openBlank } from './RoomsList';
  */
 export const PublicRoomsComponent = (props: RoomsListProps): JSX.Element => {
   const [publicRoomId, setPublicRoomId] = useState<string>('');
+  const { __ } = props;
 
   return (
     <div className={`${CSS}-rooms-public`}>
       <label id={`id-${CSS}-public-room-list`}>
         <icons.publicIcon.react {...littleIcon} />
-        Join Public room by name
+        {__('Join Public room by name')}
       </label>
       <ul aria-labelledby={`id-${CSS}-public-room-list`}>
         <li className={`${CSS}-has-input`}>
           <div className={`${CSS}-room-displayname-input`}>
             <input
               className="jp-mod-styled"
-              placeholder="  Public Room ID"
+              placeholder={'  ' + __('Public Room ID')}
               onInput={(evt) => setPublicRoomId(evt.currentTarget.value)}
             />
             <button
@@ -41,8 +42,8 @@ export const PublicRoomsComponent = (props: RoomsListProps): JSX.Element => {
             </button>
           </div>
           <blockquote>
-            Join (or create) a <b>public</b> room. Share this name with anyone who can
-            access{' '}
+            {__('Join or create a public room.')}{' '}
+            {__('Share this name with anyone who can access')}{' '}
             <a href={`https://${props.domain}`} {...openBlank}>
               {props.domain}
             </a>

@@ -31,6 +31,8 @@ export const openBlank = {
 };
 
 export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
+  const { __ } = props;
+
   return (
     <div className={`${CSS}-rooms`}>
       <label id={`id-${CSS}-user-info`}>
@@ -46,7 +48,7 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
             defaultValue={props.displayName}
           />
           <blockquote>
-            (optional) Default name to show to other chat participants
+            {__('(optional) Default name to show to other chat participants')}
           </blockquote>
           <hr />
           <label>Email</label>
@@ -56,12 +58,12 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
             defaultValue={props.email}
           />
           <blockquote>
-            (optional) Email to show to other chat participants. If an avatar icon is
-            registered with this address at{' '}
+            {__(`(optional) Email to show to other chat participants.`)}{' '}
+            {__(`An avatar icon will be shown if this address is registered at`)}{' '}
             <a href="https://gravatar.com" {...openBlank}>
               gravatar.com
             </a>
-            , an icon will be shown.
+            .
           </blockquote>
         </li>
       </ul>
