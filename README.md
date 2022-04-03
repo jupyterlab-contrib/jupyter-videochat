@@ -1,6 +1,6 @@
 # jupyter-videochat
 
-> Video Chat with JupyterHub peers inside JupyterLab, powered by [Jitsi].
+> Video Chat with JupyterHub peers inside JupyterLab and RetroLab, powered by [Jitsi].
 
 [![documentation on readthedocs][docs-badge]][docs]
 [![Extension status](https://img.shields.io/badge/status-ready-success 'ready to be used')](https://jupyterlab-contrib.github.io/)

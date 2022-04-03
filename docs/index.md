@@ -1,6 +1,7 @@
 # jupyter-videochat
 
-> Video Chat with JupyterHub peers (or the world) inside JupyterLab, powered by [Jitsi].
+> Video Chat with JupyterHub peers (or the world) inside JupyterLab or RetroLab, powered
+> by [Jitsi].
 
 ![jupyter-videochat screenshot][lab-screenshot]
 
