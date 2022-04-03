@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## jupyter-videochat [0.6.1] (unreleased)
+
+[0.6.1]: https://pypi.org/project/jupyter-videochat/0.6.1
+
 ## jupyter-videochat [0.6.0]
 
 ### UI

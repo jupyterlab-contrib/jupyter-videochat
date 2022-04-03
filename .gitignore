@@ -121,3 +121,4 @@ docs/_static/lite
 
 # eslint
 .eslintcache
+.yarn-packages

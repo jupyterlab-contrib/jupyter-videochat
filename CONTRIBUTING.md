@@ -134,7 +134,7 @@ during a Jitsi meeting.
   - upload all of the release assets (including `SHA256SUMS`!)
 - Upload to pypi.org
   ```bash
-  twine upload jupyter-videochat*
+  twine upload jupyter-videochat* jupyter_videochat*
   ```
 - Upload to `npmjs.com`
   ```bash
