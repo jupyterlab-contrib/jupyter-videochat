@@ -6,16 +6,16 @@
 
 ## Quick Start
 
-```bash
-pip install jupyter-videochat
-```
+| from PyPI                       | from conda-forge                                 |
+| ------------------------------- | ------------------------------------------------ |
+| `pip install jupyter-videochat` | `conda install -c conda-forge jupyter-videochat` |
 
 This will install:
 
 - a Python package named `jupyter-videochat` on PyPI, which offers:
   - a `jupyter_server` extension which provides convenient,
     [configurable](./user-guide.md#configuration) defaults for rooms on a JupyterHub
-    - will start as soon as you re-launch your `jupyter_server`
+    - will start as soon as you **re-launch** your `jupyter_server`
   - a JupyterLab 3+ _federated extension_ named `jupyterlab-videochat`
     - will be available immediately
     - can launch a meet via [URL](./user-guide.md#start-a-meet-by-url)

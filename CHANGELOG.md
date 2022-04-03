@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## jupyter-videochat [0.6.0] (unreleased)
+## jupyter-videochat [0.6.0]
 
 ### UI
 
@@ -12,13 +12,17 @@
 
 - _Public_ rooms are still configured as part of core, and can be opted-in via _Command
   Palette_ or _Advanced Settings_ (and therefore `overrides.json`) ([#38])
-- the _Public_ implementation is in a separate, optional plugin ([#38])
+- The _Public_ implementation is in a separate, optional plugin ([#38])
 - _Server_ rooms similarly moved to a separate, optional plugin ([#38])
+- The _Toggle Sidebar_ implementation is moved to a separate, optional plugin ([#60])
+- The `mainWidget` is available as part of the API, and exposes a `toolbar` for adding
+  custom features ([#60])
 
 ### Integrations
 
 - Works more harmoniously with [retrolab] ([#38])
 - The _Public_ plugin is compatible with [JupyterLite] ([#38])
+- All public strings are now [internationalizable][i18n] ([#60])
 
 ### Docs
 
@@ -29,9 +33,11 @@
 [#38]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/38
 [#40]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/40
 [#43]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/43
+[#60]: https://github.com/jupyterlab-contrib/jupyter-videochat/pull/60
 [jupyterlite]: https://github.com/jupyterlite/jupyterlite
 [readthedocs]: https://jupyter-videochat.rtfd.io
 [retrolab]: https://github.com/jupyterlab/retrolab
+[i18n]: https://jupyterlab.readthedocs.io/en/stable/extension/internationalization.html
 
 ## jupyter-videochat [0.5.1]
 

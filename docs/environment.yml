@@ -21,8 +21,8 @@ dependencies:
   - pydata-sphinx-theme
   - pytest-check-links
   - sphinx
+  - sphinx-autobuild
   - sphinx-jsonschema
-
   # lite
   - jupyterlab >=3.3.0,<4
   - retrolab >=0.3.20
