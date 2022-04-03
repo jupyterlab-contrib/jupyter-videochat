@@ -32,11 +32,85 @@ Install the server extension and JupyterLab extension with `pip`:
 pip install -U jupyter-videochat
 ```
 
-...or `conda`:
+...or `conda`/`mamba`:
 
 ```bash
 conda install -c conda-forge jupyter-videochat
 ```
+
+## Usage
+
+### View the Room List
+
+#### JupyterLab
+
+- From the Main Menu...
+  - Click _File_ &raquo; New &raquo; Video Chat
+- From the Launcher..
+  - Open a new _JupyterLab Launcher_
+  - Scroll down to _Other_
+  - Click the _Video Chat_ launcher card
+
+#### RetroLab
+
+- From the Main Menu...
+  - Click _File_ &raquo; New &raquo; Video Chat
+- From the RetroLab File Tree
+  - Click the _New Video Chat_ button
+
+### Start a Chat
+
+- Provide your name and email (optional)
+  - these will be saved in JupyterLab user settings for future usage
+  - your email will be used to provide [Gravatar](https://gravatar.com) icon
+- From one of the room _providers_, choose a room.
+  - You may need to provide a room name
+
+## Troubleshoot
+
+```{hint}
+If the Jitsi frame actually loads, the [Jitsi User Guide] is the best source for
+more help.
+
+[jitsi-user-guide]: https://jitsi.github.io/handbook/docs/user-guide/
+```
+
+### I see the Lab UI, but the video chat IFrame doesn't load
+
+Sometimes the Jitsi IFrame runs into issues, and just shows a white frame.
+
+_Try reloading the browser._
+
+### I see the UI but I'm missing rooms
+
+If you are seeing the frontend extension but it is not working, check that the server
+extension is enabled:
+
+```bash
+jupyter server extension list
+jupyter server extension enable --sys-prefix --py jupyter_videochat
+```
+
+... and restart the server.
+
+```{hint}
+If you launch your Jupyter server with `jupyter notebook`, as Binder does, the
+equivalent commands are:
+
+    jupyter serverextension list
+    jupyter serverextension enable --sys-prefix --py jupyter_videochat
+
+```
+
+If the server extension is installed and enabled but you are not seeing the frontend,
+check the frontend is installed:
+
+```bash
+jupyter labextension list
+```
+
+If you do not see `jupyterlab-videochat`, the best course of action is to
+[uninstall](#uninstall) and [reinstall](#install), and carefully watch the log output.
 
 ## Architecture
 
@@ -53,40 +127,6 @@ This extension is composed of:
       - `jupyterlab-videochat:rooms-server`
       - `jupyterlab-videochat:rooms-public`
       - `jupyterlab-videochat:toggle-area`
-
-## Troubleshoot
-
-If you are seeing the frontend extension but it is not working, check that the server
-extension is enabled:
-
-```bash
-jupyter server extension list
-jupyter server extension enable --sys-prefix --py jupyter_videochat
-```
-
-> If you launch your Jupyter server with `jupyter notebook`, as Binder does, the
-> equivalent commands are:
->
-> ```bash
-> jupyter serverextension list
-> jupyter serverextension enable --sys-prefix --py jupyter_videochat
-> ```
-
-If the server extension is installed and enabled but you are not seeing the frontend,
-check the frontend is installed:
-
-```bash
-jupyter labextension list
-```
-
-If you do not see `jupyterlab-videochat`, the best course of action is to
-[uninstall](#uninstall) and [reinstall](#install), and carefully watch the log output.
-
-## Uninstall
-
-```bash
-pip uninstall jupyter-videochat
-```
 
 ## Configuration
 
@@ -263,6 +303,18 @@ https://example.github.io/my-repo/lab?JVC-PUBLIC=a-very-long-and-well-thought-ke
 ```
 
 - probably _don't_ click on links shorter than about ten characters
+
+## Uninstall
+
+```bash
+pip uninstall jupyter-videochat
+```
+
+or
+
+```bash
+conda uninstall jupyter-videochat
+```
 
 [workflow]:
   https://github.com/jupyterlab-contrib/jupyter-videochat/actions?query=workflow%3ACI+branch%3Amaster
