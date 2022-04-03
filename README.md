@@ -18,10 +18,11 @@ This extension is composed of:
   - a JupyterLab _pre-built_ or _federated extension_ named `jupyter-videochat`
     - also distributed on [npm]
       - for more about the TypeScript/JS API, see [CONTRIBUTING]
-    - at JupyterLab runtime, three _Plugins_ which can be independently disabled
+    - at JupyterLab runtime, some _Plugins_ which can be independently disabled
       - `jupyterlab-videochat:plugin` which is required by:
       - `jupyterlab-videochat:rooms-server`
       - `jupyterlab-videochat:rooms-public`
+      - `jupyterlab-videochat:toggle-area`
 
 [npm]: https://www.npmjs.com/package/jupyterlab-videochat
 [jupyterhub]: https://github.com/jupyterhub/jupyterhub
@@ -126,6 +127,7 @@ configure the `VideoChat`:
 In the JupyterLab _Advanced Settings_ panel, the _Video Chat_ settings can be further
 configured, as can a user's default `displayName` and `email`. The defaults provided are
 generally pretty conservative, and disable as many third-party services as possible.
+
 Additionally, access to **globally-accessible** public rooms may be enabled.
 
 #### Binder Client Example
