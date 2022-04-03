@@ -1,11 +1,13 @@
 import { Token } from '@lumino/coreutils';
 import { ISignal } from '@lumino/signaling';
 
+import { JitsiMeetExternalAPI } from 'jitsi-meet';
+
+import { MainAreaWidget } from '@jupyterlab/apputils';
+import { ILabShell } from '@jupyterlab/application';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { Room, VideoChatConfig, IJitsiFactory } from './types';
-import { ILabShell } from '@jupyterlab/application';
-import { JitsiMeetExternalAPI } from 'jitsi-meet';
 
 /** The namespace for key tokens and IDs */
 export const NS = 'jupyterlab-videochat';
@@ -44,6 +46,35 @@ export const RETRO_CANARY_OPT = 'retroPage';
  * A URL param that will enable chat, even in non-full Lab
  */
 export const FORCE_URL_PARAM = 'show-videochat';
+
+/**
+ * Names for spacer components.
+ */
+export namespace ToolbarIds {
+  /**
+   * The main area left spacer
+   */
+  export const SPACER_LEFT = 'spacer-left';
+
+  /**
+   * The main area right spacer
+   */
+  export const SPACER_RIGHT = 'spacer-right';
+
+  /**
+   * The button for the area toggle.
+   */
+  export const TOGGLE_AREA = 'toggle-sidebar';
+
+  /**
+   * The button for disconnect.
+   */
+  export const DISCONNECT = 'disconnect';
+  /**
+   * The text label for the title.
+   */
+  export const TITLE = 'title';
+}
 
 /**
  * An interface for sources of Jitsi Rooms
@@ -133,6 +164,11 @@ export interface IVideoChatManager extends IRoomProvider {
    * A translator for strings from this package
    */
   __(msgid: string, ...args: string[]): string;
+
+  /**
+   * The main outer Video Chat widget.
+   */
+  mainWidget: Promise<MainAreaWidget>;
 }
 
 export interface IRoomListProps {}

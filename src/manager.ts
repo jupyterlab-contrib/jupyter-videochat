@@ -4,7 +4,7 @@ import { PromiseDelegate } from '@lumino/coreutils';
 import { ILabShell } from '@jupyterlab/application';
 import { TranslationBundle } from '@jupyterlab/translation';
 
-import { VDomModel } from '@jupyterlab/apputils';
+import { MainAreaWidget, VDomModel } from '@jupyterlab/apputils';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { IVideoChatManager, DEFAULT_DOMAIN, CSS, DEBUG } from './tokens';
@@ -12,6 +12,7 @@ import { IVideoChatManager, DEFAULT_DOMAIN, CSS, DEBUG } from './tokens';
 import type { JitsiMeetExternalAPIConstructor, JitsiMeetExternalAPI } from 'jitsi-meet';
 
 import { Room, VideoChatConfig, IJitsiFactory } from './types';
+import { Widget } from '@lumino/widgets';
 
 /** A manager that can add, join, or create Video Chat rooms
  */
@@ -29,6 +30,7 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
   private _roomProvidersChanged: Signal<VideoChatManager, void>;
   private _currentRoomChanged: Signal<VideoChatManager, void>;
   private _trans: TranslationBundle;
+  protected _mainWidget: MainAreaWidget;
 
   constructor(options?: VideoChatManager.IOptions) {
     super();
@@ -134,6 +136,18 @@ export class VideoChatManager extends VDomModel implements IVideoChatManager {
 
   set currentArea(currentArea: ILabShell.Area) {
     this.settings.set('area', currentArea).catch(void 0);
+  }
+
+  get mainWidget(): Promise<MainAreaWidget<Widget>> {
+    return this.initialized.then(() => this._mainWidget);
+  }
+
+  setMainWidget(widget: MainAreaWidget): void {
+    if (this._mainWidget) {
+      console.error(this.__('Main Video Chat widget already set'));
+      return;
+    }
+    this._mainWidget = widget;
   }
 
   /** A scoped handler for connecting to the settings Signal  */
