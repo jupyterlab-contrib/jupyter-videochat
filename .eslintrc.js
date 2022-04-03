@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es6: true,
     commonjs: true,
-    node: true
+    node: true,
   },
   root: true,
   extends: [
@@ -11,14 +11,14 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
-    'plugin:react/recommended'
+    'plugin:react/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'tsconfig.json'
+    project: 'tsconfig.json',
   },
   globals: {
-    "JSX": "readonly"
+    JSX: 'readonly',
   },
   plugins: ['@typescript-eslint'],
   rules: {
@@ -30,9 +30,9 @@ module.exports = {
         format: ['PascalCase'],
         custom: {
           regex: '^I[A-Z]',
-          match: true
-        }
-      }
+          match: true,
+        },
+      },
     ],
     '@typescript-eslint/no-unused-vars': ['warn', { args: 'none' }],
     '@typescript-eslint/no-use-before-define': 'off',
@@ -56,11 +56,11 @@ module.exports = {
     'no-case-declarations': 'warn',
     'no-useless-escape': 'off',
     'prefer-const': 'off',
-    'react/prop-types': 'warn'
+    'react/prop-types': 'warn',
   },
   settings: {
     react: {
-      version: 'detect'
-    }
-  }
+      version: 'detect',
+    },
+  },
 };

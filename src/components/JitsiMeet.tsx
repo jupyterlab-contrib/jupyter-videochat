@@ -1,29 +1,34 @@
 import React, { useEffect } from 'react';
 
-import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { CSS } from '../tokens';
-import { Room, IMeet, IJitsiFactory, IMeetOptions } from '../types';
+import { CSS, IVideoChatManager, ITrans } from '../tokens';
+import { Room, IJitsiFactory } from '../types';
+
+import type { ExternalAPIOptions, JitsiMeetExternalAPI } from 'jitsi-meet';
 
 export type JitsiMeetProps = {
   jitsiAPI: IJitsiFactory;
   onRoomSelect: (room: Room) => void;
-  onMeet: (meet: IMeet) => void;
+  onMeet: (meet: JitsiMeetExternalAPI) => void;
+  providerForRoom: (room: Room) => IVideoChatManager.IProviderOptions;
   room: Room;
   domain: string;
   email: string;
   displayName: string;
-  configOverwrite: ReadonlyPartialJSONValue | null;
-  interfaceConfigOverwrite: ReadonlyPartialJSONValue | null;
+  configOverwrite: ReadonlyPartialJSONObject | null;
+  interfaceConfigOverwrite: ReadonlyPartialJSONObject | null;
+  __: ITrans;
 };
 
 export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
   const container = React.createRef<HTMLDivElement>();
+  const { __ } = props;
 
   useEffect(() => {
-    const options: IMeetOptions = {
+    const options: ExternalAPIOptions = {
       roomName: props.room.id,
       parentNode: container.current,
       userInfo: {
@@ -31,12 +36,7 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
       },
     };
 
-    const {
-      displayName,
-      email,
-      configOverwrite,
-      interfaceConfigOverwrite,
-    } = props;
+    const { displayName, email, configOverwrite, interfaceConfigOverwrite } = props;
 
     if (displayName != null) {
       options.userInfo.displayName = displayName;
@@ -49,20 +49,20 @@ export const JitsiMeetComponent = (props: JitsiMeetProps): JSX.Element => {
     if (configOverwrite != null) {
       options.configOverwrite = configOverwrite;
     } else {
-      console.warn('No Jitsi third-party requests will be blocked');
+      console.warn(__('No Jitsi third-party requests will be blocked'));
     }
 
     if (interfaceConfigOverwrite != null) {
       options.interfaceConfigOverwrite = interfaceConfigOverwrite;
     } else {
-      console.warn('All Jitsi features will be enabled');
+      console.warn(__('All Jitsi features will be enabled'));
     }
 
-    let meet: IMeet;
+    let meet: JitsiMeetExternalAPI;
     let Jitsi = props.jitsiAPI();
 
     if (Jitsi == null) {
-      console.info('Jitsi API not yet loaded, will try again in a moment');
+      console.info(__('Jitsi API not yet loaded, will try again in a moment'));
     } else {
       meet = new Jitsi(props.domain, options);
     }

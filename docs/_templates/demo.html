@@ -1,0 +1,73 @@
+<div style="text-align: center" class="jupyter-videochat-demo">
+  <style>
+    .demo-apps {
+      display: flex;
+      justify-content: space-between;
+      gap: 1em;
+    }
+    .demo-apps form {
+      flex: 1;
+      display: flex;
+    }
+    .demo-apps form button {
+      flex: 1;
+    }
+  </style>
+  <div>Try jupyter-videochat <strong>Now</strong></div>
+
+  <div class="demo-apps">
+    <form action="{{ pathto('_static/lite/lab/index.html', 1) }}" target="_blank">
+      <button
+        type="submit"
+        class="btn btn-success"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title="Launch a new JupyterLab (Lite)"
+      >
+        <img src="{{ pathto('_static/logo-light.svg', 1) }}" width="24" height="24" />
+        Lab
+      </button>
+      <input type="hidden" name="JVC-PUBLIC" class="room-name" />
+      <input type="hidden" name="room" class="room-name" />
+    </form>
+
+    <form
+      action="{{ pathto('_static/lite/retro/tree/index.html', 1) }}"
+      target="_blank"
+    >
+      <button
+        type="submit"
+        class="btn btn-primary"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        title="Launch a new RetroLab (Lite)"
+      >
+        <img src="{{ pathto('_static/logo-light.svg', 1) }}" width="24" height="24" />
+        Retro
+      </button>
+      <input type="hidden" name="show-videochat" value="1" />
+      <input type="hidden" name="JVC-PUBLIC" class="room-name" />
+    </form>
+  </div>
+
+  <details>
+    <summary>Launch in Public Room...</summary>
+    <div>
+      <b>Room</b>
+      <input name="JVC-PUBLIC" type="text" id="room-name" />
+    </div>
+    <i>
+      This <b>public</b> room name will be used for Jitsi chat and collaborative
+      editing.
+    </i>
+  </details>
+
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip();
+      // update the hidden room names with the entered one.
+      const room = $('input[type="text"][name="JVC-PUBLIC"]');
+      room.change(() => $('input.room-name').val(room.val()));
+    });
+  </script>
+</div>

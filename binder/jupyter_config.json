@@ -1,0 +1,24 @@
+{
+  "VideoChat": {
+    "rooms": [
+      {
+        "id": "demo",
+        "displayName": "📹 Demo",
+        "description": "A demo of jupyter-videochat"
+      },
+      {
+        "id": "breakout-1-apple",
+        "displayName": "🍏 Breakout Room 1",
+        "description": "Another room"
+      },
+      {
+        "id": "breakout-2-penguin",
+        "displayName": "🐧 Breakout Room 2",
+        "description": "Yet another room"
+      }
+    ]
+  },
+  "LabApp": {
+    "collaborative": true
+  }
+}

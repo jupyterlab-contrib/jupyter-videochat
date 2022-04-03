@@ -1,30 +1,18 @@
-import React, { useState } from 'react';
-
-import { CSS } from '../tokens';
-import { Room } from '../types';
-import * as icons from '../icons';
+import React from 'react';
 import { LabIcon } from '@jupyterlab/ui-components';
 
-export type RoomsListProps = {
-  onRoomSelect: (room: Room) => void;
-  onCreateRoom: (room: Room) => void;
-  onEmailChanged: (email: string) => void;
-  onDisplayNameChanged: (displayName: string) => void;
-  currentRoom: Room;
-  rooms: Room[];
-  email: string;
-  displayName: string;
-  domain: string;
-  disablePublicRooms: boolean;
-};
+import { CSS, RoomsListProps } from '../tokens';
+import * as icons from '../icons';
+import { ServerRoomsComponent } from './ServerRooms';
+import { PublicRoomsComponent } from './PublicRooms';
 
-const littleIcon: Partial<LabIcon.IReactProps> = {
+export const littleIcon: Partial<LabIcon.IReactProps> = {
   tag: 'span',
   width: '20px',
   height: '20px',
 };
 
-const noRoom = (
+export const noRoom = (
   <li>
     <blockquote>
       <p>
@@ -37,14 +25,13 @@ const noRoom = (
   </li>
 );
 
-const openBlank = {
+export const openBlank = {
   target: '_blank',
   rel: 'noopener noreferrer',
 };
 
 export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
-  const [roomName, setRoomName] = useState<string>('');
-  const [publicRoomId, setPublicRoomId] = useState<string>('');
+  const { __ } = props;
 
   return (
     <div className={`${CSS}-rooms`}>
@@ -57,16 +44,13 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
           <label>Name</label>
           <input
             className="jp-mod-styled"
-            onInput={(evt) =>
-              props.onDisplayNameChanged(evt.currentTarget.value)
-            }
+            onInput={(evt) => props.onDisplayNameChanged(evt.currentTarget.value)}
             defaultValue={props.displayName}
           />
           <blockquote>
-            (optional) Default name to show to other chat participants
+            {__('(optional) Default name to show to other chat participants')}
           </blockquote>
-        </li>
-        <li className={`${CSS}-input-group`}>
+          <hr />
           <label>Email</label>
           <input
             className="jp-mod-styled"
@@ -74,113 +58,17 @@ export const RoomsListComponent = (props: RoomsListProps): JSX.Element => {
             defaultValue={props.email}
           />
           <blockquote>
-            (optional) Email to show to other chat participants. If an avatar
-            icon is registered with this address at{' '}
+            {__(`(optional) Email to show to other chat participants.`)}{' '}
+            {__(`An avatar icon will be shown if this address is registered at`)}{' '}
             <a href="https://gravatar.com" {...openBlank}>
               gravatar.com
             </a>
-            , an icon will be shown.
+            .
           </blockquote>
         </li>
       </ul>
-
-      <label id={`id-${CSS}-hub-room-list`}>
-        <icons.groupIcon.react {...littleIcon} />
-        Select Hub room to join
-      </label>
-      <ul aria-labelledby={`id-${CSS}-hub-room-list`}>
-        {!props.rooms.length
-          ? noRoom
-          : props.rooms.map((value, i) => {
-              return (
-                <li key={value.id}>
-                  <label>{value.displayName}</label>
-                  <button
-                    className={`jp-mod-styled jp-mod-accept`}
-                    onClick={() => props.onRoomSelect(value)}
-                  >
-                    JOIN
-                  </button>
-                  <blockquote>{value.description}</blockquote>
-                </li>
-              );
-            })}
-      </ul>
-
-      <label id={`id-${CSS}-new-room-list`}>
-        <icons.newGroupIcon.react {...littleIcon} />
-        Join Hub room by name
-      </label>
-      <ul aria-labelledby={`id-${CSS}-new-room-list`}>
-        <li>
-          <div className={`${CSS}-room-displayname-input`}>
-            <input
-              className="jp-mod-styled"
-              placeholder="Hub Room Name"
-              onInput={(evt) => setRoomName(evt.currentTarget.value)}
-            />
-            <button
-              className={`jp-mod-styled ${
-                roomName.trim().length ? 'jp-mod-accept' : ''
-              }`}
-              disabled={!roomName.trim().length}
-              onClick={() => props.onCreateRoom({ displayName: roomName })}
-            >
-              JOIN
-            </button>
-          </div>
-          <blockquote>
-            Join (or create) a named room. Share this name with other users of
-            your Hub.
-          </blockquote>
-        </li>
-      </ul>
-
-      {props.disablePublicRooms ? (
-        <></>
-      ) : (
-        <label id={`id-${CSS}-public-room-list`}>
-          <icons.publicIcon.react {...littleIcon} />
-          Join Public room by name
-        </label>
-      )}
-      {props.disablePublicRooms ? (
-        <></>
-      ) : (
-        <ul aria-labelledby={`id-${CSS}-public-room-list`}>
-          <li>
-            <div className={`${CSS}-room-displayname-input`}>
-              <input
-                className="jp-mod-styled"
-                placeholder="Public Room ID"
-                onInput={(evt) => setPublicRoomId(evt.currentTarget.value)}
-              />
-              <button
-                className={`jp-mod-styled ${
-                  publicRoomId.trim().length ? 'jp-mod-accept' : ''
-                }`}
-                disabled={!publicRoomId.trim().length}
-                onClick={() =>
-                  props.onRoomSelect({
-                    displayName: publicRoomId,
-                    id: publicRoomId,
-                  })
-                }
-              >
-                JOIN
-              </button>
-            </div>
-            <blockquote>
-              Join (or create) a <b>public</b> room. Share this name with anyone
-              who can access{' '}
-              <a href={`https://${props.domain}`} {...openBlank}>
-                {props.domain}
-              </a>
-              .
-            </blockquote>
-          </li>
-        </ul>
-      )}
+      {props.canCreateRooms ? ServerRoomsComponent(props) : <></>}
+      {props.disablePublicRooms ? <></> : PublicRoomsComponent(props)}
     </div>
   );
 };

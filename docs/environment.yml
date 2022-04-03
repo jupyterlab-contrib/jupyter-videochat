@@ -2,22 +2,29 @@ name: jupyter-videochat-docs
 
 channels:
   - conda-forge
+  - nodefaults
 
 dependencies:
   # run
   - escapism
-  - jupyterlab >=3,<4
-  - python >=3.6,<3.10
+  - python >=3.7,<3.10
   # build
-  - nodejs >=14,<15
+  - nodejs >=14,!=15,<17
   - pip
   - twine
+  # lint
+  - black ==22.3.0
+  - isort
   # docs
+  - ipywidgets
   - myst-nb
   - pydata-sphinx-theme
-  - sphinx
-  - sphinx-jsonschema
-  # check
   - pytest-check-links
-  - hunspell
-  - hunspell-en
+  - sphinx
+  - sphinx-autobuild
+  - sphinx-jsonschema
+  # lite
+  - jupyterlab >=3.3.0,<4
+  - retrolab >=0.3.20
+  - pip:
+      - jupyterlite ==0.1.0b4

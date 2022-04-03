@@ -1,3 +1,9 @@
+# run-time dependencies
 escapism
-jupyterlab==3.*
+jupyterlab ==3.*
+
+# DEMO stuff
+jupyterlab >=3.3.0,<4
+retrolab >=0.3.20
 nbgitpuller
+jupyterlab-link-share

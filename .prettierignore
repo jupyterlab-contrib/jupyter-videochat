@@ -1,7 +1,8 @@
-node_modules
-**/node_modules
-**/lib
-**/package.json
 **/build
 **/dist
+**/lib
+**/node_modules
+**/package.json
 docs/_build/
+docs/_static/lite/
+node_modules/

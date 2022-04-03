@@ -18,3 +18,10 @@ jupyter server extension enable --sys-prefix --py jupyter_videochat
 jupyter server extension list
 jupyter serverextension list
 jupyter labextension list
+
+# server configuration
+cp binder/jupyter_config.json .
+
+# lab settings
+mkdir -p ${NB_PYTHON_PREFIX}/share/jupyter/lab/settings
+cp binder/overrides.json ${NB_PYTHON_PREFIX}/share/jupyter/lab/settings

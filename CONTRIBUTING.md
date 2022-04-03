@@ -2,11 +2,11 @@
 
 ## Install
 
-The `jlpm` command is JupyterLab's pinned version of
-[yarn](https://yarnpkg.com/) that is installed with JupyterLab.
+The `jlpm` command is JupyterLab's pinned version of [yarn](https://yarnpkg.com/) that
+is installed with JupyterLab.
 
-> You may use `yarn` or `npm` in lieu of `jlpm` below, but internally some
-> subcommands will use still use `jlpm`.
+> You may use `yarn` or `npm` in lieu of `jlpm` below, but internally some subcommands
+> will use still use `jlpm`.
 
 ```bash
 # Clone the project repository
@@ -21,6 +21,7 @@ jlpm build
 pip install -e .
 # Register server extension
 jupyter server extension enable --py jupyter_videochat
+jupyter serverextension enable --py jupyter_videochat
 # Symlink your development version of the extension with JupyterLab
 jupyter labextension develop --overwrite .
 # Rebuild Typescript source after making changes
@@ -29,8 +30,8 @@ jlpm build
 
 ## Live Development
 
-You can watch the `src` directory for changes and automatically rebuild the JS
-files and webpacked extension.
+You can watch the `src` directory for changes and automatically rebuild the JS files and
+webpacked extension.
 
 ```bash
 # Watch the source directory in another terminal tab
@@ -46,12 +47,13 @@ jupyter lab
 
 ## Extending
 
-Other [JupyterLab extensions] can use the `IVideoChatManager` to interact with
-the
+### Jitsi Meet API
+
+Other [JupyterLab extensions] can use the `IVideoChatManager` to interact with the
 [Jitsi Meet API](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe)
-instance, which has many _commands_, _functions_ and _events_. Nobody has yet,
-_that we know of_: if you are successful, please consider posting an
-issue/screenshot on the GitHub repository!
+instance, which has many _commands_, _functions_ and _events_. Nobody has yet, _that we
+know of_: if you are successful, please consider posting an issue/screenshot on the
+GitHub repository!
 
 - Add `jupyterlab-videochat` as a `package.json` dependency
 
@@ -82,11 +84,10 @@ issue/screenshot on the GitHub repository!
   export default plugin;
   ```
 
-  > _The typings provided for the Jitsit API are **best-effort**, PRs welcome to
-  > improve them._
+  > _The typings provided for the Jitsit API are **best-effort**, PRs welcome to improve
+  > them._
 
-- (Probably) add `jupyter-videochat` to your extension's python dependencies,
-  e.g.
+- (Probably) add `jupyter-videochat` to your extension's python dependencies, e.g.
 
   ```py
   # setup.py
@@ -95,6 +96,28 @@ issue/screenshot on the GitHub repository!
   )
   ```
 
+### Room Provider
+
+Other [JupyterLab extensions] may add additional sources of _Rooms_ by registering a
+_provider_. See the core implementations of server and public rooms for examples of how
+to use the `IVideoChatManager.registerRoomProvider` API.
+
+_Providers_ are able to:
+
+- fetch configuration information to set up a connection to a Jitsi server
+- create new _Rooms_ that other users can join.
+- find additional _Rooms_
+
+If providing new rooms, it is important to have a scheme for generating room names that
+are:
+
+- unique
+- hard-to-guess
+
+While _passwords_, _lobbies_, and _end-to-end encryption_ are also available to
+moderators, the room name is the first line of defense in avoiding unexpected visitors
+during a Jitsi meeting.
+
 ## Releasing
 
 - Start a release issue with a checklist of tasks
@@ -102,7 +125,7 @@ issue/screenshot on the GitHub repository!
 - Ensure the version has been updated, roughly following [semver]
   - Basically, any _removal_ or _data_ constraint would trigger a `0.x+1.0`
   - Otherwise it's probably `0.x.y+1`
-- Ensure the [CHANGELOG] and [README] are up-to-date
+- Ensure the `CHANGELOG.md` and `README.md` are up-to-date
 - Wait until CI passes on `master`
 - Validate on Binder
 - Download the release assets from the latest CI run
@@ -113,10 +136,11 @@ issue/screenshot on the GitHub repository!
   ```bash
   twine upload jupyter-videochat*
   ```
-- Upload to npm.com
+- Upload to `npmjs.com`
   ```bash
   npm login
   npm publish jupyterlab-videochat*
+  npm logout
   ```
 - Make a new PR bumping to the next point release
   - just in case a quick fix is needed
@@ -129,12 +153,7 @@ issue/screenshot on the GitHub repository!
   - validate and merge
 - Close the release issue!
 
-[changelog]:
-  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/CHANGELOG.md
-[readme]:
-  https://github.com/jupyterlab-contrib/jupyter-videochat/blob/master/README.md
 [semver]: https://semver.org/
-[conda-forge feedstock]:
-  https://github.com/conda-forge/jupyter-videochat-feedstock
+[conda-forge feedstock]: https://github.com/conda-forge/jupyter-videochat-feedstock
 [jupyterlab extensions]:
   https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html
